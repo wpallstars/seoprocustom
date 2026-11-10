@@ -1,0 +1,649 @@
+#!/usr/bin/env bash
+# Copy the core files (scripts/core-files.txt) from the starter plugin into
+# this plugin, with this plugin's names. Core files hold no code for one
+# plugin, so they match the starter apart from names and marked own blocks.
+#
+# Usage: scripts/sync-core.sh [--check] [--from DIR] [--ref REF] [--repo OWNER/REPO] [--discard-local]
+#   --check          Change nothing; list core files that differ from the
+#                    starter's, each with its class, and exit 1 if any do
+#                    (scripts/preflight-release.sh warns).
+#   --from DIR       A checkout of the starter (default: <PREFIX>_STARTER_DIR,
+#                    then <STARTER_REPO_DIR> next to the main checkout, not a
+#                    linked worktree; with a bare main repository, next to
+#                    its first linked worktree).
+#   --ref REF        Starter commit, branch or tag to copy from (default: HEAD
+#                    of that checkout; use origin/main after a git fetch there).
+#   --repo OWNER/REPO  This plugin's GitHub repository, for the links in core
+#                    files (default: the main file's GitHub Plugin URI, then
+#                    the origin remote). A sync stops when none is known.
+#   --discard-local  Also replace files changed here (below), once their
+#                    change is in the starter or no longer needed.
+#
+# A core file that differs is behind (an older starter version: a sync
+# updates it), newer (a starter version REF does not contain, such as a
+# later one on main), changed here (no starter version has it: the plugin
+# changed it outside its own blocks) or missing (a sync adds it). A sync
+# writes nothing while any file is newer or changed here, so it never undoes
+# a starter change or loses the plugin's own: sync from a ref that contains
+# the newer files, and take a change made here to the starter first. The
+# classes come from the starter checkout's history, so it must not be a
+# shallow clone. DEVELOPMENT.md → Starter sync.
+#
+# The list of core files and their contents come from the starter at REF;
+# the plugin's names come from this repository's main file at HEAD.
+# A plugin that leaves some core files out on purpose (an add-on with no
+# admin screen) lists them in scripts/core-skip.txt here: one path per line
+# in this plugin's names, a trailing / for every file below. They are not
+# compared or added, and the summary counts them.
+# Review the changes with git diff, then commit them.
+
+# SPDX-License-Identifier: GPL-3.0-or-later
+# SPDX-FileCopyrightText: 2026 Marcus Quinn
+# Additional terms (GPL-3.0 section 7(b)): ATTRIBUTION.txt
+# Provenance: wpas-e4502af0f07e8a92. Copies, even of part, keep these lines.
+
+set -euo pipefail
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+readonly SCRIPT_DIR
+# shellcheck source=scripts/lib/plugin.sh disable=SC1091 # followed only with -x
+. "$SCRIPT_DIR/lib/plugin.sh"
+
+# Split the starter slug so plugin_map leaves its repository name unchanged.
+readonly STARTER_REPO_DIR="wp-plugin-""starter-template-for-ai-coding"
+
+die() {
+	local message="$1"
+	printf 'sync-core: %s\n' "$message" >&2
+	exit 2
+}
+
+TMP_FILE=""
+# Every core path at REF, and the ones this plugin carries.
+ALL_FILE=""
+LIST_FILE=""
+OWN_FILE=""
+# A starter version being compared, the versions of one path, and each
+# differing file's class (classify).
+CAND_FILE=""
+BLOBS_FILE=""
+CLASS_FILE=""
+# The file being swapped in, removed if the run stops.
+NEW_FILE=""
+
+cleanup() {
+	local file
+	for file in "$TMP_FILE" "$ALL_FILE" "$LIST_FILE" "$OWN_FILE" "$CAND_FILE" "$BLOBS_FILE" "$CLASS_FILE" "$NEW_FILE"; do
+		[[ -z "$file" ]] || rm -f "$file"
+	done
+	return 0
+}
+
+# A core path must stay inside the plugin: not absolute, no .. segment.
+check_path() {
+	local path="$1"
+	case "/$path/" in
+	//* | */../*) die "scripts/core-files.txt lists $path, which is outside the plugin" ;;
+	*) ;;
+	esac
+	return 0
+}
+
+# A target is written only through real folders of the plugin: neither it
+# nor a folder above it may be a symbolic link, which could point outside.
+check_target() {
+	local target="$1"
+	local dir
+	[[ ! -L "$target" ]] || die "$target is a symbolic link; core files are written only inside the plugin"
+	dir="$(dirname "$target")"
+	while [[ "$dir" != "." && "$dir" != "/" ]]; do
+		[[ ! -L "$dir" ]] || die "$dir is a symbolic link; core files are written only inside the plugin"
+		dir="$(dirname "$dir")"
+	done
+	return 0
+}
+
+# Whether a file's executable bit matches a Git mode (100755 or 100644).
+same_mode() {
+	local file="$1"
+	local mode="$2"
+	if [[ "$mode" = "100755" ]]; then
+		[[ -x "$file" ]] || return 1
+	elif [[ -x "$file" ]]; then
+		return 1
+	fi
+	return 0
+}
+
+usage() {
+	sed -n '2,38p' "$0" | sed -e 's/^# \{0,1\}//' -e "s/<STARTER_REPO_DIR>/$STARTER_REPO_DIR/"
+	return 0
+}
+
+# Core paths at the starter ref, one per line, with directories expanded,
+# into FILE. Stops when the list cannot be read or comes out empty, so a
+# failure never reads as "all 0 core files match".
+core_paths() {
+	local from="$1"
+	local ref="$2"
+	local out="$3"
+	local list line files
+	list="$(git -C "$from" show "$ref:scripts/core-files.txt" 2>/dev/null)" ||
+		die "no scripts/core-files.txt in the starter at $ref"
+	: >"$out"
+	while IFS= read -r line; do
+		case "$line" in
+		*/)
+			files="$(git --literal-pathspecs -C "$from" ls-tree -r --name-only "$ref" -- "$line")" ||
+				die "cannot list $line in the starter at $ref"
+			[[ -n "$files" ]] || die "scripts/core-files.txt lists $line, which has no files in the starter at $ref"
+			printf '%s\n' "$files" >>"$out"
+			;;
+		*) printf '%s\n' "$line" >>"$out" ;;
+		esac
+	done < <(printf '%s\n' "$list" | sed -e 's/[[:space:]]*$//' -e '/^#/d' -e '/^$/d')
+	[[ -s "$out" ]] || die "scripts/core-files.txt in the starter at $ref lists no files"
+	return 0
+}
+
+# Core files this plugin leaves out on purpose, one path per line in its
+# own names; a trailing / means every file below.
+readonly SKIP_LIST="scripts/core-skip.txt"
+# Core files left out (skip_paths counts them).
+SKIPPED=0
+
+# Whether TARGET (a core path in this plugin's names) is one of ENTRIES.
+skip_match() {
+	local target="$1"
+	local entries="$2"
+	local entry
+	while IFS= read -r entry; do
+		case "$entry" in
+		"") ;;
+		*/) [[ "$target" != "$entry"* ]] || return 0 ;;
+		*) [[ "$target" != "$entry" ]] || return 0 ;;
+		esac
+	done <<<"$entries"
+	return 1
+}
+
+# Copy the core paths in LIST into KEPT, without the ones SKIP_LIST names.
+# A line that names no core file is reported, so a stale list is noticed.
+skip_paths() {
+	local list="$1"
+	local kept="$2"
+	local entries="" targets="" path target entry found
+	if [[ -f "$SKIP_LIST" ]]; then
+		entries="$(sed -e 's/[[:space:]]*$//' -e '/^#/d' -e '/^$/d' "$SKIP_LIST")"
+	fi
+	: >"$kept"
+	while IFS= read -r path; do
+		target="$(printf '%s' "$path" | plugin_map)"
+		targets="$targets$target"$'\n'
+		if [[ -n "$entries" ]] && skip_match "$target" "$entries"; then
+			SKIPPED=$((SKIPPED + 1))
+		else
+			printf '%s\n' "$path" >>"$kept"
+		fi
+	done <"$list"
+	while IFS= read -r entry; do
+		[[ -n "$entry" ]] || continue
+		found=0
+		while IFS= read -r target; do
+			if [[ -n "$target" ]] && skip_match "$target" "$entry"; then
+				found=1
+				break
+			fi
+		done <<<"$targets"
+		[[ "$found" -eq 1 ]] || printf 'sync-core: %s lists %s, which is not a core file; remove the line\n' "$SKIP_LIST" "$entry" >&2
+	done <<<"$entries"
+	[[ -s "$kept" ]] || die "$SKIP_LIST leaves out every core file"
+	return 0
+}
+
+# ", N left out (scripts/core-skip.txt)" for the summary, when any are.
+skipped_note() {
+	[[ "$SKIPPED" -eq 0 ]] || printf ', %d left out (%s)' "$SKIPPED" "$SKIP_LIST"
+	return 0
+}
+
+# owner/repo of the origin remote when it is on GitHub, else nothing. The
+# host must be github.com itself: https://[user@]github.com/o/r,
+# git@github.com:o/r or ssh://git@github.com[:port]/o/r.
+origin_repo() {
+	local url
+	local pattern='^(https?://|ssh://)?([A-Za-z0-9_.-]+@)?github\.com(:[0-9]+)?[:/]([A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+)$'
+	url="$(git remote get-url origin 2>/dev/null || true)"
+	url="${url%/}"
+	url="${url%.git}"
+	if [[ "$url" =~ $pattern ]]; then
+		printf '%s' "${BASH_REMATCH[4]}"
+	fi
+	return 0
+}
+
+# Set PLUGIN_REPO: --repo when given, else the GitHub Plugin URI header,
+# else the origin remote (an add-on its parent updates has no header). With
+# none, stop: the starter's repository name would only get this plugin's
+# slug, an address that does not exist (Composer package, security report).
+resolve_repo() {
+	local repo="$1"
+	if [[ -n "$repo" ]]; then
+		[[ "$repo" =~ ^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$ ]] || die "--repo needs OWNER/REPO, not $repo"
+		PLUGIN_REPO="$repo"
+	elif [[ -z "$PLUGIN_REPO" ]]; then
+		PLUGIN_REPO="$(origin_repo)"
+		[[ -n "$PLUGIN_REPO" ]] ||
+			die "no GitHub Plugin URI header and no GitHub origin remote, so the links in core files cannot name this plugin's repository; pass --repo OWNER/REPO"
+	fi
+	return 0
+}
+
+# The folder holding the repositories: the parent of the main checkout, so a
+# linked worktree finds the starter beside the main checkout, not in its own folder.
+default_starter_parent() {
+	local top="$1" main_wt="" candidate
+	# The first entry of `git worktree list` is the main checkout, whatever the
+	# Git directory is named or located (no --path-format, so old Git works too).
+	# A bare main repository is no checkout: its entry has a "bare" line, so
+	# the first linked worktree whose folder still exists is used instead (a
+	# removed one stays listed, marked "prunable" by newer Git, until pruned).
+	while IFS= read -r candidate; do
+		if [[ -n "$candidate" && -d "$candidate" ]]; then
+			main_wt="$candidate"
+			break
+		fi
+	done < <(git worktree list --porcelain 2>/dev/null | awk '
+		/^worktree / { path = substr($0, 10); next }
+		$0 == "bare" || /^prunable( |$)/ { path = ""; next }
+		$0 == "" { if (path != "") print path; path = ""; next }
+		END { if (path != "") print path }
+	')
+	if [[ -n "$main_wt" ]]; then
+		top="$main_wt"
+	fi
+	dirname "$top"
+	return 0
+}
+
+# Name the starter checkout and its commit; warn when it is behind its upstream (no fetch).
+report_starter() {
+	local dir="$1" behind
+	printf 'Starter: %s @ %s\n' "$dir" "$(git -C "$dir" rev-parse --short HEAD)"
+	behind="$(git -C "$dir" rev-list --count 'HEAD..@{upstream}' 2>/dev/null)" || behind=0
+	if [[ "$behind" =~ ^[0-9]+$ && "$behind" -gt 0 ]]; then
+		printf 'Warning: the starter checkout is %s commit(s) behind its upstream; pull it, or pass --from\n' "$behind" >&2
+	fi
+	return 0
+}
+
+main() {
+	local check=0 discard=0 from="" ref="HEAD" repo=""
+	while [[ $# -gt 0 ]]; do
+		local arg="$1"
+		local value="${2:-}"
+		case "$arg" in
+		--check) check=1 ;;
+		--discard-local) discard=1 ;;
+		--from)
+			[[ $# -ge 2 ]] || die "--from needs a value"
+			from="$value"
+			shift
+			;;
+		--repo)
+			[[ $# -ge 2 ]] || die "--repo needs a value"
+			repo="$value"
+			shift
+			;;
+		--ref)
+			[[ $# -ge 2 ]] || die "--ref needs a value"
+			ref="$value"
+			shift
+			;;
+		-h | --help)
+			usage
+			return 0
+			;;
+		*) die "unknown argument: $arg" ;;
+		esac
+		shift
+	done
+
+	local root
+	root="$(git rev-parse --show-toplevel)" || die "run this inside a checkout of the plugin"
+	cd "$root"
+	plugin_identity HEAD || die "cannot tell which plugin this is"
+	resolve_repo "$repo"
+	plugin_names_as TO
+
+	if [[ -z "$from" ]]; then
+		from="$(plugin_env STARTER_DIR "$(default_starter_parent "$root")/$STARTER_REPO_DIR")"
+	fi
+	[[ -d "$from" ]] || die "no starter checkout at $from; clone it there or pass --from DIR"
+	from="$(cd "$from" && pwd)"
+	[[ "$from" != "$root" ]] || die "this is the starter; run it in a plugin made from the starter"
+	git -C "$from" rev-parse --verify --quiet "$ref^{commit}" >/dev/null || die "not a commit in the starter: $ref"
+	if [[ "$(git -C "$from" rev-parse --is-shallow-repository)" = "true" ]]; then
+		SHALLOW=1
+	fi
+
+	cd "$from"
+	plugin_identity "$ref" || die "cannot read the starter's names at $ref"
+	plugin_names_as FROM
+	cd "$root"
+
+	printf 'Core files from %s (%s) into %s, as %s / %s / %s / %s / %s\n' \
+		"$FROM_NAME" "$(git -C "$from" rev-parse --short "$ref")" "$TO_NAME" \
+		"$TO_SLUG" "$TO_PREFIX" "$TO_PACKAGE" "$TO_CONST" "$TO_CSS"
+	report_starter "$from"
+
+	local path count=0
+	DIFFER=0
+	trap cleanup EXIT
+	TMP_FILE="$(mktemp "${TMPDIR:-/tmp}/sync-core.XXXXXX")"
+	ALL_FILE="$(mktemp "${TMPDIR:-/tmp}/sync-core-all.XXXXXX")"
+	LIST_FILE="$(mktemp "${TMPDIR:-/tmp}/sync-core-list.XXXXXX")"
+	OWN_FILE="$(mktemp "${TMPDIR:-/tmp}/sync-core-own.XXXXXX")"
+	CAND_FILE="$(mktemp "${TMPDIR:-/tmp}/sync-core-cand.XXXXXX")"
+	BLOBS_FILE="$(mktemp "${TMPDIR:-/tmp}/sync-core-blobs.XXXXXX")"
+	CLASS_FILE="$(mktemp "${TMPDIR:-/tmp}/sync-core-class.XXXXXX")"
+	core_paths "$from" "$ref" "$ALL_FILE"
+	skip_paths "$ALL_FILE" "$LIST_FILE"
+	# Validate and classify every file before writing any: a late malformed
+	# block, or a file a sync would lose work in, must not leave the plugin
+	# partly synced.
+	while IFS= read -r path; do
+		sync_file "$from" "$ref" "$path" 2
+	done <"$LIST_FILE"
+	if [[ "$check" -eq 0 ]]; then
+		stop_if_unsafe "$from" "$ref" "$discard"
+	fi
+	while IFS= read -r path; do
+		sync_file "$from" "$ref" "$path" "$check"
+		count=$((count + 1))
+	done <"$LIST_FILE"
+
+	if [[ "$check" -eq 1 ]]; then
+		if [[ "$DIFFER" -eq 0 ]]; then
+			printf 'All %d core files match the starter%s.\n' "$count" "$(skipped_note)"
+			return 0
+		fi
+		printf '%d of %d core files differ from the starter%s. Run scripts/sync-core.sh, or change the starter first.\n' "$DIFFER" "$count" "$(skipped_note)"
+		return 1
+	fi
+	printf '%d of %d core files updated%s. Review with git diff, then commit.\n' "$DIFFER" "$count" "$(skipped_note)"
+	return 0
+}
+
+# Core files that differ from the starter (sync_file counts them).
+DIFFER=0
+# 1 when the starter checkout is a shallow clone: no history to classify.
+SHALLOW=0
+# Set by classify: behind, newer, changed or unknown, and for behind and
+# newer the starter commit whose version the plugin's file is.
+CLASS=""
+CLASS_AT=""
+
+# Put each own block of TARGET into the corresponding block of FILE, in
+# order. Recognise whole comment lines only, including indented release
+# steps. Returns 1, with the reason on stderr, when the blocks do not fit.
+own_merge() {
+	local target="$1"
+	local file="$2"
+	awk -v marker="$TO_CSS-own" '
+		function fail(message) {
+			print "sync-core: " FILENAME ": " message > "/dev/stderr"
+			failed = 1
+			exit 1
+		}
+		function boundary(line, suffix) {
+			sub(/^[[:space:]]*/, "", line)
+			sub(/[[:space:]]*$/, "", line)
+			return line == "# " marker suffix || line == "<!-- " marker suffix " -->"
+		}
+		FILENAME != previous {
+			if (inside) fail("own start marker has no end marker")
+			inside = 0
+			count = 0
+			previous = FILENAME
+		}
+		{
+			target = (FILENAME == ARGV[1])
+			if (boundary($0, ":start")) {
+				if (inside) fail("nested own start marker")
+				inside = 1
+				count++
+				if (target) target_count = count
+				else { starter_count = count; print; printf "%s", content[count] }
+			} else if (boundary($0, ":end")) {
+				if (!inside) fail("own end marker has no start marker")
+				inside = 0
+				if (!target) print
+			} else if (inside) {
+				if (target) content[count] = content[count] $0 ORS
+			} else if (!target) print
+		}
+		END {
+			if (!failed) {
+				if (inside) fail("own start marker has no end marker")
+				if (target_count > starter_count) fail("target has more own blocks than the starter")
+			}
+		}
+	' "$target" "$file" >"$OWN_FILE" || return 1
+	cp "$OWN_FILE" "$file"
+	return 0
+}
+
+# Keep the target's own blocks in the starter's file (TMP_FILE).
+preserve_own() {
+	local target="$1"
+	grep -Fq "$TO_CSS-own:" "$target" || return 0
+	own_merge "$target" "$TMP_FILE" || die "cannot preserve own blocks in $target; no core files written"
+	return 0
+}
+
+# The versions of PATH in the starter's history, newest first, each once:
+# "blob commit" per line, into BLOBS_FILE. REVS are git log's revisions.
+starter_versions() {
+	local from="$1"
+	local path="$2"
+	shift 2
+	git -c core.quotePath=false --literal-pathspecs -C "$from" log --format='%H' --raw --no-abbrev \
+		--no-renames --full-history "$@" -- "$path" |
+		awk -v p="$path" '
+			!/^:/ { if (NF) commit = $0; next }
+			{
+				# ":old-mode new-mode old-blob new-blob status<TAB>path"
+				split($0, part, "\t")
+				split(part[1], f, " ")
+				if (part[2] == p && f[4] !~ /^0+$/ && !seen[f[4]]++) print f[4], commit
+			}' >"$BLOBS_FILE" || die "cannot read the history of $path in the starter"
+	return 0
+}
+
+# Whether the starter's version BLOB, with this plugin's names and the
+# target's own blocks, is the target's content.
+same_version() {
+	local from="$1"
+	local blob="$2"
+	local target="$3"
+	git -C "$from" cat-file blob "$blob" | plugin_map "$target" >"$CAND_FILE" || return 1
+	if grep -Fq "$TO_CSS-own:" "$target"; then
+		own_merge "$target" "$CAND_FILE" 2>/dev/null || return 1
+	fi
+	cmp -s "$CAND_FILE" "$target" || return 1
+	return 0
+}
+
+# Set CLASS and CLASS_AT for a core file whose content differs from the
+# starter's at REF: behind when it is a version REF contains, newer when it
+# is one only other starter commits have (later on main, another branch),
+# changed when no starter version is the same, unknown without history.
+# Versions REF contains are tried first, newest first; each stops at the
+# first match.
+classify() {
+	local from="$1"
+	local ref="$2"
+	local path="$3"
+	local target="$4"
+	local blob commit seen=" "
+	CLASS="unknown"
+	CLASS_AT=""
+	[[ "$SHALLOW" -eq 0 ]] || return 0
+	starter_versions "$from" "$path" "$ref"
+	while read -r blob commit; do
+		seen="$seen$blob "
+		if same_version "$from" "$blob" "$target"; then
+			CLASS="behind"
+			CLASS_AT="$commit"
+			return 0
+		fi
+	done <"$BLOBS_FILE"
+	starter_versions "$from" "$path" --all --not "$ref"
+	while read -r blob commit; do
+		case "$seen" in
+		*" $blob "*) continue ;;
+		*) ;;
+		esac
+		if same_version "$from" "$blob" "$target"; then
+			CLASS="newer"
+			CLASS_AT="$commit"
+			return 0
+		fi
+	done <"$BLOBS_FILE"
+	CLASS="changed"
+	return 0
+}
+
+# The class recorded for TARGET (CLASS and CLASS_AT), from CLASS_FILE.
+class_of() {
+	local target="$1"
+	local line
+	line="$(awk -F'\t' -v t="$target" '$1 == t { print $2 "\t" $3; exit }' "$CLASS_FILE")"
+	CLASS="${line%%$'\t'*}"
+	CLASS_AT="${line#*$'\t'}"
+	return 0
+}
+
+# The indented line under a file in --check: its class and what to do. The
+# starter-sync workflow reads the words before the colon.
+class_line() {
+	local from="$1"
+	local ref="$2"
+	case "$CLASS" in
+	behind) printf '    behind: an older starter version (%s); a sync updates it\n' "${CLASS_AT:0:7}" ;;
+	newer) printf '    newer: the starter'\''s version at %s, which %s does not contain; sync from the starter'\''s main or a later tag\n' "${CLASS_AT:0:7}" "$ref" ;;
+	changed) printf '    changed here: no starter version has it; take the change to the starter first, or move plugin-only lines into %s-own blocks, then sync with --discard-local\n' "$TO_CSS" ;;
+	*) printf '    unknown (shallow starter clone): run git -C %s fetch --unshallow\n' "$from" ;;
+	esac
+	return 0
+}
+
+# Stop before writing anything when a sync would lose work: a file newer
+# than REF, changed here (unless --discard-local), or not classified.
+stop_if_unsafe() {
+	local from="$1"
+	local ref="$2"
+	local discard="$3"
+	local target class at list="" newer=0 changed=0 unknown=0
+	while IFS=$'\t' read -r target class at; do
+		case "$class" in
+		newer)
+			list="$list  newer         $target (the starter's version at ${at:0:7})"$'\n'
+			newer=1
+			;;
+		changed)
+			[[ "$discard" -eq 0 ]] || continue
+			list="$list  changed here  $target"$'\n'
+			changed=1
+			;;
+		unknown)
+			list="$list  unknown       $target"$'\n'
+			unknown=1
+			;;
+		*) ;;
+		esac
+	done <"$CLASS_FILE"
+	[[ -n "$list" ]] || return 0
+	{
+		printf 'sync-core: nothing written. A sync from the starter at %s could lose work in these core files:\n%s' "$ref" "$list"
+		if [[ "$newer" -eq 1 ]]; then
+			printf 'Newer: this plugin has a later starter version than %s. Sync from a starter ref that contains it: the starter'\''s main (what the daily Starter sync checks against), or a later tag. There is no option to go backwards.\n' "$ref"
+		fi
+		if [[ "$changed" -eq 1 ]]; then
+			printf 'Changed here: this plugin changed it outside its %s-own blocks. Take the change to the starter first (a pull request, or an issue there with this plugin'\''s case), or move plugin-only lines into %s-own blocks. Then run again with --discard-local.\n' "$TO_CSS" "$TO_CSS"
+		fi
+		if [[ "$unknown" -eq 1 ]]; then
+			printf 'Unknown: the starter checkout is a shallow clone, so its history cannot tell. Run: git -C %s fetch --unshallow\n' "$from"
+		fi
+	} >&2
+	exit 2
+}
+
+# Compare one core file with the starter's, with this plugin's names; list
+# it (CHECK 1), validate and classify only (CHECK 2), or replace it when it
+# differs.
+sync_file() {
+	local from="$1"
+	local ref="$2"
+	local path="$3"
+	local check="$4"
+	local target mode
+	check_path "$path"
+	target="$(printf '%s' "$path" | plugin_map)"
+	check_path "$target"
+	check_target "$target"
+	# A literal pathspec: a name such as file[1].php is that file only.
+	mode="$(git --literal-pathspecs -C "$from" ls-tree "$ref" -- "$path" | awk '{ print $1 }')"
+	case "$mode" in
+	100644 | 100755) ;;
+	*) die "$path in the starter at $ref is not one regular file (mode '$mode')" ;;
+	esac
+	git -C "$from" show "$ref:$path" | plugin_map "$target" >"$TMP_FILE"
+	if [[ -f "$target" ]]; then preserve_own "$target"; fi
+	if [[ "$check" -eq 2 ]]; then
+		# Only files whose content differs need their history read.
+		if [[ -f "$target" ]] && ! cmp -s "$TMP_FILE" "$target"; then
+			classify "$from" "$ref" "$path" "$target"
+			printf '%s\t%s\t%s\n' "$target" "$CLASS" "$CLASS_AT" >>"$CLASS_FILE"
+		fi
+		return 0
+	fi
+	if [[ -f "$target" ]] && cmp -s "$TMP_FILE" "$target" && same_mode "$target" "$mode"; then
+		return 0
+	fi
+	DIFFER=$((DIFFER + 1))
+	if [[ "$check" -eq 1 ]]; then
+		if [[ ! -f "$target" ]]; then
+			printf '  missing  %s\n' "$target"
+			printf '    missing: a sync adds it\n'
+		elif cmp -s "$TMP_FILE" "$target"; then
+			printf '  mode     %s (executable bit)\n' "$target"
+			printf '    behind: only the executable bit differs; a sync sets it\n'
+		else
+			printf '  differs  %s\n' "$target"
+			class_of "$target"
+			class_line "$from" "$ref"
+		fi
+		return 0
+	fi
+	local note=""
+	if [[ -f "$target" ]] && ! cmp -s "$TMP_FILE" "$target"; then
+		class_of "$target"
+		[[ "$CLASS" != "changed" ]] || note=" (changed here; its change discarded)"
+	fi
+	mkdir -p "$(dirname "$target")"
+	# Replace by rename, never in place: bash reads a running script as it
+	# goes, so rewriting scripts/sync-core.sh itself would break this run.
+	NEW_FILE="$target.sync-core-new"
+	# Never write through a leftover file or link of that name.
+	rm -f "$NEW_FILE"
+	cp "$TMP_FILE" "$NEW_FILE"
+	if [[ "$mode" = "100755" ]]; then chmod 755 "$NEW_FILE"; else chmod 644 "$NEW_FILE"; fi
+	mv -f "$NEW_FILE" "$target"
+	NEW_FILE=""
+	printf '  updated  %s%s\n' "$target" "$note"
+	return 0
+}
+
+main "$@"

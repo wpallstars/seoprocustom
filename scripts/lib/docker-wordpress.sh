@@ -1,0 +1,155 @@
+#!/usr/bin/env bash
+# Shared disposable WordPress setup. Callers supply NAME, TMP_DIR, versions,
+# DB_IMAGE, MULTISITE, wp_cli, start_network and die. Optional DOCKER_LABELS
+# labels every resource; the caller owns persistence and cleanup.
+# STARTED and CURL_ARGS are consumed by the callers, not this library.
+# shellcheck disable=SC2034
+# SPDX-License-Identifier: GPL-3.0-or-later
+# SPDX-FileCopyrightText: 2026 Marcus Quinn
+# Additional terms (GPL-3.0 section 7(b)): ATTRIBUTION.txt
+# Provenance: wpas-e4502af0f07e8a92. Copies, even of part, keep these lines.
+
+# Pull from the mirror with a positive-integer time limit
+# (DOCKER_MIRROR_TIMEOUT seconds, default 180) where timeout exists, as on
+# GitHub's runners: a stalled mirror would otherwise run until the job's time
+# limit, and the Docker Hub fallback would never run.
+pull_mirror() {
+	local mirror="$1"
+	local limit="${DOCKER_MIRROR_TIMEOUT:-180}"
+	if [[ ! "$limit" =~ ^0*[1-9][0-9]*$ ]]; then
+		limit=180
+	fi
+	limit="${limit#"${limit%%[!0]*}"}"
+	if command -v timeout >/dev/null 2>&1; then
+		timeout "$limit" docker pull "$mirror" || return 1
+		return 0
+	fi
+	docker pull "$mirror" || return 1
+	return 0
+}
+
+# Keep cached images. In GitHub Actions, address the official-image cache
+# directly: a daemon mirror can silently fall back to rate-limited Docker Hub.
+pull_image() {
+	local image="$1"
+	local attempt official="" mirror
+	if docker image inspect "$image" >/dev/null 2>&1; then
+		return 0
+	fi
+	if [[ "${GITHUB_ACTIONS:-}" == "true" && "$image" != *@* ]]; then
+		case "$image" in
+		library/*) official="${image#library/}" ;;
+		docker.io/library/*) official="${image#docker.io/library/}" ;;
+		*/*) ;; # Private, namespaced and other-registry overrides stay unchanged.
+		*) official="$image" ;;
+		esac
+		if [[ -n "$official" && "$official" != */* ]]; then
+			mirror="mirror.gcr.io/library/$official"
+			printf 'Pulling %s from %s.\n' "$image" "$mirror"
+			if pull_mirror "$mirror" && docker tag "$mirror" "$image"; then
+				return 0
+			fi
+			printf 'Mirror pull or tag failed or timed out for %s; falling back to Docker Hub.\n' "$image" >&2
+		fi
+	fi
+	for attempt in 1 2 3; do
+		if docker pull "$image"; then
+			return 0
+		fi
+		if [[ "$attempt" -lt 3 ]]; then
+			printf 'Pull failed for %s (attempt %s/3); retrying in 20 seconds.\n' "$image" "$attempt" >&2
+			sleep 20
+		fi
+	done
+	return 1
+}
+
+# Arguments are Docker options, not words to split (worktree paths may contain spaces).
+docker_owner_labels() {
+	local root="$1"
+	shift
+	local helper="$HOME/.aidevops/agents/scripts/docker-resource-helper.sh" labels label
+	[[ -x "$helper" ]] || return 0
+	labels="$("$helper" labels --worktree "$root" "$@")" || return 1
+	while IFS= read -r label; do
+		[[ -z "$label" ]] || DOCKER_LABELS+=("$label")
+	done <<<"$labels"
+	return 0
+}
+
+random_password() {
+	# No early-closing pipeline (SIGPIPE under pipefail).
+	od -An -N24 -tx1 /dev/urandom | tr -d ' \n' || return 1
+	return 0
+}
+
+write_htaccess() {
+	printf '%s\n' "$@" | docker exec -i -u www-data "$NAME-web" sh -c 'cat >/var/www/html/.htaccess' || return 1
+	return 0
+}
+
+docker_prepare_core() {
+	docker run --rm ${DOCKER_LABELS[@]+"${DOCKER_LABELS[@]}"} -v "$NAME-wp:/var/www/html" --user 0:0 "wordpress:cli-php$PHP_VERSION" chown 33:33 /var/www/html
+	local waited=0
+	until docker exec "$NAME-db" mariadb-admin ping -h127.0.0.1 -uroot -p"$DB_PASSWORD" --silent >/dev/null 2>&1; do
+		[[ "$waited" -lt 90 ]] || die "the database did not start"
+		sleep 2
+		waited=$((waited + 2))
+	done
+	wp_cli core download --version="$WP_VERSION" --quiet
+	return 0
+}
+
+docker_debug_config() {
+	wp_cli config set WP_DEBUG true --raw --quiet
+	wp_cli config set WP_DEBUG_LOG true --raw --quiet
+	wp_cli config set WP_DEBUG_DISPLAY false --raw --quiet
+	wp_cli config set DISABLE_WP_CRON true --raw --quiet
+	return 0
+}
+
+docker_network_rewrites() {
+	local ref='$'
+	write_htaccess '# BEGIN WordPress Multisite' 'RewriteEngine On' 'RewriteBase /' \
+		'RewriteRule ^index\.php$ - [L]' "RewriteRule ^([_0-9a-zA-Z-]+/)?wp-admin$ ${ref}1wp-admin/ [R=301,L]" \
+		'RewriteCond %{REQUEST_FILENAME} -f [OR]' 'RewriteCond %{REQUEST_FILENAME} -d' 'RewriteRule ^ - [L]' \
+		"RewriteRule ^([_0-9a-zA-Z-]+/)?(wp-(content|admin|includes).*) ${ref}2 [L]" \
+		"RewriteRule ^([_0-9a-zA-Z-]+/)?(.*\.php)$ ${ref}2 [L]" 'RewriteRule . index.php [L]' '# END WordPress Multisite'
+	return 0
+}
+
+docker_start_site() {
+	printf 'Starting a disposable WordPress %s on PHP %s (%s)...\n' "$WP_VERSION" "$PHP_VERSION" "$NAME"
+	STARTED=1
+	DB_PASSWORD="$(random_password)"
+	ADMIN_PASSWORD="$(random_password)"
+	docker network create ${DOCKER_LABELS[@]+"${DOCKER_LABELS[@]}"} "$NAME" >/dev/null
+	docker volume create ${DOCKER_LABELS[@]+"${DOCKER_LABELS[@]}"} "$NAME-wp" >/dev/null
+	docker volume create ${DOCKER_LABELS[@]+"${DOCKER_LABELS[@]}"} "$NAME-db" >/dev/null
+	docker run -d ${DOCKER_LABELS[@]+"${DOCKER_LABELS[@]}"} --name "$NAME-db" --network "$NAME" \
+		-v "$NAME-db:/var/lib/mysql" \
+		-e MARIADB_ROOT_PASSWORD="$DB_PASSWORD" -e MARIADB_DATABASE=wordpress "$DB_IMAGE" >/dev/null
+	docker_prepare_core
+	docker run -d ${DOCKER_LABELS[@]+"${DOCKER_LABELS[@]}"} --name "$NAME-web" --network "$NAME" -v "$NAME-wp:/var/www/html" \
+		-p 127.0.0.1::80 "wordpress:php$PHP_VERSION-apache" >/dev/null
+	local published
+	published="$(docker port "$NAME-web" 80)"
+	BASE_URL="http://$published"
+	if [[ "$MULTISITE" -eq 1 ]]; then
+		BASE_URL="http://127.0.0.1"
+		CURL_ARGS=(--connect-to "127.0.0.1:80:$published")
+	fi
+	wp_cli config create --dbname=wordpress --dbuser=root --dbpass="$DB_PASSWORD" --dbhost="$NAME-db" --skip-check --quiet
+	docker_debug_config
+	if [[ "$MULTISITE" -eq 1 ]]; then
+		start_network
+	else
+		wp_cli core install --title=TestSite --admin_user=admin --admin_password="$ADMIN_PASSWORD" --admin_email=admin@example.com --skip-email --quiet --url="$BASE_URL"
+		wp_cli rewrite structure '/%postname%/' --quiet
+		write_htaccess "# BEGIN WordPress" "RewriteEngine On" "RewriteBase /" \
+			"RewriteRule ^index\.php$ - [L]" "RewriteCond %{REQUEST_FILENAME} !-f" "RewriteCond %{REQUEST_FILENAME} !-d" \
+			"RewriteRule . /index.php [L]" "# END WordPress"
+	fi
+	printf 'WordPress %s at %s\n' "$(wp_cli core version)" "$BASE_URL"
+	return 0
+}
