@@ -21,7 +21,7 @@
 
 Change how your site's theme and plugins behave when their settings can't, without waiting for, or negotiating, an update from their makers.
 
-SEO Pro Custom is an empty plugin you make your own. Each change you need is one small file in your own copy of this repository, which you (or your AI assistant) write, release and deploy to your sites the same day. The theme and plugins stay untouched, so their updates keep coming. When a change would help everyone, ask for it upstream; once the product does the job itself, your file switches itself off.
+SEO Pro Custom is an empty plugin you make your own. Fork it, install your fork on the sites you want to change, and keep each change as one small file in your fork, which you (or your AI assistant) write, release and deploy the same day. One fork serves as many of your sites as you like. The theme and plugins stay untouched, so their updates keep coming. When a change would help everyone, ask for it upstream; once the product does the job itself, your file switches itself off.
 
 If this saves you time, headaches and costs, feel free to [buy me a coffee](https://buymeacoffee.com/marcusquinn), or whatever you like, to invest in making more things open-source.
 
@@ -56,17 +56,22 @@ Try the lighter ways first, in this order:
 
 Don't use it for one-off data changes (run a WP-CLI command once, after a backup) or for anything every site needs (ask upstream).
 
-## Make your own copy
+## Fork it and install it
 
-1. On GitHub, choose **Use this template** to make your own **private** repository (a fork of a public repository stays public), and clone it.
-2. In `seoprocustom.php`, set `GitHub Plugin URI` (and `Update URI`, if you use it) to your repository, `owner/repo`.
-3. So your sites can update from a private repository, make a read-only fine-grained token for that one repository (Contents: read) and put it in `wp-config.php` on each site, never in Git:
+1. **Fork** this repository on GitHub and clone your fork. A fork is public, like this repository. If your changes must stay private, choose **Use this template** instead to make a **private** copy; everything below works the same.
+2. In your fork's **Actions** tab, enable workflows, so the Release workflow can build your zips.
+3. In `seoprocustom.php`, set `GitHub Plugin URI` (and `Update URI`, if you use it) to your repository, `owner/repo`, so your sites take updates from your fork, not ours.
+4. Private copy only: so your sites can update from it, make a read-only fine-grained token for that one repository (Contents: read) and put it in `wp-config.php` on each site, never in Git:
 
    ```php
    define( 'WPALLSTARS_GITHUB_TOKEN', 'github_pat_…' );
    ```
 
-4. Release your copy (below) and install its zip on your sites in place of ours. Our copy is empty, so nothing changes until you add a file.
+5. Release your fork (below) and install its zip on each site you want to customise, in place of ours. Ours is empty, so nothing changes until you add a file.
+
+### One fork, many sites
+
+Keep one fork for all the sites that share your changes, and reuse it: install the same release on each, and use a file's `Sites:` header for a change only some of them need. Start a second fork only for sites that must not share code, such as another client's. Keep your forks up to date (below) so every site gets our loader fixes along with your changes.
 
 ## Make a change
 
@@ -89,7 +94,7 @@ Don't use it for one-off data changes (run a WP-CLI command once, after a backup
    ```
 
 3. For styles or a script, add `search-heading.css` or `search-heading.js` next to it. They load on the front end, after the theme's styles, only while the file is loaded.
-4. Test it on a staging copy, commit, release, and click **Update** on each site.
+4. Test it on a staging copy, commit to your fork, release, and click **Update** on each site.
 
 | Header | Meaning |
 |---|---|
@@ -101,7 +106,7 @@ Don't use it for one-off data changes (run a WP-CLI command once, after a backup
 
 Files load on `init` (priority 0), so hook `init` or later. A file only adds hooks: it never writes options, theme settings or database rows while it loads, and never copies or edits the theme's or plugins' own files, which their updates replace. `customizations/README.md` has the details.
 
-**With an AI assistant:** open your copy with [aidevops](https://aidevops.sh), or any AI coding assistant, and describe the change. `AGENTS.md` gives it these rules, so it picks the lightest way, writes the file and its header, and checks the result.
+**With an AI assistant:** open your fork with [aidevops](https://aidevops.sh), or any AI coding assistant, and describe the change. `AGENTS.md` gives it these rules, so it picks the lightest way, writes the file and its header, and checks the result.
 
 ## Check your changes
 
@@ -123,18 +128,22 @@ With no customisation files, the plugin adds nothing to the front end and runs n
 
 ## Ask for a change upstream
 
-When a change would help other sites too, ask for it, then add the issue's address as `Upstream:` and the version that will include it as `Retire-When:`.
+Your site's own changes stay in your fork: that is what it's for. Ask upstream only when a change would help every site, then add the issue's address as `Upstream:` and the version that will include it as `Retire-When:`.
 
 - **Public products** (SEO Pro Stack and the starter plugins): open an issue or a pull request on that product's own repository.
 - **Private products** (the PSD child theme and SEO Pro Directory): use the **Product request** form under [New issue](https://github.com/wpallstars/seoprocustom/issues/new/choose). Name the product, the customisation file it would replace, and what and why. Issues are public: leave out site addresses, private code and client data, and use **Tools → Report a problem** for anything sensitive.
 
-Pull requests to this repository need a `Signed-off-by:` line on every commit (`git commit -s`; `CONTRIBUTING.md`).
+### Issues and pull requests for this repository
 
-## Keep your copy up to date
+This repository is the blank, best-practice starting point every fork copies. Issues and pull requests are welcome for that: the loader, its headers and states, Site Health and WP-CLI reports, the rules in `AGENTS.md`, the example and these docs. Not for a feature your site needs: keep that as a file in your fork, or ask the product for it as above. Pull requests need a `Signed-off-by:` line on every commit (`git commit -s`; `CONTRIBUTING.md`).
 
-Your `customizations/` folder is yours. The rest is shared: the daily Starter sync pull request, or `scripts/sync-core.sh` (`--check` lists what differs), brings in our later loader, settings and updater changes without touching your files.
+## Keep your fork up to date
 
-## Release your copy
+Your `customizations/` folder is yours; the rest is ours. When we release a new version, choose **Sync fork** on your fork's GitHub page (or `git pull` from this repository), then release your fork so your sites get it. Edit only `customizations/`, your repository settings in `seoprocustom.php` and the version numbers, and the only conflicts a sync can bring are those lines: keep your repository settings, and give your next release a version above both ours and yours.
+
+A private copy made with **Use this template** shares no history with ours, so it can't sync: copy our later changes in by hand, or ask your AI assistant to bring in our latest release without touching `customizations/`.
+
+## Release your fork
 
 1. Raise the version (`Version:` and `SEOPROCUSTOM_VERSION` in `seoprocustom.php`, `Stable tag:` in `readme.txt`, `Version:` near the top of this file) and merge it to `main`.
 2. Tag that commit `vX.Y.Z` and push the tag. The Release workflow builds `seoprocustom-X.Y.Z.zip`, checks it and publishes the GitHub release. Full steps: `RELEASING.md`.
@@ -162,7 +171,7 @@ wp wpallstars report create --product=seoprocustom --title="Short summary" --det
 
 ## Uninstall
 
-Deleting the plugin removes its settings, its cached data and its problem reports. Your customisation files go with the plugin's folder, so keep them in your repository.
+Deleting the plugin removes its settings, its cached data and its problem reports. Your customisation files go with the plugin's folder, so keep them in your fork.
 
 ## Developers
 
