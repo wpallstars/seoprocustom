@@ -19,7 +19,7 @@
 
 Your site's own changes, one file each, in your own repository, switched off when an SEO Pro Stack product does the same.
 
-SEO Pro Stack Custom is what wpallstars plugins are made from. It has no features of its own: it holds the parts every plugin needs, built and tested in real plugins, so a new plugin starts with them working and spends its time on what makes it different.
+SEO Pro Stack Custom is for owners of sites built on SEO Pro Stack who want their own changes now, without waiting for a theme or plugin release. Make your own private copy of this repository with **Use this template**, add one file per change, and deploy it to your sites; the copy installed on each site is empty until you do. When a change would help everyone, ask for it upstream: once an SEO Pro Stack product does the same, switch your file off.
 
 If this saves you time, headaches and costs, feel free to [buy me a coffee](https://buymeacoffee.com/marcusquinn), or whatever you like, to invest in making more things open-source.
 

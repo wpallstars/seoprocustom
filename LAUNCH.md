@@ -2,16 +2,18 @@
 
 Version: 0.1.0
 
-In development; no release yet. The repository is private. Making it public
-needs the owner's say.
+In development; no release yet. The repository has been public since
+10 November 2026 (the owner's decision) and is a GitHub template repository:
+clients make their own private copy with **Use this template**.
 
-## While private
+## Public launch checks
 
-Follow `DEVELOPMENT.md` → While private. No branch protection or repository
-rules, CodeQL, secret scanning or Scorecard are on: they need a public
-repository or a paid GitHub plan. Connect Codacy, CodeFactor and SonarCloud
-at public launch. `SYNC_PAT` is needed only once `main` is protected
-(`DEVELOPMENT.md` → Services setup, step 4).
+Still to do: follow `DEVELOPMENT.md` → At public launch (branch protection,
+CodeQL, secret scanning, Scorecard). Codacy, CodeFactor and SonarCloud are
+not connected yet: quality onboarding found no project for this repository
+on any of them, and SonarCloud needs an organisation admin to import it.
+`SYNC_PAT` is needed once `main` is protected (`DEVELOPMENT.md` → Services
+setup, step 4). Update this file with what is on.
 
 ## Before 1.0
 

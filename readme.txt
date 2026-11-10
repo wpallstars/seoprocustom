@@ -13,7 +13,7 @@ Your site's own changes, one file each, in your own repository, switched off whe
 
 == Description ==
 
-SEO Pro Stack Custom is what wpallstars plugins are made from. It has no features of its own: it holds the parts every plugin needs, so a new plugin starts with them working.
+SEO Pro Stack Custom is for owners of sites built on SEO Pro Stack who want their own changes now, without waiting for a theme or plugin release. Make a private copy of its repository, add one file per change, and deploy it to your sites; the copy installed on each site is empty until you do. Ask for useful changes upstream, and switch your file off once an SEO Pro Stack product does the same.
 
 * **A settings screen** (Settings → SEO Pro Stack Custom) that features fill by declaring their settings, saved instantly, searchable, in tabs. With no features yet it shows one empty tab.
 * **Multisite**: the same screen for the whole network (Network Admin → Settings), whose settings new sites start with. Apply a card to every site, see which sites differ, and make every site the same.
@@ -23,7 +23,7 @@ SEO Pro Stack Custom is what wpallstars plugins are made from. It has no feature
 * **Report a problem** (Tools): the site's AI assistant drafts problem reports and improvements for wpallstars plugins and themes; an administrator reviews and sends them.
 * **Release and check scripts**: lint, smoke test, release build, preflight and Plugin Check.
 
-Start a plugin from it on GitHub (wpallstars/seoprostackcustom): the Read Me tab explains how.
+Make your own copy on GitHub (wpallstars/seoprostackcustom, Use this template): the Read Me tab explains how.
 
 = Built with AI =
 
