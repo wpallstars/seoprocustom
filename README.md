@@ -8,7 +8,7 @@
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/418486b267e146b392a8def4c8c5edeb)](https://app.codacy.com/gh/wpallstars/seoprocustom/dashboard)
 [![CodeFactor](https://www.codefactor.io/repository/github/wpallstars/seoprocustom/badge)](https://www.codefactor.io/repository/github/wpallstars/seoprocustom)
 [![License: GPL v3 or later](https://img.shields.io/badge/License-GPL%20v3%20or%20later-blue.svg)](LICENSE)
-[![Latest release](https://img.shields.io/badge/release-v0.1.0-blue.svg)](https://github.com/wpallstars/seoprocustom/releases)
+[![Latest release](https://img.shields.io/badge/release-v0.1.1-blue.svg)](https://github.com/wpallstars/seoprocustom/releases)
 
 [![Requires WordPress](https://img.shields.io/badge/WordPress-6.2%2B-21759B.svg?logo=wordpress)](readme.txt)
 [![Tested up to](https://img.shields.io/badge/tested%20up%20to-7.1-21759B.svg?logo=wordpress)](readme.txt)
@@ -25,7 +25,7 @@ SEO Pro Custom is an empty plugin you make your own. Fork it, install your fork 
 
 If this saves you time, headaches and costs, feel free to [buy me a coffee](https://buymeacoffee.com/marcusquinn), or whatever you like, to invest in making more things open-source.
 
-Version: 0.1.0
+Version: 0.1.1
 
 <!-- github-only:start -->
 ## Screenshots
@@ -180,6 +180,12 @@ SEO Pro Custom shares the starter's settings screen, Read Me tab, multisite sett
 - `seoprocustom_customization_style_deps`: the style handles that a customisation's `.css` loads after (`site-design` by default; handles that aren't registered are left out).
 
 ## Changelog
+
+### 0.1.1
+
+- Settings screen: the Customisations card has inner padding and space above it, a line saying where your changes go with a link to the Read Me tab, and it replaces the "No settings yet" placeholder on the General tab. The card's code moved to `SEOProCustom_Customizations_Admin`, loaded in wp-admin only.
+- README: fork the plugin, install your fork on the sites you want to customise and reuse it across them; keep your fork in sync with Sync fork; issues and pull requests here are for the blank plugin itself. New banner strapline.
+- Licence headers on the example customisation; the plugin's own `.gitignore` lines sit in its own block, which the Starter sync keeps.
 
 ### 0.1.0
 
