@@ -767,7 +767,7 @@ run_site_cron() {
 
 # Prints the origin server's IPv4 address for the site: LiteSpeed Cache's
 # Server IP, or else an address the plugin learned from a web request and
-# stored as array('ip' => ...) in its wpstarter_origin_ip option (a plugin
+# stored as array('ip' => ...) in its seoprostackcustom_origin_ip option (a plugin
 # without such a feature has none). Prints nothing when neither is set or
 # valid. A host behind a CDN can refuse its own uncached fetch
 # that loops back through the CDN, so the home fetch goes to the origin.
@@ -776,7 +776,7 @@ origin_ip() {
 	shift
 	local ip
 	# shellcheck disable=SC2016 # PHP code, not shell.
-	ip="$(wp_bare "$root" "$@" eval '$ip = trim((string) get_option("litespeed.conf.server_ip", "")); if ("" === $ip) { $learned = get_option("wpstarter_origin_ip", array()); $ip = is_array($learned) && isset($learned["ip"]) ? trim((string) $learned["ip"]) : ""; } echo "originip:" . $ip;' 2>/dev/null)" || return 0
+	ip="$(wp_bare "$root" "$@" eval '$ip = trim((string) get_option("litespeed.conf.server_ip", "")); if ("" === $ip) { $learned = get_option("seoprostackcustom_origin_ip", array()); $ip = is_array($learned) && isset($learned["ip"]) ? trim((string) $learned["ip"]) : ""; } echo "originip:" . $ip;' 2>/dev/null)" || return 0
 	ip="${ip##*originip:}"
 	if [[ "$ip" =~ ^[0-9]{1,3}(\.[0-9]{1,3}){3}$ ]]; then
 		printf '%s\n' "$ip"

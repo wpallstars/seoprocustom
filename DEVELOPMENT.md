@@ -242,8 +242,8 @@ login; the explicit mirror needs no secret.
 overrides WP-CLI in Plugin Check. Smoke-test WordPress images follow `--php`.
 Overrides may name another registry or a locally cached image.
 
-<!-- wps-own:start -->
-<!-- wps-own:end -->
+<!-- spsc-own:start -->
+<!-- spsc-own:end -->
 
 The scripts work out which plugin they are in from its main file
 (`scripts/lib/plugin.sh`): the PHP file at the top of the repository with a
@@ -407,8 +407,8 @@ repository. It needs no setup. Steps: `RELEASING.md` → GitHub release.
 `scripts/deploy-sites.sh` (remote half: `scripts/lib/deploy-remote.sh`)
 swaps the plugin folder with two `rename()` calls inside
 `wp-content/plugins/`: the verified zip is unpacked into a hidden
-`.wp-plugin-starter-template-new-<stamp>` folder, the live folder moves to
-`.wp-plugin-starter-template-old-<stamp>`, the new one moves in, then both hidden folders
+`.seoprostackcustom-new-<stamp>` folder, the live folder moves to
+`.seoprostackcustom-old-<stamp>`, the new one moves in, then both hidden folders
 are removed. The folder is missing only between the two renames, not while
 the zip unpacks, so running jobs (imports, Action Scheduler, CLI cron) are
 very unlikely to find it gone. The tar backup and restore line are unchanged. If the

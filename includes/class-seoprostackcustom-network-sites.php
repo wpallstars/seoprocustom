@@ -1,19 +1,19 @@
 <?php
 /**
- * WP Plugin Starter network settings on each site (multisite).
+ * SEO Pro Stack Custom network settings on each site (multisite).
  *
- * How the network values (WPStarter_Network_Settings) reach the sites of
+ * How the network values (SEOProStackCustom_Network_Settings) reach the sites of
  * the network:
  *
  * - A site where the plugin runs for the first time starts with them
  *   (seed()).
  * - A change the network makes for a site runs that site's saving work
- *   (wpstarter_settings_changed and wpstarter_setting_saved) on its next
+ *   (seoprostackcustom_settings_changed and seoprostackcustom_setting_saved) on its next
  *   admin, cron or WP-CLI request, in its own context and as nobody
  *   (sync()): never on a visitor's page, never with another site's
  *   features loaded, and never as the person who happens to open the
  *   site's admin.
- * - Make every site the same (WPStarter_Network_Differences, which also
+ * - Make every site the same (SEOProStackCustom_Network_Differences, which also
  *   names the sites whose own values differ) changes each site's own
  *   values; the site keeps its values from before (remember()) for its
  *   saving work.
@@ -23,7 +23,7 @@
  * Additional terms (GPL-3.0 section 7(b)): ATTRIBUTION.txt
  * Provenance: wpas-e4502af0f07e8a92. Copies, even of part, keep these lines.
  *
- * @package WPStarter
+ * @package SEOProStackCustom
  * @since 1.0.35
  */
 
@@ -31,7 +31,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-class WPStarter_Network_Sites {
+class SEOProStackCustom_Network_Sites {
 
     /**
      * Site option: the network `version` and `enforced` values the site
@@ -39,7 +39,7 @@ class WPStarter_Network_Sites {
      * before the network changed them (Make every site the same, or the
      * values a new site started with).
      */
-    const SEEN = 'wpstarter_network_seen';
+    const SEEN = 'seoprostackcustom_network_seen';
 
     /**
      * Whether the network's changes are being applied to this site (sync()).
@@ -82,15 +82,15 @@ class WPStarter_Network_Sites {
         if (!is_multisite()) {
             return $options;
         }
-        $defaults = WPStarter_Settings::defaults();
+        $defaults = SEOProStackCustom_Settings::defaults();
         $before   = array();
-        foreach (WPStarter_Network_Settings::stored()['values'] as $key => $value) {
+        foreach (SEOProStackCustom_Network_Settings::stored()['values'] as $key => $value) {
             $key = (string) $key;
-            if (array_key_exists($key, $options) || !WPStarter_Network_Settings::eligible($key)) {
+            if (array_key_exists($key, $options) || !SEOProStackCustom_Network_Settings::eligible($key)) {
                 continue;
             }
             $options[$key] = $value;
-            if (!WPStarter_Settings::same($value, $defaults[$key], $key)) {
+            if (!SEOProStackCustom_Settings::same($value, $defaults[$key], $key)) {
                 $before[$key] = $defaults[$key];
             }
         }
@@ -128,7 +128,7 @@ class WPStarter_Network_Sites {
         if (!self::saving_request()) {
             return;
         }
-        $network = WPStarter_Network_Settings::stored();
+        $network = SEOProStackCustom_Network_Settings::stored();
         // A site that has nothing recorded (SEEN is autoloaded once
         // written) has nothing to do until the network changes something:
         // skip asking the database for it on every admin request.
@@ -141,14 +141,14 @@ class WPStarter_Network_Sites {
 
         // Read and recorded under the site's save lock, which Make every
         // site the same holds while it changes the site's values and keeps
-        // those from before (WPStarter_Settings::replace_site_values()): so
+        // those from before (SEOProStackCustom_Settings::replace_site_values()): so
         // values it keeps are never written over here, and the settings read
         // here already hold the values they were kept for. Read past this
         // request's caches, which may predate that. Recorded first, so a
         // request that starts meanwhile does not run the same work again.
         // The saving work runs after the lock is released: it may save.
-        $work = WPStarter_Settings::under_lock(function () use ($network) {
-            self::flush_site_cache(get_current_blog_id(), array(self::SEEN, WPStarter_Settings::OPTION));
+        $work = SEOProStackCustom_Settings::under_lock(function () use ($network) {
+            self::flush_site_cache(get_current_blog_id(), array(self::SEEN, SEOProStackCustom_Settings::OPTION));
             $seen = self::seen();
             if (!self::pending($seen, $network)) {
                 return null;
@@ -158,14 +158,14 @@ class WPStarter_Network_Sites {
             // What the site's features last ran their saving work for: its
             // own values, as they were before the network changed them,
             // under the values the network applied then.
-            $schema = WPStarter_Settings::schema();
+            $schema = SEOProStackCustom_Settings::schema();
             return array(
                 array_merge(
-                    WPStarter_Settings::own(),
+                    SEOProStackCustom_Settings::own(),
                     array_intersect_key($seen['before'], $schema),
-                    array_intersect_key(WPStarter_Network_Settings::flatten($seen['enforced']), $schema)
+                    array_intersect_key(SEOProStackCustom_Network_Settings::flatten($seen['enforced']), $schema)
                 ),
-                WPStarter_Settings::all(),
+                SEOProStackCustom_Settings::all(),
             );
         });
         // Nothing to do, or the lock was busy: the next request tries again.
@@ -178,7 +178,7 @@ class WPStarter_Network_Sites {
      * Whether the site has saving work to run for the network's changes.
      *
      * @param array $seen    This site's SEEN option (seen()).
-     * @param array $network The network option (WPStarter_Network_Settings::stored()).
+     * @param array $network The network option (SEOProStackCustom_Network_Settings::stored()).
      * @return bool
      */
     private static function pending(array $seen, array $network) {
@@ -210,7 +210,7 @@ class WPStarter_Network_Sites {
     private static function run_saving_work(array $old, array $new) {
         $changed = array();
         foreach ($new as $key => $value) {
-            if (!WPStarter_Settings::same($old[$key] ?? null, $value, (string) $key)) {
+            if (!SEOProStackCustom_Settings::same($old[$key] ?? null, $value, (string) $key)) {
                 $changed[$key] = $value;
             }
         }
@@ -224,11 +224,11 @@ class WPStarter_Network_Sites {
             wp_set_current_user(0);
         }
         try {
-            /** This action is documented in includes/class-wpstarter-settings.php */
-            do_action('wpstarter_settings_changed', $old, $new);
+            /** This action is documented in includes/class-seoprostackcustom-settings.php */
+            do_action('seoprostackcustom_settings_changed', $old, $new);
             foreach ($changed as $key => $value) {
-                /** This action is documented in includes/class-wpstarter-settings.php */
-                do_action('wpstarter_setting_saved', $key, $value);
+                /** This action is documented in includes/class-seoprostackcustom-settings.php */
+                do_action('seoprostackcustom_setting_saved', $key, $value);
             }
         } finally {
             if ($user) {
@@ -240,9 +240,9 @@ class WPStarter_Network_Sites {
 
     /**
      * Keep a site's own values from before Make every site the same
-     * (WPStarter_Network_Differences::copy()), for its saving work (sync()).
+     * (SEOProStackCustom_Network_Differences::copy()), for its saving work (sync()).
      * The earliest value of a key is kept. Read and written straight in its
-     * options table by WPStarter_Settings::replace_site_values(), under the
+     * options table by SEOProStackCustom_Settings::replace_site_values(), under the
      * site's save lock, which sync() also holds while it reads and records
      * this option: call it only there.
      *
@@ -252,7 +252,7 @@ class WPStarter_Network_Sites {
     public static function remember($site_id, array $previous) {
         global $wpdb;
         $table = $wpdb->get_blog_prefix($site_id) . 'options';
-        // phpcs:ignore WordPress.DB.DirectDatabaseQuery -- another site's options, not loaded here (WPStarter_Network_Differences::read_site()).
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery -- another site's options, not loaded here (SEOProStackCustom_Network_Differences::read_site()).
         $raw  = $wpdb->get_var($wpdb->prepare('SELECT option_value FROM %i WHERE option_name = %s', $table, self::SEEN));
         $seen = null === $raw ? array() : maybe_unserialize($raw);
         $seen = is_array($seen) ? $seen : array();

@@ -82,8 +82,8 @@ MODELS.md
 
 # This plugin's own ignore lines go between these markers; a Starter sync
 # keeps them (DEVELOPMENT.md → Starter sync).
-# wps-own:start
-# wps-own:end
+# spsc-own:start
+# spsc-own:end
 
 # aidevops keywords: search-target data lives in the private team hub (aidevops keywords sync)
 context/keywords.md

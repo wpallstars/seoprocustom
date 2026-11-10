@@ -1,11 +1,11 @@
 <?php
 /**
- * WP Plugin Starter admin screen markup.
+ * SEO Pro Stack Custom admin screen markup.
  *
  * The header, the tab navigation, the tab panels and the browser title of
- * the settings screen (WPStarter_Admin_Manager::render_settings_page()). The
+ * the settings screen (SEOProStackCustom_Admin_Manager::render_settings_page()). The
  * plugin's own screens show the header through
- * WPStarter_Admin_Manager::render_header(), their sections as tabs with
+ * SEOProStackCustom_Admin_Manager::render_header(), their sections as tabs with
  * sections_nav(), and name their section in the browser title with
  * title_section().
  *
@@ -14,36 +14,36 @@
  * Additional terms (GPL-3.0 section 7(b)): ATTRIBUTION.txt
  * Provenance: wpas-e4502af0f07e8a92. Copies, even of part, keep these lines.
  *
- * @package WPStarter
+ * @package SEOProStackCustom
  */
 
 if (!defined('ABSPATH')) {
     exit;
 }
 
-class WPStarter_Admin_Page {
+class SEOProStackCustom_Admin_Page {
 
     /**
      * Render the screen's header: the plugin's name and version, the feature
      * search (for people who can open the settings screen) and the links
-     * WPStarter_Setup::header_links() gives.
+     * SEOProStackCustom_Setup::header_links() gives.
      */
     public static function header() {
         ?>
-            <header class="wps-header">
-                <div class="wps-header__brand">
-                    <span class="wps-header__logo dashicons dashicons-star-filled" aria-hidden="true"></span>
-                    <h1 class="wps-header__title"><?php esc_html_e('WP Plugin Starter', 'wp-plugin-starter-template'); ?></h1>
-                    <span class="wps-badge"><?php echo esc_html('v' . WPSTARTER_VERSION); ?></span>
+            <header class="spsc-header">
+                <div class="spsc-header__brand">
+                    <span class="spsc-header__logo dashicons dashicons-star-filled" aria-hidden="true"></span>
+                    <h1 class="spsc-header__title"><?php esc_html_e('SEO Pro Stack Custom', 'seoprostackcustom'); ?></h1>
+                    <span class="spsc-badge"><?php echo esc_html('v' . SEOPROSTACKCUSTOM_VERSION); ?></span>
                     <?php if (is_network_admin()) : ?>
-                        <span class="wps-badge wps-badge--network"><?php esc_html_e('Network', 'wp-plugin-starter-template'); ?></span>
+                        <span class="spsc-badge spsc-badge--network"><?php esc_html_e('Network', 'seoprostackcustom'); ?></span>
                     <?php endif; ?>
                 </div>
                 <?php
                 if (current_user_can(is_network_admin() ? 'manage_network_options' : 'manage_options')) {
                     self::search_form();
                 }
-                self::header_links(WPStarter_Setup::header_links());
+                self::header_links(SEOProStackCustom_Setup::header_links());
                 ?>
             </header>
         <?php
@@ -54,23 +54,23 @@ class WPStarter_Admin_Page {
      * its action is the screen's file alone.
      */
     private static function search_form() {
-        $action = remove_query_arg('page', WPStarter_Admin_Manager::page_url());
+        $action = remove_query_arg('page', SEOProStackCustom_Admin_Manager::page_url());
         ?>
-                <form class="wps-search" role="search" method="get" action="<?php echo esc_url($action); ?>">
-                    <input type="hidden" name="page" value="<?php echo esc_attr(WPStarter_Admin_Manager::PAGE); ?>" />
-                    <input type="hidden" name="tab" value="<?php echo esc_attr(WPStarter_Admin_Manager::SEARCH); ?>" />
-                    <label class="screen-reader-text" for="wps-search-input"><?php esc_html_e('Search features', 'wp-plugin-starter-template'); ?></label>
-                    <span class="wps-search__field">
-                        <span class="wps-search__icon dashicons dashicons-search" aria-hidden="true"></span>
+                <form class="spsc-search" role="search" method="get" action="<?php echo esc_url($action); ?>">
+                    <input type="hidden" name="page" value="<?php echo esc_attr(SEOProStackCustom_Admin_Manager::PAGE); ?>" />
+                    <input type="hidden" name="tab" value="<?php echo esc_attr(SEOProStackCustom_Admin_Manager::SEARCH); ?>" />
+                    <label class="screen-reader-text" for="spsc-search-input"><?php esc_html_e('Search features', 'seoprostackcustom'); ?></label>
+                    <span class="spsc-search__field">
+                        <span class="spsc-search__icon dashicons dashicons-search" aria-hidden="true"></span>
                         <input type="search"
-                               id="wps-search-input"
-                               class="wps-search__input"
+                               id="spsc-search-input"
+                               class="spsc-search__input"
                                name="s"
                                maxlength="100"
-                               value="<?php echo esc_attr(WPStarter_Admin_Manager::search_query()); ?>"
-                               placeholder="<?php esc_attr_e('Search features', 'wp-plugin-starter-template'); ?>" />
+                               value="<?php echo esc_attr(SEOProStackCustom_Admin_Manager::search_query()); ?>"
+                               placeholder="<?php esc_attr_e('Search features', 'seoprostackcustom'); ?>" />
                     </span>
-                    <button type="submit" class="button wps-search__button"><?php esc_html_e('Search', 'wp-plugin-starter-template'); ?></button>
+                    <button type="submit" class="button spsc-search__button"><?php esc_html_e('Search', 'seoprostackcustom'); ?></button>
                 </form>
         <?php
     }
@@ -82,30 +82,30 @@ class WPStarter_Admin_Page {
      * problem reports, Support opens Tools → Report a problem for this
      * plugin (the shared wpallstars reports); for others, the link itself.
      *
-     * @param array<string,string> $links WPStarter_Setup::header_links().
+     * @param array<string,string> $links SEOProStackCustom_Setup::header_links().
      */
     private static function header_links(array $links) {
         $buttons = array();
         if (!empty($links['source'])) {
-            $buttons[] = array($links['source'], __('Source code', 'wp-plugin-starter-template'), 'editor-code', 'wps-header__support', true);
+            $buttons[] = array($links['source'], __('Source code', 'seoprostackcustom'), 'editor-code', 'spsc-header__support', true);
         } elseif (!empty($links['website'])) {
-            $buttons[] = array($links['website'], __('Visit website', 'wp-plugin-starter-template'), '', '', true);
+            $buttons[] = array($links['website'], __('Visit website', 'seoprostackcustom'), '', '', true);
         }
         if (!empty($links['support'])) {
             $report    = function_exists('wpallstars_report_url') && current_user_can('manage_options');
             $buttons[] = array(
-                $report ? wpallstars_report_url(WPStarter::slug()) : $links['support'],
-                __('Support', 'wp-plugin-starter-template'),
+                $report ? wpallstars_report_url(SEOProStackCustom::slug()) : $links['support'],
+                __('Support', 'seoprostackcustom'),
                 'sos',
-                'wps-header__support',
+                'spsc-header__support',
                 !$report,
             );
         }
         if (!empty($links['donate'])) {
-            $buttons[] = array($links['donate'], __('Buy me a coffee', 'wp-plugin-starter-template'), 'coffee', 'wps-header__support wps-header__donate', true);
+            $buttons[] = array($links['donate'], __('Buy me a coffee', 'seoprostackcustom'), 'coffee', 'spsc-header__support spsc-header__donate', true);
         }
         ?>
-                <div class="wps-header__actions">
+                <div class="spsc-header__actions">
                     <?php foreach ($buttons as $button) : ?>
                         <?php list($url, $label, $icon, $class, $new_tab) = $button; ?>
                         <a class="<?php echo esc_attr(trim('button ' . $class)); ?>" href="<?php echo esc_url($url); ?>"<?php echo $new_tab ? ' target="_blank" rel="noopener noreferrer"' : ''; ?>>
@@ -114,7 +114,7 @@ class WPStarter_Admin_Page {
                             <?php endif; ?>
                             <?php echo esc_html($label); ?>
                             <?php if ($new_tab) : ?>
-                                <span class="screen-reader-text"><?php esc_html_e('(opens in a new tab)', 'wp-plugin-starter-template'); ?></span>
+                                <span class="screen-reader-text"><?php esc_html_e('(opens in a new tab)', 'seoprostackcustom'); ?></span>
                             <?php endif; ?>
                         </a>
                     <?php endforeach; ?>
@@ -124,7 +124,7 @@ class WPStarter_Admin_Page {
 
     /**
      * Put a section's name after the screen's name in the browser's title,
-     * as "WP Plugin Starter: General ‹ Site — WordPress". Call it on the
+     * as "SEO Pro Stack Custom: General ‹ Site — WordPress". Call it on the
      * screen's load-{hook} action: the settings screen does for its tabs,
      * and the plugin's own screens with sections (render_header()) do for
      * the section shown. The rest of core's title (the site's name, Network
@@ -154,12 +154,12 @@ class WPStarter_Admin_Page {
      * site and on the network screen (multisite).
      */
     public static function title_tab() {
-        self::title_section(self::tab_label(WPStarter_Admin_Manager::get_active_tab(), WPStarter_Admin_Manager::get_tabs()));
+        self::title_section(self::tab_label(SEOProStackCustom_Admin_Manager::get_active_tab(), SEOProStackCustom_Admin_Manager::get_tabs()));
     }
 
     /**
      * A screen's name followed by a section's, as the browser title shows
-     * them: "WP Plugin Starter: General".
+     * them: "SEO Pro Stack Custom: General".
      *
      * @param string $screen  The screen's name.
      * @param string $section The section's name.
@@ -167,19 +167,19 @@ class WPStarter_Admin_Page {
      */
     public static function screen_title($screen, $section) {
         /* translators: Browser title of a section of an admin screen. 1: the screen's name, 2: the section's name. */
-        return sprintf(__('%1$s: %2$s', 'wp-plugin-starter-template'), $screen, $section);
+        return sprintf(__('%1$s: %2$s', 'seoprostackcustom'), $screen, $section);
     }
 
     /**
      * Name of a tab (or of the search results), as plain text.
      *
      * @param string $tab  Tab slug.
-     * @param array  $tabs Tabs (WPStarter_Admin_Manager::get_tabs()).
+     * @param array  $tabs Tabs (SEOProStackCustom_Admin_Manager::get_tabs()).
      * @return string Empty for an unknown tab.
      */
     public static function tab_label($tab, array $tabs) {
-        if (WPStarter_Admin_Manager::SEARCH === $tab) {
-            return __('Search results', 'wp-plugin-starter-template');
+        if (SEOProStackCustom_Admin_Manager::SEARCH === $tab) {
+            return __('Search results', 'seoprostackcustom');
         }
         return isset($tabs[$tab]['label']) ? trim(wp_strip_all_tags((string) $tabs[$tab]['label'])) : '';
     }
@@ -188,8 +188,8 @@ class WPStarter_Admin_Page {
      * Browser title of each tab drawn on the page, as the browser shows it
      * (entities decoded), so the script can name the tab it switches to.
      *
-     * @param string[] $page_tabs Tabs drawn on the page (WPStarter_Admin_Manager::page_tabs()).
-     * @param array    $tabs      Tabs (WPStarter_Admin_Manager::get_tabs()).
+     * @param string[] $page_tabs Tabs drawn on the page (SEOProStackCustom_Admin_Manager::page_tabs()).
+     * @param array    $tabs      Tabs (SEOProStackCustom_Admin_Manager::get_tabs()).
      * @return array<string,string>
      */
     public static function page_titles(array $page_tabs, array $tabs) {
@@ -216,7 +216,7 @@ class WPStarter_Admin_Page {
     public static function panel($slug, $render, $shown, $wide = false) {
         // Not <main>: core's #wpbody already carries role="main".
         ?>
-        <div class="wps-main<?php echo $wide ? ' wps-main--wide' : ''; ?> wps-tab-<?php echo esc_attr($slug); ?>" id="wps-tab-<?php echo esc_attr($slug); ?>" data-wps-panel="<?php echo esc_attr($slug); ?>"<?php echo $shown ? '' : ' hidden'; ?>>
+        <div class="spsc-main<?php echo $wide ? ' spsc-main--wide' : ''; ?> spsc-tab-<?php echo esc_attr($slug); ?>" id="spsc-tab-<?php echo esc_attr($slug); ?>" data-spsc-panel="<?php echo esc_attr($slug); ?>"<?php echo $shown ? '' : ' hidden'; ?>>
             <?php call_user_func($render); ?>
         </div>
         <?php
@@ -229,18 +229,18 @@ class WPStarter_Admin_Page {
      * name, opening the first of them, and, while one of them is shown, as a
      * second row of tabs under the bar (menu_row()).
      *
-     * @param array    $tabs      Tabs (WPStarter_Admin_Manager::get_tabs()).
+     * @param array    $tabs      Tabs (SEOProStackCustom_Admin_Manager::get_tabs()).
      * @param string   $active    Active tab slug.
-     * @param string[] $page_tabs Tabs drawn on the page (WPStarter_Admin_Manager::page_tabs()).
+     * @param string[] $page_tabs Tabs drawn on the page (SEOProStackCustom_Admin_Manager::page_tabs()).
      */
     public static function nav(array $tabs, $active, array $page_tabs) {
         $groups = array(
-            'settings' => __('Settings', 'wp-plugin-starter-template'),
-            'discover' => __('Discover', 'wp-plugin-starter-template'),
-            'about'    => __('About', 'wp-plugin-starter-template'),
+            'settings' => __('Settings', 'seoprostackcustom'),
+            'discover' => __('Discover', 'seoprostackcustom'),
+            'about'    => __('About', 'seoprostackcustom'),
         );
         ?>
-        <nav class="wps-nav" aria-label="<?php esc_attr_e('WP Plugin Starter sections', 'wp-plugin-starter-template'); ?>">
+        <nav class="spsc-nav" aria-label="<?php esc_attr_e('SEO Pro Stack Custom sections', 'seoprostackcustom'); ?>">
             <?php
             foreach ($groups as $group => $group_label) {
                 $group_tabs = array_filter($tabs, function ($tab) use ($group) {
@@ -261,19 +261,19 @@ class WPStarter_Admin_Page {
 
     /**
      * Render the sections of one of the plugin's own screens as the settings
-     * screen's tabs (WPStarter_Admin_Manager::render_header()): a
-     * `wps-nav` of `wps-nav__tab` links, the one shown `is-active` with
+     * screen's tabs (SEOProStackCustom_Admin_Manager::render_header()): a
+     * `spsc-nav` of `spsc-nav__tab` links, the one shown `is-active` with
      * aria-current="page". Each link loads its section's page; name the
      * section shown in the browser title with title_section().
      *
      * @param array<string,array{label:string,url:string}> $sections Sections in order, by slug: each its label (plain text) and URL.
      * @param string                                       $current  Slug of the section shown.
-     * @param string                                       $label    The navigation's accessible name; empty for "WP Plugin Starter sections".
+     * @param string                                       $label    The navigation's accessible name; empty for "SEO Pro Stack Custom sections".
      */
     public static function sections_nav(array $sections, $current, $label = '') {
-        $label = '' === (string) $label ? __('WP Plugin Starter sections', 'wp-plugin-starter-template') : (string) $label;
+        $label = '' === (string) $label ? __('SEO Pro Stack Custom sections', 'seoprostackcustom') : (string) $label;
         ?>
-        <nav class="wps-nav" aria-label="<?php echo esc_attr($label); ?>">
+        <nav class="spsc-nav" aria-label="<?php echo esc_attr($label); ?>">
             <?php foreach ($sections as $slug => $section) : ?>
                 <?php
                 $shown = (string) $slug === (string) $current;
@@ -284,7 +284,7 @@ class WPStarter_Admin_Page {
                 }
                 ?>
                 <a href="<?php echo esc_url($url); ?>"
-                   class="wps-nav__tab<?php echo $shown ? ' is-active' : ''; ?>"
+                   class="spsc-nav__tab<?php echo $shown ? ' is-active' : ''; ?>"
                    <?php echo $shown ? 'aria-current="page"' : ''; ?>>
                     <?php echo esc_html($text); ?>
                 </a>
@@ -309,7 +309,7 @@ class WPStarter_Admin_Page {
     /**
      * Render one navigation group. A group of links, not form controls, so
      * role="group" with a label rather than <fieldset>. A menu's tabs show
-     * as one link, where the first of them is; data-wps-tabs lists them, so
+     * as one link, where the first of them is; data-spsc-tabs lists them, so
      * the script marks it current with any of them.
      *
      * @param string   $label     Group label.
@@ -320,7 +320,7 @@ class WPStarter_Admin_Page {
     private static function nav_group($label, array $tabs, $active, array $page_tabs) {
         $menus = array();
         ?>
-        <div class="wps-nav__group" role="group" aria-label="<?php echo esc_attr($label); ?>"> <?php // NOSONAR: a labelled group of navigation links, not a fieldset of form controls (S6819). ?>
+        <div class="spsc-nav__group" role="group" aria-label="<?php echo esc_attr($label); ?>"> <?php // NOSONAR: a labelled group of navigation links, not a fieldset of form controls (S6819). ?>
             <?php foreach ($tabs as $slug => $tab) : ?>
                 <?php
                 $slug    = (string) $slug;
@@ -354,10 +354,10 @@ class WPStarter_Admin_Page {
         $current      = in_array($active, $members, true);
         $aria_current = '' === $menu ? 'page' : 'true';
         ?>
-        <a href="<?php echo esc_url(WPStarter_Admin_Manager::tab_url($slug)); ?>"
-           class="wps-nav__tab<?php echo $current ? ' is-active' : ''; ?>"
-           <?php echo '' === $menu && in_array($slug, $page_tabs, true) ? 'data-wps-tab="' . esc_attr($slug) . '"' : ''; ?>
-           <?php echo '' !== $menu ? 'data-wps-tabs="' . esc_attr(implode(' ', $members)) . '"' : ''; ?>
+        <a href="<?php echo esc_url(SEOProStackCustom_Admin_Manager::tab_url($slug)); ?>"
+           class="spsc-nav__tab<?php echo $current ? ' is-active' : ''; ?>"
+           <?php echo '' === $menu && in_array($slug, $page_tabs, true) ? 'data-spsc-tab="' . esc_attr($slug) . '"' : ''; ?>
+           <?php echo '' !== $menu ? 'data-spsc-tabs="' . esc_attr(implode(' ', $members)) . '"' : ''; ?>
            <?php echo $current ? 'aria-current="' . esc_attr($aria_current) . '"' : ''; ?>>
             <?php echo esc_html('' === $menu ? $tab['label'] : $menu); ?>
         </a>
@@ -374,12 +374,12 @@ class WPStarter_Admin_Page {
      */
     private static function menu_row($menu, array $tabs, $active, array $page_tabs) {
         ?>
-        <nav class="wps-subnav" aria-label="<?php echo esc_attr($menu); ?>" data-wps-tabs="<?php echo esc_attr(implode(' ', array_map('strval', array_keys($tabs)))); ?>">
+        <nav class="spsc-subnav" aria-label="<?php echo esc_attr($menu); ?>" data-spsc-tabs="<?php echo esc_attr(implode(' ', array_map('strval', array_keys($tabs)))); ?>">
             <?php foreach ($tabs as $slug => $tab) : ?>
                 <?php $slug = (string) $slug; ?>
-                <a href="<?php echo esc_url(WPStarter_Admin_Manager::tab_url($slug)); ?>"
-                   class="wps-subnav__tab<?php echo $slug === $active ? ' is-active' : ''; ?>"
-                   <?php echo in_array($slug, $page_tabs, true) ? 'data-wps-tab="' . esc_attr($slug) . '"' : ''; ?>
+                <a href="<?php echo esc_url(SEOProStackCustom_Admin_Manager::tab_url($slug)); ?>"
+                   class="spsc-subnav__tab<?php echo $slug === $active ? ' is-active' : ''; ?>"
+                   <?php echo in_array($slug, $page_tabs, true) ? 'data-spsc-tab="' . esc_attr($slug) . '"' : ''; ?>
                    <?php echo $slug === $active ? 'aria-current="page"' : ''; ?>>
                     <?php echo esc_html($tab['label']); ?>
                 </a>

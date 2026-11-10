@@ -1,21 +1,21 @@
-=== WP Plugin Starter ===
+=== SEO Pro Stack Custom ===
 Contributors: wpallstars
 Donate link: https://buymeacoffee.com/marcusquinn
 Tags: starter, boilerplate, settings, developer, template
 Requires at least: 6.2
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 1.0.56
+Stable tag: 0.1.0
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
-A clean start for a WordPress plugin: a settings screen, a Read Me tab, updates from GitHub and release scripts, ready for your features.
+Your site's own changes, one file each, in your own repository, switched off when an SEO Pro Stack product does the same.
 
 == Description ==
 
-WP Plugin Starter is what wpallstars plugins are made from. It has no features of its own: it holds the parts every plugin needs, so a new plugin starts with them working.
+SEO Pro Stack Custom is what wpallstars plugins are made from. It has no features of its own: it holds the parts every plugin needs, so a new plugin starts with them working.
 
-* **A settings screen** (Settings → WP Plugin Starter) that features fill by declaring their settings, saved instantly, searchable, in tabs. With no features yet it shows one empty tab.
+* **A settings screen** (Settings → SEO Pro Stack Custom) that features fill by declaring their settings, saved instantly, searchable, in tabs. With no features yet it shows one empty tab.
 * **Multisite**: the same screen for the whole network (Network Admin → Settings), whose settings new sites start with. Apply a card to every site, see which sites differ, and make every site the same.
 * **A Read Me tab** that shows the plugin's README.md, banner included.
 * **Admin colour mode**: Light, Dark or System in the header, saved per person and shared with other wpallstars colour-mode controls, on settings, network settings and own screens.
@@ -23,20 +23,20 @@ WP Plugin Starter is what wpallstars plugins are made from. It has no features o
 * **Report a problem** (Tools): the site's AI assistant drafts problem reports and improvements for wpallstars plugins and themes; an administrator reviews and sends them.
 * **Release and check scripts**: lint, smoke test, release build, preflight and Plugin Check.
 
-Start a plugin from it on GitHub (wpallstars/wp-plugin-starter-template-for-ai-coding): the Read Me tab explains how.
+Start a plugin from it on GitHub (wpallstars/seoprostackcustom): the Read Me tab explains how.
 
 = Built with AI =
 
-WP Plugin Starter is built and maintained with aidevops (https://aidevops.sh), the same developer's open-source AI harness for creating and managing anything online with AI.
+SEO Pro Stack Custom is built and maintained with aidevops (https://aidevops.sh), the same developer's open-source AI harness for creating and managing anything online with AI.
 
-Questions about using or changing WP Plugin Starter: ask aidevops. It reads the plugin's docs and code to answer, and can report a problem for you.
+Questions about using or changing SEO Pro Stack Custom: ask aidevops. It reads the plugin's docs and code to answer, and can report a problem for you.
 
 Made from WP Plugin Starter (https://github.com/wpallstars/wp-plugin-starter-template-for-ai-coding), the wpallstars starter plugin.
 
 == Installation ==
 
-1. Upload the `wp-plugin-starter-template` folder to `/wp-content/plugins/`, or install the zip from Plugins → Add New → Upload Plugin.
-2. Activate it, then open Settings → WP Plugin Starter.
+1. Upload the `seoprostackcustom` folder to `/wp-content/plugins/`, or install the zip from Plugins → Add New → Upload Plugin.
+2. Activate it, then open Settings → SEO Pro Stack Custom.
 
 == Frequently Asked Questions ==
 
@@ -58,17 +58,12 @@ GitHub releases are the stable beta channel: each version comes out there first.
 
 == Screenshots ==
 
-1. The settings screen (Settings → WP Plugin Starter) on the General tab, empty until features add settings.
+1. The settings screen (Settings → SEO Pro Stack Custom) on the General tab, empty until features add settings.
 2. The Read Me tab, showing the plugin's README.md inside WordPress.
 
 == Changelog ==
 
-= 1.0.56 =
-* Developers: a deploy's Cloudflare purge clears only the updated sites' host names, so sites on other host names in the zone keep their cache; deploys and the update test retry GitHub reads deferred by quota pacing; a new check for the deploy log classifier.
+= 0.1.0 =
+* First version, made from WP Plugin Starter 1.0.56.
 
 Every change: changelog.txt.
-
-== Upgrade Notice ==
-
-= 1.0.1 =
-Fixes: a failing options list can no longer stop every page after an update, and GitHub updates are more reliable.

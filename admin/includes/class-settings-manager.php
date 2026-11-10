@@ -1,14 +1,14 @@
 <?php
 /**
- * WP Plugin Starter settings tabs.
+ * SEO Pro Stack Custom settings tabs.
  *
- * Renders setting cards from WPStarter_Settings::schema(). Each top-level
+ * Renders setting cards from SEOProStackCustom_Settings::schema(). Each top-level
  * setting is a card with a switch; child settings appear in an expandable
- * panel. Controls save instantly via AJAX (see admin/js/wpstarter-admin.js).
+ * panel. Controls save instantly via AJAX (see admin/js/seoprostackcustom-admin.js).
  *
  * On the network screen (multisite) the same cards show and save network
  * values, with Apply to every site and the sites that differ
- * (WPStarter_Network_Manager). On a site, a card the network applies to
+ * (SEOProStackCustom_Network_Manager). On a site, a card the network applies to
  * every site shows its values locked.
  *
  * SPDX-License-Identifier: GPL-3.0-or-later
@@ -16,7 +16,7 @@
  * Additional terms (GPL-3.0 section 7(b)): ATTRIBUTION.txt
  * Provenance: wpas-e4502af0f07e8a92. Copies, even of part, keep these lines.
  *
- * @package WPStarter
+ * @package SEOProStackCustom
  * @since 0.2.0
  */
 
@@ -26,7 +26,7 @@ if (!defined('ABSPATH')) {
 
 // One schema-driven view: field renderers share card, accessibility and network
 // context. The method count includes small private renderers, not separate services.
-class WPStarter_Settings_Manager { // NOSONAR: keep the cohesive settings view and its private control renderers together (S1448).
+class SEOProStackCustom_Settings_Manager { // NOSONAR: keep the cohesive settings view and its private control renderers together (S1448).
 
     /** Control renderer for each child field type (render_field()); any other type is text. */
     private const CONTROLS = array(
@@ -63,7 +63,7 @@ class WPStarter_Settings_Manager { // NOSONAR: keep the cohesive settings view a
      * @return mixed
      */
     private static function value($key) {
-        return is_network_admin() ? WPStarter_Network_Settings::value($key) : WPStarter_Settings::get($key);
+        return is_network_admin() ? SEOProStackCustom_Network_Settings::value($key) : SEOProStackCustom_Settings::get($key);
     }
 
     /**
@@ -74,7 +74,7 @@ class WPStarter_Settings_Manager { // NOSONAR: keep the cohesive settings view a
      * @return array
      */
     public static function fields_for_tab($tab) {
-        return is_network_admin() ? WPStarter_Network_Settings::fields_for_tab($tab) : WPStarter_Settings::fields_for_tab($tab);
+        return is_network_admin() ? SEOProStackCustom_Network_Settings::fields_for_tab($tab) : SEOProStackCustom_Settings::fields_for_tab($tab);
     }
 
     /**
@@ -84,44 +84,44 @@ class WPStarter_Settings_Manager { // NOSONAR: keep the cohesive settings view a
      * and changed here.
      *
      * @param string $query Search text.
-     * @param array  $tabs  Registered tabs (see WPStarter_Admin_Manager::get_tabs()).
+     * @param array  $tabs  Registered tabs (see SEOProStackCustom_Admin_Manager::get_tabs()).
      */
     public static function render_search($query, array $tabs) {
         $groups  = array();
         $network = is_network_admin();
-        foreach (WPStarter_Settings::search($query) as $key => $field) {
-            if (isset($tabs[$field['tab']]) && (!$network || WPStarter_Network_Settings::eligible((string) $key))) {
+        foreach (SEOProStackCustom_Settings::search($query) as $key => $field) {
+            if (isset($tabs[$field['tab']]) && (!$network || SEOProStackCustom_Network_Settings::eligible((string) $key))) {
                 $groups[$field['tab']][$key] = $field;
             }
         }
         $count = array_sum(array_map('count', $groups));
         ?>
-        <div class="wps-section">
-            <div class="wps-section__intro">
-                <h2 class="wps-section__title">
+        <div class="spsc-section">
+            <div class="spsc-section__intro">
+                <h2 class="spsc-section__title">
                     <?php
                     /* translators: %s: search text */
-                    echo esc_html(sprintf(__('Results for “%s”', 'wp-plugin-starter-template'), $query));
+                    echo esc_html(sprintf(__('Results for “%s”', 'seoprostackcustom'), $query));
                     ?>
                 </h2>
-                <p class="wps-section__desc" role="status">
+                <p class="spsc-section__desc" role="status">
                     <?php
                     // role="status" rather than <output>: screen readers announce <output> changes unevenly.
                     echo esc_html($count
                         /* translators: %d: number of matching features */
-                        ? sprintf(_n('%d feature found.', '%d features found.', $count, 'wp-plugin-starter-template'), $count)
-                        : __('No features match. Try another word.', 'wp-plugin-starter-template'));
+                        ? sprintf(_n('%d feature found.', '%d features found.', $count, 'seoprostackcustom'), $count)
+                        : __('No features match. Try another word.', 'seoprostackcustom'));
                     ?>
                 </p>
                 <?php if ($count) : ?>
-                    <p class="wps-section__hint"><?php esc_html_e('Changes are saved automatically.', 'wp-plugin-starter-template'); ?></p>
+                    <p class="spsc-section__hint"><?php esc_html_e('Changes are saved automatically.', 'seoprostackcustom'); ?></p>
                 <?php endif; ?>
             </div>
             <?php foreach ($groups as $tab => $fields) : ?>
-                <h3 class="wps-search__group">
-                    <a href="<?php echo esc_url(WPStarter_Admin_Manager::tab_url($tab)); ?>"><?php echo esc_html($tabs[$tab]['label']); ?></a>
+                <h3 class="spsc-search__group">
+                    <a href="<?php echo esc_url(SEOProStackCustom_Admin_Manager::tab_url($tab)); ?>"><?php echo esc_html($tabs[$tab]['label']); ?></a>
                 </h3>
-                <div class="wps-cards">
+                <div class="spsc-cards">
                     <?php
                     self::$query = (string) $query;
                     foreach ($fields as $key => $field) {
@@ -146,20 +146,20 @@ class WPStarter_Settings_Manager { // NOSONAR: keep the cohesive settings view a
         $fields  = self::fields_for_tab($tab);
         $network = is_network_admin();
         ?>
-        <div class="wps-section">
-            <div class="wps-section__intro">
-                <h2 class="wps-section__title"><?php echo esc_html($title); ?></h2>
+        <div class="spsc-section">
+            <div class="spsc-section__intro">
+                <h2 class="spsc-section__title"><?php echo esc_html($title); ?></h2>
                 <?php if ($description) : ?>
-                    <p class="wps-section__desc"><?php echo esc_html($description); ?></p>
+                    <p class="spsc-section__desc"><?php echo esc_html($description); ?></p>
                 <?php endif; ?>
                 <?php if ($fields && $network) : ?>
-                    <p class="wps-section__hint"><?php esc_html_e('New sites start with these settings. Apply a card to every site to set it for every site, so sites cannot change it. Changes are saved automatically.', 'wp-plugin-starter-template'); ?></p>
+                    <p class="spsc-section__hint"><?php esc_html_e('New sites start with these settings. Apply a card to every site to set it for every site, so sites cannot change it. Changes are saved automatically.', 'seoprostackcustom'); ?></p>
                 <?php elseif ($fields) : ?>
-                    <p class="wps-section__hint"><?php esc_html_e('Changes are saved automatically.', 'wp-plugin-starter-template'); ?></p>
+                    <p class="spsc-section__hint"><?php esc_html_e('Changes are saved automatically.', 'seoprostackcustom'); ?></p>
                 <?php endif; ?>
             </div>
             <?php if ($fields) : ?>
-                <div class="wps-cards">
+                <div class="spsc-cards">
                     <?php
                     foreach ($fields as $key => $field) {
                         self::render_card($key, $field);
@@ -167,8 +167,8 @@ class WPStarter_Settings_Manager { // NOSONAR: keep the cohesive settings view a
                     ?>
                 </div>
             <?php else : ?>
-                <div class="wps-card wps-empty">
-                    <p><?php esc_html_e('No settings yet.', 'wp-plugin-starter-template'); ?></p>
+                <div class="spsc-card spsc-empty">
+                    <p><?php esc_html_e('No settings yet.', 'seoprostackcustom'); ?></p>
                 </div>
             <?php endif; ?>
             <?php
@@ -179,16 +179,16 @@ class WPStarter_Settings_Manager { // NOSONAR: keep the cohesive settings view a
                  *
                  * @param string $tab Tab slug.
                  */
-                do_action('wpstarter_network_settings_tab_after', $tab);
+                do_action('seoprostackcustom_network_settings_tab_after', $tab);
             } else {
                 /**
                  * Fires after a settings tab's cards, for sections that are not
                  * settings (such as example data). Not on the network screen
-                 * (wpstarter_network_settings_tab_after).
+                 * (seoprostackcustom_network_settings_tab_after).
                  *
                  * @param string $tab Tab slug.
                  */
-                do_action('wpstarter_settings_tab_after', $tab);
+                do_action('seoprostackcustom_settings_tab_after', $tab);
             }
             ?>
         </div>
@@ -204,43 +204,43 @@ class WPStarter_Settings_Manager { // NOSONAR: keep the cohesive settings view a
     public static function render_card($key, array $field) {
         $network  = is_network_admin();
         $children = self::visible_children($key);
-        // A feature may render its whole panel itself (wpstarter_setting_panel);
+        // A feature may render its whole panel itself (seoprostackcustom_setting_panel);
         // the network screen shows only the child settings the network can set.
         $has_panel = $children || (!$network && !empty($field['panel']));
-        $id        = 'wps-' . $key;
+        $id        = 'spsc-' . $key;
         $panel_id  = $id . '-panel';
         $is_bool   = 'bool' === $field['type'];
         $value     = self::value($key);
         // On a site, a card the network applies to every site: its switch
         // and enforced settings are disabled (render_field()).
-        $locked      = !$network && WPStarter_Network_Settings::is_enforced($key);
+        $locked      = !$network && SEOProStackCustom_Network_Settings::is_enforced($key);
         $describedby = $id . self::DESC . ($locked ? ' ' . $id . '-locked' : '');
         ?>
         <section class="<?php echo esc_attr(self::card_classes($key, $is_bool && $value, $has_panel, $locked)); ?>" data-setting-card="<?php echo esc_attr($key); ?>">
             <?php // Clicking the header (outside the switch) opens the options; only the switch changes the value. ?>
-            <div class="wps-setting__header"<?php echo $has_panel ? ' data-wps-panel-toggle' : ''; ?>>
+            <div class="spsc-setting__header"<?php echo $has_panel ? ' data-spsc-panel-toggle' : ''; ?>>
                 <?php if ($is_bool) : ?>
-                    <span class="wps-switch">
+                    <span class="spsc-switch">
                         <input type="checkbox"
                                role="switch"
-                               class="wps-switch__input"
+                               class="spsc-switch__input"
                                id="<?php echo esc_attr($id); ?>"
-                               data-wps-setting="<?php echo esc_attr($key); ?>"
+                               data-spsc-setting="<?php echo esc_attr($key); ?>"
                                aria-labelledby="<?php echo esc_attr($id); ?>-title"
                                aria-describedby="<?php echo esc_attr($describedby); ?>"
                                <?php checked((bool) $value); ?>
                                <?php disabled($locked); ?> />
-                        <span class="wps-switch__track" aria-hidden="true"></span>
+                        <span class="spsc-switch__track" aria-hidden="true"></span>
                     </span>
                 <?php endif; ?>
 
-                <div class="wps-setting__text">
-                    <div class="wps-setting__title-row">
-                        <span class="wps-setting__title" id="<?php echo esc_attr($id); ?>-title"><?php echo esc_html($field['label']); ?></span>
-                        <span class="wps-status" data-wps-status="<?php echo esc_attr($key); ?>" aria-hidden="true"></span>
+                <div class="spsc-setting__text">
+                    <div class="spsc-setting__title-row">
+                        <span class="spsc-setting__title" id="<?php echo esc_attr($id); ?>-title"><?php echo esc_html($field['label']); ?></span>
+                        <span class="spsc-status" data-spsc-status="<?php echo esc_attr($key); ?>" aria-hidden="true"></span>
                     </div>
                     <?php if (!empty($field['description'])) : ?>
-                        <p class="wps-setting__desc" id="<?php echo esc_attr($id . self::DESC); ?>"><?php echo esc_html($field['description']); ?></p>
+                        <p class="spsc-setting__desc" id="<?php echo esc_attr($id . self::DESC); ?>"><?php echo esc_html($field['description']); ?></p>
                     <?php endif; ?>
                     <?php self::render_replaces($field); ?>
                     <?php
@@ -252,24 +252,24 @@ class WPStarter_Settings_Manager { // NOSONAR: keep the cohesive settings view a
 
                 <?php if ($has_panel) : ?>
                     <button type="button"
-                            class="wps-setting__expand button-link"
+                            class="spsc-setting__expand button-link"
                             aria-expanded="false"
                             aria-controls="<?php echo esc_attr($panel_id); ?>">
-                        <span class="wps-setting__expand-label"><?php esc_html_e('Options', 'wp-plugin-starter-template'); ?></span>
+                        <span class="spsc-setting__expand-label"><?php esc_html_e('Options', 'seoprostackcustom'); ?></span>
                         <span class="dashicons dashicons-arrow-down-alt2" aria-hidden="true"></span>
-                        <span class="screen-reader-text"><?php echo esc_html(sprintf(/* translators: %s: setting name */ __('for %s', 'wp-plugin-starter-template'), $field['label'])); ?></span>
+                        <span class="screen-reader-text"><?php echo esc_html(sprintf(/* translators: %s: setting name */ __('for %s', 'seoprostackcustom'), $field['label'])); ?></span>
                     </button>
                 <?php endif; ?>
             </div>
 
             <?php
             if ($network) {
-                WPStarter_Network_Manager::render_card_network($key);
+                SEOProStackCustom_Network_Manager::render_card_network($key);
             }
             ?>
 
             <?php if ($has_panel) : ?>
-                <div class="wps-setting__panel" id="<?php echo esc_attr($panel_id); ?>" hidden>
+                <div class="spsc-setting__panel" id="<?php echo esc_attr($panel_id); ?>" hidden>
                     <?php self::render_panel($key, $field, $children); ?>
                 </div>
             <?php endif; ?>
@@ -286,11 +286,11 @@ class WPStarter_Settings_Manager { // NOSONAR: keep the cohesive settings view a
      */
     private static function render_locked_note($id, array $field) {
         ?>
-        <p class="wps-locked-note" id="<?php echo esc_attr($id); ?>-locked">
+        <p class="spsc-locked-note" id="<?php echo esc_attr($id); ?>-locked">
             <span class="dashicons dashicons-lock" aria-hidden="true"></span>
-            <?php esc_html_e('The network administrator sets this for every site.', 'wp-plugin-starter-template'); ?>
+            <?php esc_html_e('The network administrator sets this for every site.', 'seoprostackcustom'); ?>
             <?php if (current_user_can('manage_network_options')) : ?>
-                <a href="<?php echo esc_url(WPStarter_Network_Manager::page_url(empty($field['tab']) ? array() : array('tab' => (string) $field['tab']))); ?>"><?php esc_html_e('Change it for the network', 'wp-plugin-starter-template'); ?></a>
+                <a href="<?php echo esc_url(SEOProStackCustom_Network_Manager::page_url(empty($field['tab']) ? array() : array('tab' => (string) $field['tab']))); ?>"><?php esc_html_e('Change it for the network', 'seoprostackcustom'); ?></a>
             <?php endif; ?>
         </p>
         <?php
@@ -311,22 +311,22 @@ class WPStarter_Settings_Manager { // NOSONAR: keep the cohesive settings view a
             /**
              * Fires at the top of a setting's options panel on the
              * network screen (multisite), for notes about the
-             * whole network (wrap output in .wps-panel-note).
+             * whole network (wrap output in .spsc-panel-note).
              *
              * @param string $key   Setting key.
              * @param array  $field Schema entry.
              */
-            do_action('wpstarter_network_setting_panel', $key, $field);
+            do_action('seoprostackcustom_network_setting_panel', $key, $field);
         } else {
             /**
              * Fires at the top of a setting's options panel, for status
-             * such as progress (wrap output in .wps-panel-note). Not on
-             * the network screen (wpstarter_network_setting_panel).
+             * such as progress (wrap output in .spsc-panel-note). Not on
+             * the network screen (seoprostackcustom_network_setting_panel).
              *
              * @param string $key   Setting key.
              * @param array  $field Schema entry.
              */
-            do_action('wpstarter_setting_panel', $key, $field);
+            do_action('seoprostackcustom_setting_panel', $key, $field);
         }
 
         $troubleshooting = array_filter($children, function ($child) {
@@ -339,9 +339,9 @@ class WPStarter_Settings_Manager { // NOSONAR: keep the cohesive settings view a
             return;
         }
         ?>
-        <details class="wps-troubleshooting"<?php echo self::troubleshooting_open($key, $troubleshooting) ? ' open' : ''; ?>>
-            <summary class="wps-troubleshooting__summary"><?php esc_html_e('Troubleshooting', 'wp-plugin-starter-template'); ?></summary>
-            <p class="wps-troubleshooting__intro"><?php esc_html_e('Leave these as they are unless something is missing or broken.', 'wp-plugin-starter-template'); ?></p>
+        <details class="spsc-troubleshooting"<?php echo self::troubleshooting_open($key, $troubleshooting) ? ' open' : ''; ?>>
+            <summary class="spsc-troubleshooting__summary"><?php esc_html_e('Troubleshooting', 'seoprostackcustom'); ?></summary>
+            <p class="spsc-troubleshooting__intro"><?php esc_html_e('Leave these as they are unless something is missing or broken.', 'seoprostackcustom'); ?></p>
             <?php
             foreach ($troubleshooting as $child_key => $child) {
                 self::render_field($child_key, $child);
@@ -377,7 +377,7 @@ class WPStarter_Settings_Manager { // NOSONAR: keep the cohesive settings view a
          * @param bool   $open Whether it starts open (false).
          * @param string $key  Parent setting key.
          */
-        return (bool) apply_filters('wpstarter_troubleshooting_open', false, $key);
+        return (bool) apply_filters('seoprostackcustom_troubleshooting_open', false, $key);
     }
 
     /**
@@ -431,8 +431,8 @@ class WPStarter_Settings_Manager { // NOSONAR: keep the cohesive settings view a
      */
     private static function visible_children($key) {
         $network = is_network_admin();
-        return array_filter(WPStarter_Settings::children_of($key), function ($child, $child_key) use ($network) {
-            return empty($child['hidden']) && (!$network || WPStarter_Network_Settings::eligible((string) $child_key));
+        return array_filter(SEOProStackCustom_Settings::children_of($key), function ($child, $child_key) use ($network) {
+            return empty($child['hidden']) && (!$network || SEOProStackCustom_Network_Settings::eligible((string) $child_key));
         }, ARRAY_FILTER_USE_BOTH);
     }
 
@@ -448,18 +448,18 @@ class WPStarter_Settings_Manager { // NOSONAR: keep the cohesive settings view a
      * @return string
      */
     private static function card_classes($key, $is_on, $has_panel, $locked) {
-        $applied = is_network_admin() && WPStarter_Network_Settings::is_applied($key);
-        return 'wps-card wps-setting' . ($is_on ? ' is-on' : '') . ($has_panel ? ' has-panel' : '')
+        $applied = is_network_admin() && SEOProStackCustom_Network_Settings::is_applied($key);
+        return 'spsc-card spsc-setting' . ($is_on ? ' is-on' : '') . ($has_panel ? ' has-panel' : '')
             . ($locked ? ' is-locked' : '') . ($applied ? ' is-applied' : '');
     }
 
     /**
      * Note which plugins a setting replaces. While one is active the setting
-     * waits (WPStarter_Feature::replaced_active()); say so, with a
+     * waits (SEOProStackCustom_Feature::replaced_active()); say so, with a
      * deactivate link where the user can deactivate it here. The network
      * screen notes only plugins active for the whole network, as each
      * site's own are for that site (deactivated on the network's Plugins
-     * screen, so no link). wpstarter_replaces_link can change or drop the
+     * screen, so no link). seoprostackcustom_replaces_link can change or drop the
      * link, for a plugin with a step to take first (an import).
      *
      * @param array $field Schema entry.
@@ -470,7 +470,7 @@ class WPStarter_Settings_Manager { // NOSONAR: keep the cohesive settings view a
         }
 
         $network = is_network_admin();
-        $active  = $network ? self::network_active_plugins() : WPStarter_Feature::active_plugins();
+        $active  = $network ? self::network_active_plugins() : SEOProStackCustom_Feature::active_plugins();
         $site    = $network ? array() : self::active_plugins_by_slug();
         $items  = array();
         $links  = array();
@@ -484,11 +484,11 @@ class WPStarter_Settings_Manager { // NOSONAR: keep the cohesive settings view a
             if (isset($site[$slug]) && current_user_can('deactivate_plugin', $site[$slug])) {
                 // Comes back to this tab, where the setting then takes over.
                 $link = array(
-                    'url'   => WPStarter_Replaced_Plugins::deactivate_url($site[$slug]),
+                    'url'   => SEOProStackCustom_Replaced_Plugins::deactivate_url($site[$slug]),
                     /* translators: %s: plugin name */
-                    'label' => sprintf(__('Deactivate %s', 'wp-plugin-starter-template'), $name),
+                    'label' => sprintf(__('Deactivate %s', 'seoprostackcustom'), $name),
                 );
-                $link = apply_filters('wpstarter_replaces_link', $link, (string) $slug, $site[$slug], (string) $name);
+                $link = apply_filters('seoprostackcustom_replaces_link', $link, (string) $slug, $site[$slug], (string) $name);
                 if (is_array($link) && !empty($link['url']) && isset($link['label']) && '' !== (string) $link['label']) {
                     $links[] = sprintf('<a href="%1$s">%2$s</a>', esc_url((string) $link['url']), esc_html((string) $link['label']));
                 }
@@ -496,15 +496,15 @@ class WPStarter_Settings_Manager { // NOSONAR: keep the cohesive settings view a
         }
 
         printf(
-            '<p class="wps-replaces">%1$s %2$s</p>',
-            esc_html__('Replaces:', 'wp-plugin-starter-template'),
+            '<p class="spsc-replaces">%1$s %2$s</p>',
+            esc_html__('Replaces:', 'seoprostackcustom'),
             implode(', ', $items) // phpcs:ignore WordPress.Security.EscapeOutput -- escaped above.
         );
         if ($busy) {
             printf(
-                '<p class="wps-replaces wps-replaces__active">%1$s %2$s</p>',
+                '<p class="spsc-replaces spsc-replaces__active">%1$s %2$s</p>',
                 /* translators: %s: plugin names */
-                esc_html(sprintf(__('%s is still active, so it does this job and this setting waits until it is deactivated.', 'wp-plugin-starter-template'), implode(', ', $busy))),
+                esc_html(sprintf(__('%s is still active, so it does this job and this setting waits until it is deactivated.', 'seoprostackcustom'), implode(', ', $busy))),
                 implode(' · ', $links) // phpcs:ignore WordPress.Security.EscapeOutput -- escaped above.
             );
         }
@@ -535,7 +535,7 @@ class WPStarter_Settings_Manager { // NOSONAR: keep the cohesive settings view a
         static $active = null;
         if (null === $active) {
             $active = array();
-            foreach (WPStarter_Feature::stored_active_plugins() as $file) {
+            foreach (SEOProStackCustom_Feature::stored_active_plugins() as $file) {
                 $slug = dirname((string) $file);
                 if ('.' !== $slug) {
                     $active[$slug] = (string) $file;
@@ -555,37 +555,37 @@ class WPStarter_Settings_Manager { // NOSONAR: keep the cohesive settings view a
      */
     public static function render_field($key, array $field) {
         $value   = self::value($key);
-        $id      = 'wps-' . $key;
+        $id      = 'spsc-' . $key;
         $desc_id = $id . self::DESC;
-        $attrs   = sprintf('id="%1$s" data-wps-setting="%2$s" aria-describedby="%3$s"', esc_attr($id), esc_attr($key), esc_attr($desc_id));
+        $attrs   = sprintf('id="%1$s" data-spsc-setting="%2$s" aria-describedby="%3$s"', esc_attr($id), esc_attr($key), esc_attr($desc_id));
         $is_multi = 'multi' === $field['type'];
-        $locked   = !is_network_admin() && WPStarter_Network_Settings::is_enforced($key);
+        $locked   = !is_network_admin() && SEOProStackCustom_Network_Settings::is_enforced($key);
         ?>
-        <div class="wps-field">
+        <div class="spsc-field">
             <?php if ($is_multi) : ?>
-                <span class="wps-field__label" id="<?php echo esc_attr($id); ?>-label"><?php echo esc_html($field['label']); ?></span>
+                <span class="spsc-field__label" id="<?php echo esc_attr($id); ?>-label"><?php echo esc_html($field['label']); ?></span>
             <?php else : ?>
-                <label class="wps-field__label" for="<?php echo esc_attr($id); ?>"><?php echo esc_html($field['label']); ?></label>
+                <label class="spsc-field__label" for="<?php echo esc_attr($id); ?>"><?php echo esc_html($field['label']); ?></label>
             <?php endif; ?>
-            <div class="wps-field__control">
+            <div class="spsc-field__control">
                 <?php
                 // A disabled fieldset disables every control in it, buttons
                 // included (tokens, Select all, pictures).
                 if ($locked) {
-                    echo '<fieldset class="wps-setting__fields" disabled>';
+                    echo '<fieldset class="spsc-setting__fields" disabled>';
                 }
                 $method = isset(self::CONTROLS[$field['type']]) ? self::CONTROLS[$field['type']] : 'render_text';
                 self::$method($key, $field, $value, $attrs);
                 ?>
-                <span class="wps-status" data-wps-status="<?php echo esc_attr($key); ?>" aria-hidden="true"></span>
+                <span class="spsc-status" data-spsc-status="<?php echo esc_attr($key); ?>" aria-hidden="true"></span>
                 <?php if (!empty($field['description']) || !empty($field['tokens'])) : ?>
                     <p class="description" id="<?php echo esc_attr($desc_id); ?>">
                         <?php echo esc_html(isset($field['description']) ? $field['description'] : ''); ?>
                         <?php if (!empty($field['tokens'])) : ?>
-                            <span class="wps-tokens">
-                                <?php esc_html_e('Tokens:', 'wp-plugin-starter-template'); ?>
+                            <span class="spsc-tokens">
+                                <?php esc_html_e('Tokens:', 'seoprostackcustom'); ?>
                                 <?php foreach ($field['tokens'] as $token) : ?>
-                                    <button type="button" class="wps-token" data-token="<?php echo esc_attr($token); ?>" data-target="<?php echo esc_attr($id); ?>" title="<?php esc_attr_e('Insert token', 'wp-plugin-starter-template'); ?>"><code><?php echo esc_html($token); ?></code></button>
+                                    <button type="button" class="spsc-token" data-token="<?php echo esc_attr($token); ?>" data-target="<?php echo esc_attr($id); ?>" title="<?php esc_attr_e('Insert token', 'seoprostackcustom'); ?>"><code><?php echo esc_html($token); ?></code></button>
                                 <?php endforeach; ?>
                             </span>
                         <?php endif; ?>
@@ -613,11 +613,11 @@ class WPStarter_Settings_Manager { // NOSONAR: keep the cohesive settings view a
      * @param string $key   Setting key.
      * @param array  $field Schema entry.
      * @param mixed  $value Current value.
-     * @param string $attrs Escaped id, data-wps-setting and aria-describedby.
+     * @param string $attrs Escaped id, data-spsc-setting and aria-describedby.
      */
     private static function render_select($key, array $field, $value, $attrs) {
         printf('<select %s>', $attrs); // phpcs:ignore WordPress.Security.EscapeOutput -- escaped in render_field().
-        $choices = WPStarter_Settings::options_for($field);
+        $choices = SEOProStackCustom_Settings::options_for($field);
         if (!empty($field['open']) && '' !== (string) $value && !array_key_exists((string) $value, $choices)) {
             // A saved choice whose plugin is not loaded here stays shown.
             $choices[(string) $value] = (string) $value;
@@ -643,16 +643,16 @@ class WPStarter_Settings_Manager { // NOSONAR: keep the cohesive settings view a
      * @param string $key   Setting key.
      * @param array  $field Schema entry.
      * @param mixed  $value Current value.
-     * @param string $attrs Escaped id, data-wps-setting and aria-describedby.
+     * @param string $attrs Escaped id, data-spsc-setting and aria-describedby.
      */
     private static function render_multi($key, array $field, $value, $attrs) {
-        $id      = 'wps-' . $key;
+        $id      = 'spsc-' . $key;
         $chosen  = array_map('strval', (array) $value);
-        $choices = WPStarter_Settings::options_for($field);
-        $locked  = WPStarter_Settings::locked_values($field);
+        $choices = SEOProStackCustom_Settings::options_for($field);
+        $locked  = SEOProStackCustom_Settings::locked_values($field);
         // With some plugins skipped on this request, a saved
         // choice may belong to one of them; keep it too.
-        if (!empty($field['open']) || WPStarter_Feature::plugins_skipped()) {
+        if (!empty($field['open']) || SEOProStackCustom_Feature::plugins_skipped()) {
             // Saved items that are not registered right now stay visible so they can be unticked.
             foreach (array_diff($chosen, array_map('strval', array_keys($choices))) as $missing) {
                 $choices[$missing] = $missing;
@@ -678,36 +678,36 @@ class WPStarter_Settings_Manager { // NOSONAR: keep the cohesive settings view a
         if ($long) {
             // Long lists (such as every active plugin) scroll, with quick choices.
             printf(
-                '<span class="wps-checkboxes__all"><button type="button" class="button-link" data-wps-check-all="%1$s">%2$s</button> · <button type="button" class="button-link" data-wps-check-none="%1$s">%3$s</button></span>',
+                '<span class="spsc-checkboxes__all"><button type="button" class="button-link" data-spsc-check-all="%1$s">%2$s</button> · <button type="button" class="button-link" data-spsc-check-none="%1$s">%3$s</button></span>',
                 esc_attr($id),
-                esc_html__('Select all', 'wp-plugin-starter-template'),
-                esc_html__('Clear', 'wp-plugin-starter-template')
+                esc_html__('Select all', 'seoprostackcustom'),
+                esc_html__('Clear', 'seoprostackcustom')
             );
         }
-        // The group carries data-wps-setting; the JS saves every checked value.
+        // The group carries data-spsc-setting; the JS saves every checked value.
         printf(
-            '<fieldset class="wps-checkboxes%3$s"%4$s data-wps-multi %1$s aria-labelledby="%2$s">',
+            '<fieldset class="spsc-checkboxes%3$s"%4$s data-spsc-multi %1$s aria-labelledby="%2$s">',
             $attrs, // phpcs:ignore WordPress.Security.EscapeOutput -- escaped in render_field().
             esc_attr($id . '-label'),
             $long ? ' is-long' : '',
-            $ordered ? ' data-wps-ordered' : ''
+            $ordered ? ' data-spsc-ordered' : ''
         );
         foreach ($choices as $option_value => $option_label) {
             if (in_array((string) $option_value, $locked, true)) {
                 printf(
-                    '<label class="wps-checkbox is-locked"><input type="checkbox" value="%1$s" checked disabled data-wps-locked /> %2$s <span class="dashicons dashicons-lock" aria-hidden="true"></span><span class="screen-reader-text">%3$s</span></label>',
+                    '<label class="spsc-checkbox is-locked"><input type="checkbox" value="%1$s" checked disabled data-spsc-locked /> %2$s <span class="dashicons dashicons-lock" aria-hidden="true"></span><span class="screen-reader-text">%3$s</span></label>',
                     esc_attr((string) $option_value),
                     esc_html($option_label),
-                    esc_html__('(always chosen)', 'wp-plugin-starter-template')
+                    esc_html__('(always chosen)', 'seoprostackcustom')
                 );
                 continue;
             }
             if ($ordered) {
                 // A handle beside the label, so dragging it never ticks the box.
                 printf(
-                    '<div class="wps-checkbox-row"><button type="button" class="wps-checkbox__handle" aria-label="%1$s"><span class="dashicons dashicons-menu" aria-hidden="true"></span></button><label class="wps-checkbox"><input type="checkbox" value="%2$s"%3$s /> %4$s</label></div>',
+                    '<div class="spsc-checkbox-row"><button type="button" class="spsc-checkbox__handle" aria-label="%1$s"><span class="dashicons dashicons-menu" aria-hidden="true"></span></button><label class="spsc-checkbox"><input type="checkbox" value="%2$s"%3$s /> %4$s</label></div>',
                     /* translators: %s: a choice, such as Facebook. */
-                    esc_attr(sprintf(__('Move %s: drag, or press the up or down arrow key', 'wp-plugin-starter-template'), $option_label)),
+                    esc_attr(sprintf(__('Move %s: drag, or press the up or down arrow key', 'seoprostackcustom'), $option_label)),
                     esc_attr((string) $option_value),
                     checked(in_array((string) $option_value, $chosen, true), true, false),
                     esc_html($option_label)
@@ -715,7 +715,7 @@ class WPStarter_Settings_Manager { // NOSONAR: keep the cohesive settings view a
                 continue;
             }
             printf(
-                '<label class="wps-checkbox"><input type="checkbox" value="%1$s"%2$s /> %3$s</label>',
+                '<label class="spsc-checkbox"><input type="checkbox" value="%1$s"%2$s /> %3$s</label>',
                 esc_attr((string) $option_value),
                 checked(in_array((string) $option_value, $chosen, true), true, false),
                 esc_html($option_label)
@@ -723,10 +723,10 @@ class WPStarter_Settings_Manager { // NOSONAR: keep the cohesive settings view a
         }
         echo '</fieldset>';
         if ($ordered) {
-            printf('<p class="wps-ordered-help">%s</p>', esc_html__('Drag the handles to change the order.', 'wp-plugin-starter-template'));
+            printf('<p class="spsc-ordered-help">%s</p>', esc_html__('Drag the handles to change the order.', 'seoprostackcustom'));
         }
         if ($locked) {
-            printf('<p class="wps-locked-help">%s</p>', esc_html__('Choices with a lock are always chosen.', 'wp-plugin-starter-template'));
+            printf('<p class="spsc-locked-help">%s</p>', esc_html__('Choices with a lock are always chosen.', 'seoprostackcustom'));
         }
     }
 
@@ -736,7 +736,7 @@ class WPStarter_Settings_Manager { // NOSONAR: keep the cohesive settings view a
      * @param string $key   Setting key.
      * @param array  $field Schema entry.
      * @param mixed  $value Current value.
-     * @param string $attrs Escaped id, data-wps-setting and aria-describedby.
+     * @param string $attrs Escaped id, data-spsc-setting and aria-describedby.
      */
     private static function render_url($key, array $field, $value, $attrs) {
         printf(
@@ -753,7 +753,7 @@ class WPStarter_Settings_Manager { // NOSONAR: keep the cohesive settings view a
      * @param string $key   Setting key.
      * @param array  $field Schema entry.
      * @param mixed  $value Current value.
-     * @param string $attrs Escaped id, data-wps-setting and aria-describedby.
+     * @param string $attrs Escaped id, data-spsc-setting and aria-describedby.
      */
     private static function render_times($key, array $field, $value, $attrs) {
         printf(
@@ -770,7 +770,7 @@ class WPStarter_Settings_Manager { // NOSONAR: keep the cohesive settings view a
      * @param string $key   Setting key.
      * @param array  $field Schema entry.
      * @param mixed  $value Current value.
-     * @param string $attrs Escaped id, data-wps-setting and aria-describedby.
+     * @param string $attrs Escaped id, data-spsc-setting and aria-describedby.
      */
     private static function render_int($key, array $field, $value, $attrs) {
         printf(
@@ -781,7 +781,7 @@ class WPStarter_Settings_Manager { // NOSONAR: keep the cohesive settings view a
             esc_attr(isset($field['max']) ? (string) $field['max'] : '')
         );
         if (!empty($field['unit'])) {
-            echo ' <span class="wps-field__unit">' . esc_html($field['unit']) . '</span>';
+            echo ' <span class="spsc-field__unit">' . esc_html($field['unit']) . '</span>';
         }
     }
 
@@ -791,7 +791,7 @@ class WPStarter_Settings_Manager { // NOSONAR: keep the cohesive settings view a
      * @param string $key   Setting key.
      * @param array  $field Schema entry.
      * @param mixed  $value Current value.
-     * @param string $attrs Escaped id, data-wps-setting and aria-describedby.
+     * @param string $attrs Escaped id, data-spsc-setting and aria-describedby.
      */
     private static function render_textarea($key, array $field, $value, $attrs) {
         printf(
@@ -804,39 +804,39 @@ class WPStarter_Settings_Manager { // NOSONAR: keep the cohesive settings view a
     }
 
     /**
-     * Render a media control. The hidden input carries data-wps-setting; the
+     * Render a media control. The hidden input carries data-spsc-setting; the
      * JS sets it from the media dialog and saves it.
      *
      * @param string $key   Setting key.
      * @param array  $field Schema entry.
      * @param mixed  $value Current value.
-     * @param string $attrs Escaped id, data-wps-setting and aria-describedby.
+     * @param string $attrs Escaped id, data-spsc-setting and aria-describedby.
      */
     private static function render_media($key, array $field, $value, $attrs) {
-        $id       = 'wps-' . $key;
+        $id       = 'spsc-' . $key;
         $image_id = (int) $value;
         $preview  = $image_id ? wp_get_attachment_image_url($image_id, 'thumbnail') : '';
-        echo '<div class="wps-media" data-wps-media>';
+        echo '<div class="spsc-media" data-spsc-media>';
         printf(
-            '<input type="hidden" data-wps-setting="%1$s" value="%2$s" />',
+            '<input type="hidden" data-spsc-setting="%1$s" value="%2$s" />',
             esc_attr($key),
             esc_attr((string) $image_id)
         );
         if ($preview) {
-            printf('<img class="wps-media__preview" src="%s" alt="" />', esc_url($preview));
+            printf('<img class="spsc-media__preview" src="%s" alt="" />', esc_url($preview));
         } else {
-            echo '<img class="wps-media__preview" alt="" hidden />';
+            echo '<img class="spsc-media__preview" alt="" hidden />';
         }
         printf(
-            '<button type="button" class="button wps-media__choose" id="%1$s" aria-describedby="%2$s">%3$s</button>',
+            '<button type="button" class="button spsc-media__choose" id="%1$s" aria-describedby="%2$s">%3$s</button>',
             esc_attr($id),
             esc_attr($id . self::DESC),
-            esc_html__('Choose picture', 'wp-plugin-starter-template')
+            esc_html__('Choose picture', 'seoprostackcustom')
         );
         printf(
-            '<button type="button" class="button-link wps-media__remove"%1$s>%2$s</button>',
+            '<button type="button" class="button-link spsc-media__remove"%1$s>%2$s</button>',
             $image_id ? '' : ' hidden',
-            esc_html__('Remove', 'wp-plugin-starter-template')
+            esc_html__('Remove', 'seoprostackcustom')
         );
         echo '</div>';
     }
@@ -848,11 +848,11 @@ class WPStarter_Settings_Manager { // NOSONAR: keep the cohesive settings view a
      * @param string $key   Setting key.
      * @param array  $field Schema entry.
      * @param mixed  $value Current value.
-     * @param string $attrs Escaped id, data-wps-setting and aria-describedby.
+     * @param string $attrs Escaped id, data-spsc-setting and aria-describedby.
      */
     private static function render_bool($key, array $field, $value, $attrs) {
         printf(
-            '<span class="wps-switch"><input type="checkbox" role="switch" class="wps-switch__input" %1$s %2$s /><span class="wps-switch__track" aria-hidden="true"></span></span>',
+            '<span class="spsc-switch"><input type="checkbox" role="switch" class="spsc-switch__input" %1$s %2$s /><span class="spsc-switch__track" aria-hidden="true"></span></span>',
             $attrs, // phpcs:ignore WordPress.Security.EscapeOutput -- escaped in render_field().
             checked((bool) $value, true, false)
         );
@@ -864,7 +864,7 @@ class WPStarter_Settings_Manager { // NOSONAR: keep the cohesive settings view a
      * @param string $key   Setting key.
      * @param array  $field Schema entry.
      * @param mixed  $value Current value.
-     * @param string $attrs Escaped id, data-wps-setting and aria-describedby.
+     * @param string $attrs Escaped id, data-spsc-setting and aria-describedby.
      */
     private static function render_text($key, array $field, $value, $attrs) {
         printf(
