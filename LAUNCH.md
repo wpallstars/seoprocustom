@@ -8,8 +8,8 @@ clients make their own private copy with **Use this template**. Renamed from
 `seoprostackcustom` (SEO Pro Stack Custom) the same day, before any release;
 GitHub redirects the old address.
 
-It will be listed on wpallstars.com as a free plugin, with its purpose
-explained (owner, 10 November 2026).
+It will be listed on the wpallstars website as a free plugin, with its
+purpose explained (owner, 10 November 2026).
 
 ## Public launch checks
 
