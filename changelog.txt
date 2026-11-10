@@ -2,6 +2,11 @@
 
 Every change to SEO Pro Custom. readme.txt lists the latest version in short.
 
+= 0.1.1 =
+* Settings screen: the Customisations card has inner padding and space above it, a line saying where your changes go with a link to the Read Me tab, and it replaces the "No settings yet" placeholder on the General tab.
+* README: fork the plugin, install your fork on the sites you want to customise and reuse it across them; keep your fork in sync; issues and pull requests here are for the blank plugin itself. New banner strapline.
+* Licence headers on the example customisation; the plugin's own .gitignore lines are kept by the Starter sync.
+
 = 0.1.0 =
 * First version, made from WP Plugin Starter 1.0.56.
 * Customisation loader for `customizations/*.php` (Description, Sites, Requires, Upstream and Retire-When headers, optional .css and .js), with PHP errors reported and skipped.

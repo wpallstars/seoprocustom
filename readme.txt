@@ -5,7 +5,7 @@ Tags: customization, custom code, developer, template, wpallstars
 Requires at least: 6.2
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 0.1.0
+Stable tag: 0.1.1
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -79,7 +79,7 @@ GitHub releases are the stable beta channel: each version comes out there first.
 
 == Changelog ==
 
-= 0.1.0 =
-* First version: loads your own changes from customizations/, reported in Site Health and WP-CLI.
+= 0.1.1 =
+* Settings screen: the Customisations card is padded, spaced and replaces the "No settings yet" placeholder. Docs: fork it, install your fork, reuse it across sites.
 
 Every change: changelog.txt.
