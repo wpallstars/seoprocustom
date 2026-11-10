@@ -5,9 +5,8 @@
 <!-- aidevops:badges:start -->
 <!-- On GitHub only: the Read Me tab skips this block. scripts/rename-plugin.sh rewrites it. -->
 [![CI](https://github.com/wpallstars/seoprocustom/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/wpallstars/seoprocustom/actions/workflows/ci.yml)
-[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=wpallstars_seoprocustom&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=wpallstars_seoprocustom)
 [![License: GPL v3 or later](https://img.shields.io/badge/License-GPL%20v3%20or%20later-blue.svg)](LICENSE)
-[![Latest release](https://img.shields.io/badge/release-v0.1.0-blue.svg)](https://github.com/wpallstars/seoprocustom/releases)
+[![Latest release](https://img.shields.io/badge/release-v0.1.0-blue.svg)](https://github.com/wpallstars/seoprocustom/releases) [![Codacy](https://app.codacy.com/project/badge/Grade/418486b267e146b392a8def4c8c5edeb)](https://app.codacy.com/gh/wpallstars/seoprocustom/dashboard) [![CodeFactor](https://www.codefactor.io/repository/github/wpallstars/seoprocustom/badge)](https://www.codefactor.io/repository/github/wpallstars/seoprocustom)
 
 [![Requires WordPress](https://img.shields.io/badge/WordPress-6.2%2B-21759B.svg?logo=wordpress)](readme.txt)
 [![Tested up to](https://img.shields.io/badge/tested%20up%20to-7.1-21759B.svg?logo=wordpress)](readme.txt)
