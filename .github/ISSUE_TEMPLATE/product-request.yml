@@ -1,0 +1,46 @@
+name: Product request
+description: Ask for a change in a private wpallstars product (the PSD child theme or SEO Pro Directory).
+labels: ["product-request"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        **This issue is public.** Do not include site addresses, private code or client data. For anything sensitive use Tools → Report a problem on your site, which sends privately.
+
+        Public products (SEO Pro Stack and the starter plugins) take issues and pull requests on their own repositories.
+  - type: dropdown
+    id: product
+    attributes:
+      label: Product
+      options:
+        - PSD child theme
+        - SEO Pro Directory
+    validations:
+      required: true
+  - type: input
+    id: file
+    attributes:
+      label: Customisation file it would replace
+      description: The file name in customizations/, if you already have one.
+      placeholder: my-change.php
+  - type: textarea
+    id: what
+    attributes:
+      label: What
+      description: What the product should do or let you do.
+    validations:
+      required: true
+  - type: textarea
+    id: why
+    attributes:
+      label: Why
+      description: The problem it solves, and why it would help other sites too.
+    validations:
+      required: true
+  - type: checkboxes
+    id: public
+    attributes:
+      label: Public issue
+      options:
+        - label: I have left out site addresses, private code and client data.
+          required: true

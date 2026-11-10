@@ -33,7 +33,7 @@ final class SEOProCustom_Setup {
      * Each lives in includes/features/class-{lowercase-hyphenated-name}.php,
      * for example SEOProCustom_Example in class-seoprocustom-example.php.
      */
-    const FEATURES = array();
+    const FEATURES = array('SEOProCustom_Customizations');
 
     /**
      * Features that some builds leave out, loaded only when their file is

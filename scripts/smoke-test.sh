@@ -377,6 +377,61 @@ switch_all_on() {
 	return $?
 }
 
+# Plugins that load customizations/*.php (the {Prefix}_Customizations feature):
+# put four files in the folder, one loaded (with a style), one skipped (a
+# requirement that is not met), one retired (Retire-When met) and one with a
+# syntax error, then check `wp {slug} list --format=json` reports each, the
+# site and the admin screens still load, and the style reaches the page.
+check_customizations() {
+	local class="${PLUGIN_PACKAGE}_Customizations"
+	local dir="$TMP_DIR/zips/customizations"
+	local out state expected file
+	if ! wp_cli eval "exit( class_exists( '$class' ) ? 0 : 1 );" >/dev/null 2>&1; then
+		return 0
+	fi
+	printf '\nCustomisations (loaded, skipped, retired, failed):\n'
+	mkdir -p "$dir"
+	chmod 755 "$dir"
+	printf '%s\n' '<?php' '/**' ' * Description: Smoke test, loaded.' ' */' "add_filter( 'smoke_customization_loaded', '__return_true' );" >"$dir/smoke-loaded.php"
+	printf '%s\n' '.smoke-customization { color: red; }' >"$dir/smoke-loaded.css"
+	printf '%s\n' '.smoke-customization { color: blue; }' >"$dir/smoke-skipped.css"
+	printf '%s\n' '<?php' '/**' ' * Description: Smoke test, skipped.' ' * Requires: smoke-no-such-plugin >= 1.0' ' */' "add_filter( 'smoke_customization_skipped', '__return_true' );" >"$dir/smoke-skipped.php"
+	printf '%s\n' '<?php' '/**' ' * Description: Smoke test, retired.' " * Retire-When: $SLUG >= 0.0.1" ' */' "add_filter( 'smoke_customization_retired', '__return_true' );" >"$dir/smoke-retired.php"
+	# shellcheck disable=SC2016 # PHP code with a deliberate syntax error.
+	printf '%s\n' '<?php' '/**' ' * Description: Smoke test, failed.' ' */' '$broken = ;' >"$dir/smoke-failed.php"
+	chmod 644 "$dir"/*
+	# shellcheck disable=SC2016 # PHP code: its $variables are PHP's, not the shell's.
+	wp_cli eval '
+		$to = constant( "WP_PLUGIN_DIR" ) . "/'"$SLUG"'/customizations/";
+		foreach ( glob( "/zips/customizations/*" ) as $f ) {
+			copy( $f, $to . basename( $f ) ) || exit( 1 );
+		}' || {
+		fail "could not add the customisation files"
+		return 0
+	}
+	out="$(wp_cli "$SLUG" list --format=json)" || {
+		fail "wp $SLUG list failed"
+		return 0
+	}
+	printf '  %s\n' "$out"
+	for expected in smoke-loaded.php:loaded smoke-skipped.php:skipped smoke-retired.php:retired smoke-failed.php:failed; do
+		file="${expected%%:*}"
+		state="${expected##*:}"
+		if ! grep -q "\"file\":\"$file\",\"state\":\"$state\"" <<<"$out"; then
+			fail "$file should be $state in wp $SLUG list"
+		fi
+	done
+	fetch '/' visitor
+	if ! grep -q "$SLUG-smoke-loaded-css" "$TMP_DIR/page"; then
+		fail "the loaded customisation's style is not on the front page"
+	fi
+	if grep -q "$SLUG-smoke-skipped" "$TMP_DIR/page"; then
+		fail "a skipped customisation's style is on the front page"
+	fi
+	load_pages
+	return 0
+}
+
 # The plugin's own database tables ({$wpdb->prefix}{prefix}_*), one per line.
 # PLUGIN_PREFIX is lower-case letters, digits and underscores (plugin.sh).
 plugin_tables() {
@@ -631,6 +686,8 @@ main() {
 		check_network
 		check_queries
 	fi
+
+	check_customizations
 
 	printf '\nUninstall:\n'
 	check_uninstall

@@ -1,0 +1,38 @@
+name: DCO
+
+# Every commit in a pull request needs a "Signed-off-by:" line (git commit -s):
+# the Developer Certificate of Origin, https://developercertificate.org/.
+# CONTRIBUTING.md says why. Merge commits and bot commits are left out.
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+permissions:
+  contents: read
+
+jobs:
+  dco:
+    name: Signed-off-by
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check every commit has a Signed-off-by line
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          PR: ${{ github.event.pull_request.number }}
+        run: |
+          set -euo pipefail
+          unsigned="$(gh api --paginate "repos/$REPO/pulls/$PR/commits" --jq '
+            .[]
+            | select((.parents | length) < 2)
+            | select(((.author.login // "") | endswith("[bot]")) | not)
+            | select((.commit.message | test("(^|\\n)Signed-off-by: [^\\n]+ <[^\\n]+@[^\\n]+>[ \\t]*(\\n|$)")) | not)
+            | .sha[0:7]')"
+          if [ -n "$unsigned" ]; then
+            while read -r sha; do
+              echo "::error::Commit $sha has no Signed-off-by line. Fix it with: git rebase --signoff, then push again."
+            done <<< "$unsigned"
+            exit 1
+          fi
+          echo "Every commit is signed off."

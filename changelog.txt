@@ -4,3 +4,6 @@ Every change to SEO Pro Custom. readme.txt lists the latest version in short.
 
 = 0.1.0 =
 * First version, made from WP Plugin Starter 1.0.56.
+* Customisation loader for `customizations/*.php` (Description, Sites, Requires, Upstream and Retire-When headers, optional .css and .js), with PHP errors reported and skipped.
+* Loaded, skipped, retired and failed states in Site Health, on the settings screen and in `wp seoprocustom list`.
+* Product request issue form and a DCO check for pull requests.
