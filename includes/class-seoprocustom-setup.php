@@ -116,7 +116,8 @@ final class SEOProCustom_Setup {
         return array(
             'general' => array(
                 'label'       => __('General', 'seoprocustom'),
-                'description' => __('SEO Pro Custom\'s settings appear here as features are added.', 'seoprocustom'),
+                // Empty: the Customisations card below carries the intro.
+                'description' => '',
             ),
         );
     }
