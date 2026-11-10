@@ -2,7 +2,10 @@ name: DCO
 
 # Every commit in a pull request needs a "Signed-off-by:" line (git commit -s):
 # the Developer Certificate of Origin, https://developercertificate.org/.
-# CONTRIBUTING.md says why. Merge commits and bot commits are left out.
+# CONTRIBUTING.md says why. Merge commits and bot commits are left out, and
+# so are pull requests from the repository's owner, members and collaborators
+# (and their AI workers), who already have the right to the code: the check
+# is for outside contributions.
 
 on:
   pull_request:
@@ -14,6 +17,7 @@ permissions:
 jobs:
   dco:
     name: Signed-off-by
+    if: ${{ !contains(fromJSON('["OWNER", "MEMBER", "COLLABORATOR"]'), github.event.pull_request.author_association) }}
     runs-on: ubuntu-latest
     steps:
       - name: Check every commit has a Signed-off-by line
