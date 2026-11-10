@@ -83,9 +83,8 @@ MODELS.md
 # This plugin's own ignore lines go between these markers; a Starter sync
 # keeps them (DEVELOPMENT.md → Starter sync).
 # spc-own:start
-# spc-own:end
-
 # aidevops keywords: search-target data lives in the private team hub (aidevops keywords sync)
 context/keywords.md
 context/keywords.md.hub
 context/keywords/
+# spc-own:end

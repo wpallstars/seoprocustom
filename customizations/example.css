@@ -1,6 +1,11 @@
 /*
  * Example style for customizations/example.php. It loads on the front end
  * only when that file loads, after the theme's styles.
+ *
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ * SPDX-FileCopyrightText: 2026 Marcus Quinn
+ * Additional terms (GPL-3.0 section 7(b)): ATTRIBUTION.txt
+ * Provenance: wpas-9508a2221415b8ce. Copies, even of part, keep these lines.
  */
 .entry-meta {
 	opacity: 0.8;
