@@ -9,17 +9,17 @@ Stable tag: 0.1.0
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
-Your site's own changes, one file each, in your own repository, switched off when an SEO Pro Stack product does the same.
+Change how your theme and plugins behave when their settings can't, without waiting on their makers: one small file per change, in your own copy.
 
 == Description ==
 
-SEO Pro Custom is for owners of sites built on SEO Pro Stack who want their own changes now, without waiting for a theme or plugin release. Make a private copy of its repository, add one file per change, and deploy it to your sites; the copy installed on each site is empty until you do. Ask for useful changes upstream, and switch your file off once an SEO Pro Stack product does the same.
+SEO Pro Custom is an empty plugin you make your own. Each change your site needs, that the theme's or a plugin's settings can't make, is one small file in your own copy of its repository, which you or your AI assistant write, release and deploy the same day. The theme and plugins stay untouched, so their updates keep coming. When a change would help everyone, ask the product's maker for it; once the product does the job, your file switches itself off.
 
-* **A loader for your own changes**: each `customizations/*.php` file loads on its own, with headers for what it does, which sites, what it requires, the upstream request and when it can be retired. A file with a PHP error is reported and skipped.
+* **One file per change** in `customizations/`, with headers for what it does, which sites, what it requires, the upstream request and when it can retire. A file with a PHP error is reported and skipped; the site keeps working.
 * **A style and script per change**, loaded after the theme's styles while the file is loaded.
-* **Four states**: loaded, skipped, retired and failed, in Tools → Site Health, on the settings screen and in `wp seoprocustom list --format=json`.
+* **Four states**: loaded, skipped, retired and failed, on the settings screen, in Tools → Site Health and in `wp seoprocustom list --format=json`.
 * **Nothing when empty**: no front-end output and no database queries without customisation files.
-* **A Read Me tab** that shows the plugin's README.md, banner included, and multisite settings.
+* **Rules for your AI assistant** in `AGENTS.md`: a setting first, then a documented filter or action, then CSS, then code; never edit the theme's or plugins' own files.
 * **Report a problem** (Tools): the site's AI assistant drafts problem reports and improvements for wpallstars plugins and themes; an administrator reviews and sends them.
 
 Make your own copy on GitHub (wpallstars/seoprocustom, Use this template): the Read Me tab explains how.
@@ -28,7 +28,7 @@ Make your own copy on GitHub (wpallstars/seoprocustom, Use this template): the R
 
 SEO Pro Custom is built and maintained with aidevops (https://aidevops.sh), the same developer's open-source AI harness for creating and managing anything online with AI.
 
-Questions about using or changing SEO Pro Custom: ask aidevops. It reads the plugin's docs and code to answer, and can report a problem for you.
+Questions about using or changing SEO Pro Custom: ask aidevops. It reads the plugin's docs and code to answer, writes customisations, and can report a problem for you.
 
 Made from WP Plugin Starter (https://github.com/wpallstars/wp-plugin-starter-template-for-ai-coding), the wpallstars starter plugin.
 
@@ -36,6 +36,7 @@ Made from WP Plugin Starter (https://github.com/wpallstars/wp-plugin-starter-tem
 
 1. Upload the `seoprocustom` folder to `/wp-content/plugins/`, or install the zip from Plugins → Add New → Upload Plugin.
 2. Activate it, then open Settings → SEO Pro Custom.
+3. Add your changes to your own copy's `customizations/` folder (Settings → SEO Pro Custom → Read Me).
 
 == Frequently Asked Questions ==
 
@@ -43,9 +44,17 @@ Made from WP Plugin Starter (https://github.com/wpallstars/wp-plugin-starter-tem
 
 No. Until you add customisation files to its `customizations` folder it adds nothing to the front end and runs no database queries. It has a settings screen, a Read Me tab and Tools → Report a problem.
 
+= When should I use it instead of a setting? =
+
+Only when no setting does the job. Try a setting first, then a documented filter or action, then CSS. Use code last.
+
 = How do I add a change? =
 
-Make your own private copy of the repository with Use this template, add one file per change to `customizations/` (see its README.md), and update the site from your copy's release.
+Make your own private copy of the repository with Use this template, copy `customizations/example.php` to a new file, fill in its header and hooks, and update the site from your copy's release.
+
+= What happens when the theme or plugin catches up? =
+
+Give the file a `Retire-When:` header, such as `some-plugin >= 2.0`. Once that version is active the file stops loading and Site Health tells you to delete it.
 
 = Where do I get help? =
 
@@ -61,8 +70,8 @@ GitHub releases are the stable beta channel: each version comes out there first.
 
 == Screenshots ==
 
-1. The settings screen (Settings → SEO Pro Custom) on the General tab, empty until features add settings.
-2. The Read Me tab, showing the plugin's README.md inside WordPress.
+1. The settings screen (Settings → SEO Pro Custom) with the Customisations card: each file and what became of it on this site.
+2. Tools → Site Health reporting a customisation with a PHP error, skipped so the site keeps working.
 
 == Changelog ==
 
