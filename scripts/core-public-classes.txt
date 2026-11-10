@@ -5,7 +5,7 @@
 #
 # Use them in markup freely; never restyle them (no plugin CSS rule whose
 # selector ends on one). A plugin's own components take their own names:
-# wps-<screen>-* or wps-app-*. Every other class in the core stylesheets is
+# spsc-<screen>-* or spsc-app-*. Every other class in the core stylesheets is
 # internal: a starter sync may change or remove it without notice.
 # Changing or removing a class here is a changelog item that plugins must act
 # on. scripts/preflight-release.sh (Core class names) reads this file.
@@ -16,39 +16,39 @@
 # Provenance: wpas-e4502af0f07e8a92. Copies, even of part, keep these lines.
 
 # Page shell of the plugin's own screens (render_header(), sections_nav()).
-wps-wrap
-wps-main
+spsc-wrap
+spsc-main
 # A tab or screen that needs the whole width (a tab: 'wide' => true).
-wps-main--wide
-wps-nav
-wps-nav__group
-wps-nav__tab
+spsc-main--wide
+spsc-nav
+spsc-nav__group
+spsc-nav__tab
 
 # Settings components, for tabs that look like the settings screen's.
-wps-cards
-wps-card
-wps-section
-wps-section__intro
-wps-section__title
-wps-section__desc
-wps-badge
-wps-badge--success
-wps-field
-wps-field__label
-wps-field__control
-wps-setting
-wps-setting__header
-wps-setting__text
-wps-setting__title
-wps-setting__desc
+spsc-cards
+spsc-card
+spsc-section
+spsc-section__intro
+spsc-section__title
+spsc-section__desc
+spsc-badge
+spsc-badge--success
+spsc-field
+spsc-field__label
+spsc-field__control
+spsc-setting
+spsc-setting__header
+spsc-setting__text
+spsc-setting__title
+spsc-setting__desc
 
 # Feature output at the top of a setting's options panel.
-wps-panel-note
-wps-panel-note--warning
-# A block of code to copy, such as server rules: <pre class="wps-code">.
-wps-code
+spsc-panel-note
+spsc-panel-note--warning
+# A block of code to copy, such as server rules: <pre class="spsc-code">.
+spsc-code
 
 # Colour mode: set on <html> by the header's Light / Dark / System button.
-# Use it as an ancestor: html.wps-dark .wps-<screen>-card. On <html> alone
+# Use it as an ancestor: html.spsc-dark .spsc-<screen>-card. On <html> alone
 # it takes only a dark palette: custom properties, color-scheme, background.
-wps-dark
+spsc-dark

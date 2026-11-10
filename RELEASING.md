@@ -36,8 +36,8 @@ fleet script can source `scripts/lib/deploy-remote.sh` with
 `DEPLOY_LIBRARY_ONLY=1` and wrap each change in `active_guard` for the same
 checks.
 
-<!-- wps-own:start -->
-<!-- wps-own:end -->
+<!-- spsc-own:start -->
+<!-- spsc-own:end -->
 
 The two builds of each version:
 
@@ -77,8 +77,8 @@ expected in the GitHub zip too.
    `main` to every site, and the shared updater skips tags with letters.
 2. On the pull request's branch: `scripts/preflight-release.sh` (no errors) and
    `scripts/plugin-check.sh` (no errors).
-   <!-- wps-own:start -->
-   <!-- wps-own:end -->
+   <!-- spsc-own:start -->
+   <!-- spsc-own:end -->
 3. Merge, then straight away:
 
    ```bash

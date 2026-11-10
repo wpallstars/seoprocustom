@@ -1,17 +1,17 @@
 <?php
 /**
- * Plugins screen: plugins WP Plugin Starter can replace.
+ * Plugins screen: plugins SEO Pro Stack Custom can replace.
  *
  * Lists installed plugins that a setting's `replaces` names:
  * - active, with every setting that replaces it on: the plugin can go, with a
  *   Deactivate link (the settings wait until it is deactivated);
- * - active, with a replacing setting off: WP Plugin Starter can do this job, with
+ * - active, with a replacing setting off: SEO Pro Stack Custom can do this job, with
  *   a link to the settings (only for people who can change them);
  * - installed but inactive, with every replacing setting on: no longer
  *   needed, with a Delete link (single sites; on multisite a plugin may be
  *   active on another site).
- * While an active plugin does things here that WP Plugin Starter does not (the
- * `wpstarter_replaced_plugin_extras` filter), the notice names them
+ * While an active plugin does things here that SEO Pro Stack Custom does not (the
+ * `seoprostackcustom_replaced_plugin_extras` filter), the notice names them
  * instead of saying the plugin can go.
  *
  * Each of those plugins, and inactive ones whose replacing setting is off,
@@ -19,7 +19,7 @@
  *
  * The list's Redundant view (WordPress 6.3 or later) shows every installed
  * plugin a setting replaces, whatever its step, and the plugins the
- * `wpstarter_redundant_plugins` filter adds. Every plugin made from the
+ * `seoprostackcustom_redundant_plugins` filter adds. Every plugin made from the
  * starter adds to the same view, so a site with several has one.
  *
  * Shown on the Plugins screen to people who can activate plugins. "Hide"
@@ -31,7 +31,7 @@
  * Additional terms (GPL-3.0 section 7(b)): ATTRIBUTION.txt
  * Provenance: wpas-e4502af0f07e8a92. Copies, even of part, keep these lines.
  *
- * @package WPStarter
+ * @package SEOProStackCustom
  * @since 0.7.0
  */
 
@@ -39,19 +39,19 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-class WPStarter_Replaced_Plugins {
+class SEOProStackCustom_Replaced_Plugins {
 
     /** admin-post action, also the nonce action. */
-    const HIDE = 'wpstarter_hide_replaced_plugins';
+    const HIDE = 'seoprostackcustom_hide_replaced_plugins';
 
     /** User meta: list of "slug:step" items the person hid. */
-    const HIDDEN = 'wpstarter_replaced_plugins_hidden';
+    const HIDDEN = 'seoprostackcustom_replaced_plugins_hidden';
 
     /** admin-post action that deactivates a replaced plugin and comes back. */
-    const DEACTIVATE = 'wpstarter_deactivate_replaced';
+    const DEACTIVATE = 'seoprostackcustom_deactivate_replaced';
 
     /** Query argument on the page it comes back to. */
-    const DONE = 'wpstarter-deactivated';
+    const DONE = 'seoprostackcustom-deactivated';
 
     /**
      * The Plugins screen's view (`plugin_status`) of redundant plugins. The
@@ -89,7 +89,7 @@ class WPStarter_Replaced_Plugins {
 
     /**
      * Add the Redundant list to the Plugins screen's lists: installed plugins
-     * a setting replaces and the plugins the `wpstarter_redundant_plugins`
+     * a setting replaces and the plugins the `seoprostackcustom_redundant_plugins`
      * filter adds, with what other plugins made from the starter added, in
      * the order of All.
      *
@@ -115,7 +115,7 @@ class WPStarter_Replaced_Plugins {
          *
          * @param string[] $files Plugin files.
          */
-        foreach ((array) apply_filters('wpstarter_redundant_plugins', array()) as $file) {
+        foreach ((array) apply_filters('seoprostackcustom_redundant_plugins', array()) as $file) {
             if (is_string($file) && '' !== $file) {
                 $files[$file] = true;
             }
@@ -154,7 +154,7 @@ class WPStarter_Replaced_Plugins {
             '<a href="%1$s"%2$s>%3$s <span class="count">(%4$s)</span></a>',
             esc_url(add_query_arg('plugin_status', self::VIEW, 'plugins.php')),
             self::VIEW === $status ? ' class="current" aria-current="page"' : '',
-            esc_html__('Redundant', 'wp-plugin-starter-template'),
+            esc_html__('Redundant', 'seoprostackcustom'),
             esc_html(number_format_i18n((int) $totals[self::VIEW]))
         );
         return $views;
@@ -164,7 +164,7 @@ class WPStarter_Replaced_Plugins {
      * Join a row note to its plugin's row, as core does for update notes.
      */
     public static function row_note_style() {
-        echo '<style>.plugins tr:has(+ tr.wps-replaced-row) th, .plugins tr:has(+ tr.wps-replaced-row) td { box-shadow: none; }</style>' . "\n";
+        echo '<style>.plugins tr:has(+ tr.spsc-replaced-row) th, .plugins tr:has(+ tr.spsc-replaced-row) td { box-shadow: none; }</style>' . "\n";
     }
 
     /**
@@ -209,10 +209,10 @@ class WPStarter_Replaced_Plugins {
         $file = isset($_GET['plugin']) ? sanitize_text_field(wp_unslash($_GET['plugin'])) : '';
         check_admin_referer(self::DEACTIVATE . '_' . $file);
         if ('' === $file || validate_file($file) || !current_user_can('deactivate_plugin', $file)) {
-            wp_die(esc_html__('You are not allowed to deactivate this plugin.', 'wp-plugin-starter-template'), '', array('response' => 403));
+            wp_die(esc_html__('You are not allowed to deactivate this plugin.', 'seoprostackcustom'), '', array('response' => 403));
         }
         if (!isset(self::replaced()[dirname($file)])) {
-            wp_die(esc_html__('WP Plugin Starter only deactivates plugins it replaces.', 'wp-plugin-starter-template'), '', array('response' => 400));
+            wp_die(esc_html__('SEO Pro Stack Custom only deactivates plugins it replaces.', 'seoprostackcustom'), '', array('response' => 400));
         }
         if (!function_exists('is_plugin_active')) {
             require_once ABSPATH . 'wp-admin/includes/plugin.php';
@@ -305,7 +305,7 @@ class WPStarter_Replaced_Plugins {
      * "Plugin deactivated." on the page the link came back to.
      */
     public static function deactivated_notice() {
-        echo '<div class="notice notice-success is-dismissible"><p>' . esc_html__('Plugin deactivated.', 'wp-plugin-starter-template') . '</p></div>';
+        echo '<div class="notice notice-success is-dismissible"><p>' . esc_html__('Plugin deactivated.', 'seoprostackcustom') . '</p></div>';
     }
 
     /**
@@ -325,40 +325,40 @@ class WPStarter_Replaced_Plugins {
             return '‘' . $label . '’';
         }, $item['settings'])));
         $setting = '';
-        if (WPStarter_Settings::can_change()) {
-            $setting = sprintf(' <a href="%1$s">%2$s</a>', esc_url(WPStarter_Admin_Manager::tab_url(WPStarter_Admin_Manager::SEARCH, array('s' => $item['name']))), esc_html__('Show the setting', 'wp-plugin-starter-template'));
+        if (SEOProStackCustom_Settings::can_change()) {
+            $setting = sprintf(' <a href="%1$s">%2$s</a>', esc_url(SEOProStackCustom_Admin_Manager::tab_url(SEOProStackCustom_Admin_Manager::SEARCH, array('s' => $item['name']))), esc_html__('Show the setting', 'seoprostackcustom'));
         }
         $extras = esc_html(implode(', ', $item['extras']));
 
         switch ($item['step']) {
             case 'deactivate':
-                /* translators: %s: WP Plugin Starter setting names */
-                $text = sprintf(esc_html__('WP Plugin Starter makes this plugin redundant: %s is on and takes over once you deactivate this plugin. Then you can delete it.', 'wp-plugin-starter-template'), $labels);
+                /* translators: %s: SEO Pro Stack Custom setting names */
+                $text = sprintf(esc_html__('SEO Pro Stack Custom makes this plugin redundant: %s is on and takes over once you deactivate this plugin. Then you can delete it.', 'seoprostackcustom'), $labels);
                 break;
             case 'partial':
-                /* translators: 1: WP Plugin Starter setting names, 2: the plugin's settings WP Plugin Starter does not have */
-                $text = sprintf(esc_html__('WP Plugin Starter can do this plugin\'s job: %1$s is on and takes over once you deactivate it, except for these, which WP Plugin Starter does not do: %2$s.', 'wp-plugin-starter-template'), $labels, $extras);
+                /* translators: 1: SEO Pro Stack Custom setting names, 2: the plugin's settings SEO Pro Stack Custom does not have */
+                $text = sprintf(esc_html__('SEO Pro Stack Custom can do this plugin\'s job: %1$s is on and takes over once you deactivate it, except for these, which SEO Pro Stack Custom does not do: %2$s.', 'seoprostackcustom'), $labels, $extras);
                 break;
             case 'switch_on':
-                /* translators: %s: WP Plugin Starter setting names */
-                $text = sprintf(esc_html__('WP Plugin Starter makes this plugin redundant: turn on %s in WP Plugin Starter, then deactivate and delete this plugin.', 'wp-plugin-starter-template'), $labels) . $setting;
+                /* translators: %s: SEO Pro Stack Custom setting names */
+                $text = sprintf(esc_html__('SEO Pro Stack Custom makes this plugin redundant: turn on %s in SEO Pro Stack Custom, then deactivate and delete this plugin.', 'seoprostackcustom'), $labels) . $setting;
                 break;
             case 'switch_on_partial':
-                /* translators: 1: WP Plugin Starter setting names, 2: the plugin's settings WP Plugin Starter does not have */
-                $text = sprintf(esc_html__('WP Plugin Starter can do part of this plugin\'s job with %1$s. It does not do these, which this plugin has on: %2$s.', 'wp-plugin-starter-template'), $labels, $extras) . $setting;
+                /* translators: 1: SEO Pro Stack Custom setting names, 2: the plugin's settings SEO Pro Stack Custom does not have */
+                $text = sprintf(esc_html__('SEO Pro Stack Custom can do part of this plugin\'s job with %1$s. It does not do these, which this plugin has on: %2$s.', 'seoprostackcustom'), $labels, $extras) . $setting;
                 break;
             case 'switch_on_inactive':
-                /* translators: %s: WP Plugin Starter setting names */
-                $text = sprintf(esc_html__('WP Plugin Starter makes this plugin redundant: turn on %s in WP Plugin Starter, then you can delete this plugin.', 'wp-plugin-starter-template'), $labels) . $setting;
+                /* translators: %s: SEO Pro Stack Custom setting names */
+                $text = sprintf(esc_html__('SEO Pro Stack Custom makes this plugin redundant: turn on %s in SEO Pro Stack Custom, then you can delete this plugin.', 'seoprostackcustom'), $labels) . $setting;
                 break;
             default:
-                /* translators: %s: WP Plugin Starter setting names */
-                $text = sprintf(esc_html__('No longer needed: %s in WP Plugin Starter does this plugin\'s job. You can delete it.', 'wp-plugin-starter-template'), $labels);
+                /* translators: %s: SEO Pro Stack Custom setting names */
+                $text = sprintf(esc_html__('No longer needed: %s in SEO Pro Stack Custom does this plugin\'s job. You can delete it.', 'seoprostackcustom'), $labels);
         }
         $columns = ($wp_list_table instanceof WP_List_Table) ? $wp_list_table->get_column_count() : 4;
         $active  = in_array($item['step'], array('deactivate', 'partial', 'switch_on', 'switch_on_partial'), true) ? ' active' : ' inactive';
         printf(
-            '<tr class="plugin-update-tr wps-replaced-row%1$s"><td colspan="%2$d" class="plugin-update colspanchange"><div class="notice inline notice-info notice-alt"><p>%3$s</p></div></td></tr>',
+            '<tr class="plugin-update-tr spsc-replaced-row%1$s"><td colspan="%2$d" class="plugin-update colspanchange"><div class="notice inline notice-info notice-alt"><p>%3$s</p></div></td></tr>',
             esc_attr($active),
             (int) $columns,
             $text // phpcs:ignore WordPress.Security.EscapeOutput -- built from escaped parts above.
@@ -373,7 +373,7 @@ class WPStarter_Replaced_Plugins {
      */
     private static function replaced() {
         $replaced = array();
-        foreach (WPStarter_Settings::schema() as $key => $field) {
+        foreach (SEOProStackCustom_Settings::schema() as $key => $field) {
             if (empty($field['replaces']) || !is_array($field['replaces']) || !empty($field['parent'])) {
                 continue;
             }
@@ -397,7 +397,7 @@ class WPStarter_Replaced_Plugins {
         $items = array_filter(self::states(), function ($item) {
             // Inactive with the setting off: only a note on its row.
             return 'switch_on_inactive' !== $item['step']
-                && ('switch_on' !== $item['step'] || WPStarter_Settings::can_change());
+                && ('switch_on' !== $item['step'] || SEOProStackCustom_Settings::can_change());
         });
         $hidden = (array) get_user_meta(get_current_user_id(), self::HIDDEN, true);
         return array_values(array_filter($items, function ($item) use ($hidden) {
@@ -425,8 +425,8 @@ class WPStarter_Replaced_Plugins {
         // skipped on this screen still count.
         $here = is_multisite() && is_network_admin()
             ? array_keys((array) get_site_option('active_sitewide_plugins', array()))
-            : WPStarter_Feature::stored_active_plugins();
-        $all  = WPStarter_Feature::active_plugins();
+            : SEOProStackCustom_Feature::stored_active_plugins();
+        $all  = SEOProStackCustom_Feature::active_plugins();
 
         $states = array();
         foreach (self::replaced() as $slug => $plugin) {
@@ -456,14 +456,14 @@ class WPStarter_Replaced_Plugins {
         $extras = array();
         if ('deactivate' === $step || 'switch_on' === $step) {
             /**
-             * What a replaced plugin does on this site that WP Plugin Starter,
+             * What a replaced plugin does on this site that SEO Pro Stack Custom,
              * as set up, does not. When there is any, the notice lists it
              * instead of saying the plugin can go.
              *
              * @param string[] $extras Plain names.
              * @param string   $slug   Plugin folder.
              */
-            $extras = array_values(array_filter(array_map('strval', (array) apply_filters('wpstarter_replaced_plugin_extras', array(), $slug))));
+            $extras = array_values(array_filter(array_map('strval', (array) apply_filters('seoprostackcustom_replaced_plugin_extras', array(), $slug))));
         }
         if ($extras) {
             $step = 'deactivate' === $step ? 'partial' : 'switch_on_partial';
@@ -512,7 +512,7 @@ class WPStarter_Replaced_Plugins {
     private static function step($file, $slug, array $settings, array $here, array $all) {
         $all_on = true;
         foreach (array_keys($settings) as $key) {
-            $all_on = $all_on && (bool) WPStarter_Settings::get($key);
+            $all_on = $all_on && (bool) SEOProStackCustom_Settings::get($key);
         }
         if (in_array($file, $here, true)) {
             return $all_on ? 'deactivate' : 'switch_on';
@@ -540,14 +540,14 @@ class WPStarter_Replaced_Plugins {
         }, $items);
         $hide = wp_nonce_url(add_query_arg(array('action' => self::HIDE, 'items' => implode(',', $keys)), admin_url('admin-post.php')), self::HIDE);
         ?>
-        <div class="notice notice-info wps-replaced-plugins">
-            <p><strong><?php esc_html_e('WP Plugin Starter can do the job of these plugins:', 'wp-plugin-starter-template'); ?></strong></p>
+        <div class="notice notice-info spsc-replaced-plugins">
+            <p><strong><?php esc_html_e('SEO Pro Stack Custom can do the job of these plugins:', 'seoprostackcustom'); ?></strong></p>
             <ul class="ul-disc">
                 <?php foreach ($rows as $row) : ?>
                     <li><?php echo $row; // phpcs:ignore WordPress.Security.EscapeOutput -- built from escaped parts in row(). ?></li>
                 <?php endforeach; ?>
             </ul>
-            <p><a href="<?php echo esc_url($hide); ?>"><?php esc_html_e('Hide', 'wp-plugin-starter-template'); ?></a></p>
+            <p><a href="<?php echo esc_url($hide); ?>"><?php esc_html_e('Hide', 'seoprostackcustom'); ?></a></p>
         </div>
         <?php
     }
@@ -566,12 +566,12 @@ class WPStarter_Replaced_Plugins {
         $base   = self_admin_url('plugins.php');
 
         if ('deactivate' === $item['step']) {
-            /* translators: 1: plugin name, 2: WP Plugin Starter setting names */
-            $text = sprintf(esc_html__('%1$s: %2$s is on and takes over once you deactivate it. Then you can delete it.', 'wp-plugin-starter-template'), $name, esc_html($labels));
+            /* translators: 1: plugin name, 2: SEO Pro Stack Custom setting names */
+            $text = sprintf(esc_html__('%1$s: %2$s is on and takes over once you deactivate it. Then you can delete it.', 'seoprostackcustom'), $name, esc_html($labels));
             if (current_user_can('deactivate_plugin', $item['file'])) {
                 $url   = self::plugins_deactivate_url($item['file']);
                 /* translators: %s: plugin name */
-                $text .= sprintf(' <a href="%1$s">%2$s</a>', esc_url($url), esc_html(sprintf(__('Deactivate %s', 'wp-plugin-starter-template'), $item['name'])));
+                $text .= sprintf(' <a href="%1$s">%2$s</a>', esc_url($url), esc_html(sprintf(__('Deactivate %s', 'seoprostackcustom'), $item['name'])));
             }
             return $text;
         }
@@ -579,36 +579,36 @@ class WPStarter_Replaced_Plugins {
         if ('partial' === $item['step'] || 'switch_on_partial' === $item['step']) {
             $extras = esc_html(implode(', ', $item['extras']));
             if ('partial' === $item['step']) {
-                /* translators: 1: plugin name, 2: WP Plugin Starter setting names, 3: the plugin's settings WP Plugin Starter does not have */
-                $text = sprintf(esc_html__('%1$s: %2$s is on and takes over once you deactivate it, except for these, which WP Plugin Starter does not do: %3$s. Deactivate it only if you no longer need them.', 'wp-plugin-starter-template'), $name, esc_html($labels), $extras);
+                /* translators: 1: plugin name, 2: SEO Pro Stack Custom setting names, 3: the plugin's settings SEO Pro Stack Custom does not have */
+                $text = sprintf(esc_html__('%1$s: %2$s is on and takes over once you deactivate it, except for these, which SEO Pro Stack Custom does not do: %3$s. Deactivate it only if you no longer need them.', 'seoprostackcustom'), $name, esc_html($labels), $extras);
                 if (current_user_can('deactivate_plugin', $item['file'])) {
                     $url   = self::plugins_deactivate_url($item['file']);
                     /* translators: %s: plugin name */
-                    $text .= sprintf(' <a href="%1$s">%2$s</a>', esc_url($url), esc_html(sprintf(__('Deactivate %s', 'wp-plugin-starter-template'), $item['name'])));
+                    $text .= sprintf(' <a href="%1$s">%2$s</a>', esc_url($url), esc_html(sprintf(__('Deactivate %s', 'seoprostackcustom'), $item['name'])));
                 }
                 return $text;
             }
-            /* translators: 1: plugin name, 2: WP Plugin Starter setting names, 3: the plugin's settings WP Plugin Starter does not have */
-            $text = sprintf(esc_html__('%1$s: %2$s can do part of its job. WP Plugin Starter does not do these, which it has on: %3$s.', 'wp-plugin-starter-template'), $name, esc_html($labels), $extras);
-            $url  = WPStarter_Admin_Manager::tab_url(WPStarter_Admin_Manager::SEARCH, array('s' => $item['name']));
-            return $text . sprintf(' <a href="%1$s">%2$s</a>', esc_url($url), esc_html__('Show the setting', 'wp-plugin-starter-template'));
+            /* translators: 1: plugin name, 2: SEO Pro Stack Custom setting names, 3: the plugin's settings SEO Pro Stack Custom does not have */
+            $text = sprintf(esc_html__('%1$s: %2$s can do part of its job. SEO Pro Stack Custom does not do these, which it has on: %3$s.', 'seoprostackcustom'), $name, esc_html($labels), $extras);
+            $url  = SEOProStackCustom_Admin_Manager::tab_url(SEOProStackCustom_Admin_Manager::SEARCH, array('s' => $item['name']));
+            return $text . sprintf(' <a href="%1$s">%2$s</a>', esc_url($url), esc_html__('Show the setting', 'seoprostackcustom'));
         }
 
         if ('delete' === $item['step']) {
-            /* translators: 1: plugin name, 2: WP Plugin Starter setting names */
-            $text = sprintf(esc_html__('%1$s is inactive and no longer needed: %2$s does its job.', 'wp-plugin-starter-template'), $name, esc_html($labels));
+            /* translators: 1: plugin name, 2: SEO Pro Stack Custom setting names */
+            $text = sprintf(esc_html__('%1$s is inactive and no longer needed: %2$s does its job.', 'seoprostackcustom'), $name, esc_html($labels));
             if (current_user_can('delete_plugins')) {
                 $url   = wp_nonce_url(add_query_arg(array('action' => 'delete-selected', 'checked[]' => $item['file'], 'plugin_status' => 'all'), $base), 'bulk-plugins');
                 /* translators: %s: plugin name */
-                $text .= sprintf(' <a href="%1$s">%2$s</a>', esc_url($url), esc_html(sprintf(__('Delete %s', 'wp-plugin-starter-template'), $item['name'])));
+                $text .= sprintf(' <a href="%1$s">%2$s</a>', esc_url($url), esc_html(sprintf(__('Delete %s', 'seoprostackcustom'), $item['name'])));
             }
             return $text;
         }
 
-        /* translators: 1: plugin name, 2: WP Plugin Starter setting names */
-        $text = sprintf(esc_html__('%1$s: switch on %2$s, then deactivate and delete it.', 'wp-plugin-starter-template'), $name, esc_html($labels));
-        $url  = WPStarter_Admin_Manager::tab_url(WPStarter_Admin_Manager::SEARCH, array('s' => $item['name']));
-        return $text . sprintf(' <a href="%1$s">%2$s</a>', esc_url($url), esc_html__('Show the setting', 'wp-plugin-starter-template'));
+        /* translators: 1: plugin name, 2: SEO Pro Stack Custom setting names */
+        $text = sprintf(esc_html__('%1$s: switch on %2$s, then deactivate and delete it.', 'seoprostackcustom'), $name, esc_html($labels));
+        $url  = SEOProStackCustom_Admin_Manager::tab_url(SEOProStackCustom_Admin_Manager::SEARCH, array('s' => $item['name']));
+        return $text . sprintf(' <a href="%1$s">%2$s</a>', esc_url($url), esc_html__('Show the setting', 'seoprostackcustom'));
     }
 
     /**
@@ -617,7 +617,7 @@ class WPStarter_Replaced_Plugins {
     public static function hide() {
         check_admin_referer(self::HIDE);
         if (!current_user_can('activate_plugins')) {
-            wp_die(esc_html__('You are not allowed to manage plugins on this site.', 'wp-plugin-starter-template'), '', array('response' => 403));
+            wp_die(esc_html__('You are not allowed to manage plugins on this site.', 'seoprostackcustom'), '', array('response' => 403));
         }
         $items  = isset($_GET['items']) ? explode(',', sanitize_text_field(wp_unslash($_GET['items']))) : array();
         $items  = array_filter($items, function ($item) {
