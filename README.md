@@ -70,25 +70,25 @@ Don't use it for one-off data changes (run a WP-CLI command once, after a backup
 
 ## Make a change
 
-1. Copy `customizations/example.php` to a new name that says what it does, such as `customizations/phone-label.php`.
+1. Copy `customizations/example.php` to a new name that says what it does, such as `customizations/search-heading.php`.
 2. Fill in its header and add your hooks:
 
    ```php
    <?php
    /**
-    * Description: Says "Call" instead of "Phone" on directory listings.
+    * Description: Says "You searched for" instead of "Search Results for" on search pages.
     * Sites:       all
-    * Requires:    seoprodirectory >= 0.4.0
+    * Requires:    kadence >= 1.2
     * Upstream:    https://github.com/owner/repo/issues/123
-    * Retire-When: seoprodirectory >= 0.5.0
+    * Retire-When: some-plugin >= 2.0
     */
 
-   add_filter( 'gettext_seoprodirectory', function ( $text, $original ) {
-       return 'Phone' === $original ? 'Call' : $text;
+   add_filter( 'gettext_kadence', function ( $text, $original ) {
+       return 'Search Results for: %s' === $original ? 'You searched for: %s' : $text;
    }, 10, 2 );
    ```
 
-3. For styles or a script, add `phone-label.css` or `phone-label.js` next to it. They load on the front end, after the theme's styles, only while the file is loaded.
+3. For styles or a script, add `search-heading.css` or `search-heading.js` next to it. They load on the front end, after the theme's styles, only while the file is loaded.
 4. Test it on a staging copy, commit, release, and click **Update** on each site.
 
 | Header | Meaning |
