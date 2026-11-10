@@ -2,7 +2,7 @@
 /**
  * Plugin Name:       SEO Pro Custom
  * Plugin URI:        https://github.com/wpallstars/seoprocustom
- * Description:       Your site's own changes, one file each, in your own repository, switched off when an SEO Pro Stack product does the same.
+ * Description:       Change how your theme and plugins behave when their settings can't, without waiting on their makers: one small file per change, in your own copy.
  * Version:           0.1.0
  * Requires at least: 6.2
  * Requires PHP:      7.4
