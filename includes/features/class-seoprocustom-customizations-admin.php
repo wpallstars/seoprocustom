@@ -44,7 +44,9 @@ final class SEOProCustom_Customizations_Admin {
      * Style for the card, on the settings screen only. The core stylesheet is
      * the starter's, so this rides on it as inline CSS, using its variables so
      * dark mode follows. It also hides the starter's "No settings yet"
-     * placeholder, as this card is the tab's content.
+     * placeholder, as this card is the tab's content: with no settings the
+     * tab has a lone .spc-card right before this card (with settings, an
+     * .spc-cards list instead), so only public core classes are named.
      *
      * @param string $tab Tab slug.
      */
@@ -54,7 +56,7 @@ final class SEOProCustom_Customizations_Admin {
         }
         wp_add_inline_style(
             'seoprocustom-admin',
-            '.spc-section > .spc-empty{display:none}'
+            '.spc-section > .spc-card:has(+ .spc-customisations){display:none}'
             . '.spc-customisations{margin-block-start:12px}'
             . '.spc-customisations__card{padding:16px 20px}'
             . '.spc-customisations__card h3{margin:0 0 8px}'
