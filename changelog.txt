@@ -1,6 +1,6 @@
 == Changelog ==
 
-Every change to SEO Pro Stack Custom. readme.txt lists the latest version in short.
+Every change to SEO Pro Custom. readme.txt lists the latest version in short.
 
 = 0.1.0 =
 * First version, made from WP Plugin Starter 1.0.56.

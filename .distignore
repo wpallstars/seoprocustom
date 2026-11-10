@@ -54,8 +54,8 @@ DESIGN.md
 # Agent and developer task docs (STANDARDS.md → Agent docs).
 /docs
 /scripts
-# spsc-own:start
-# spsc-own:end
+# spc-own:start
+# spc-own:end
 reference-plugins
 project-documents
 node_modules

@@ -1,10 +1,15 @@
-# SEO Pro Stack Custom launch state
+# SEO Pro Custom launch state
 
 Version: 0.1.0
 
 In development; no release yet. The repository has been public since
 10 November 2026 (the owner's decision) and is a GitHub template repository:
-clients make their own private copy with **Use this template**.
+clients make their own private copy with **Use this template**. Renamed from
+`seoprostackcustom` (SEO Pro Stack Custom) the same day, before any release;
+GitHub redirects the old address.
+
+It will be listed on the wpallstars website as a free plugin, with its
+purpose explained (owner, 10 November 2026).
 
 ## Public launch checks
 

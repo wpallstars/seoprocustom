@@ -15,21 +15,21 @@
 	var __ = wp.i18n.__;
 	var sprintf = wp.i18n.sprintf;
 	var EVENT = 'wpallstars-admin-theme';
-	var SOURCE = 'seoprostackcustom';
+	var SOURCE = 'seoprocustom';
 	var root = document.documentElement;
 	var media = window.matchMedia ? window.matchMedia('(prefers-color-scheme: dark)') : null;
 	var svgNs = 'http://www.w3.org/2000/svg';
 	var modes = {
 		light: {
-			label: __('Light', 'seoprostackcustom'),
+			label: __('Light', 'seoprocustom'),
 			icon: 'M12 7.75a4.25 4.25 0 1 0 0 8.5 4.25 4.25 0 0 0 0-8.5zM11.25 2h1.5v3h-1.5zm0 17h1.5v3h-1.5zM2 11.25h3v1.5H2zm17 0h3v1.5h-3zM4.4 5.46 5.46 4.4l2.12 2.12-1.06 1.06zm12.02 12.02 1.06-1.06 2.12 2.12-1.06 1.06zM4.4 18.54l2.12-2.12 1.06 1.06-2.12 2.12zM16.42 6.52l2.12-2.12 1.06 1.06-2.12 2.12z'
 		},
 		dark: {
-			label: __('Dark', 'seoprostackcustom'),
+			label: __('Dark', 'seoprocustom'),
 			icon: 'M20.5 14.6A8.5 8.5 0 0 1 9.4 3.5a8.5 8.5 0 1 0 11.1 11.1z'
 		},
 		system: {
-			label: __('System', 'seoprostackcustom'),
+			label: __('System', 'seoprocustom'),
 			icon: 'M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18zm0 1.5v15a7.5 7.5 0 0 1 0-15z'
 		}
 	};
@@ -60,22 +60,22 @@
 
 	function name(which) {
 		/* translators: %s: the colour mode, Light, Dark or System. */
-		return sprintf(__('Colour mode: %s', 'seoprostackcustom'), modes[which].label);
+		return sprintf(__('Colour mode: %s', 'seoprocustom'), modes[which].label);
 	}
 
 	function apply(which) {
 		mode = which;
 		order.forEach(function (value) {
-			root.classList.toggle('spsc-theme-' + value, value === which);
+			root.classList.toggle('spc-theme-' + value, value === which);
 		});
-		root.classList.toggle('spsc-dark', which === 'dark' || (which === 'system' && !!media && media.matches));
+		root.classList.toggle('spc-dark', which === 'dark' || (which === 'system' && !!media && media.matches));
 		if (toggle) {
 			toggle.replaceChild(icon(modes[which].icon), toggle.firstChild);
 			toggle.lastChild.textContent = name(which);
 			toggle.title = name(which);
 		}
 		items.forEach(function (item) {
-			item.setAttribute('aria-checked', item.getAttribute('data-spsc-mode') === which ? 'true' : 'false');
+			item.setAttribute('aria-checked', item.getAttribute('data-spc-mode') === which ? 'true' : 'false');
 		});
 	}
 
@@ -103,7 +103,7 @@
 			})
 			.catch(function () {
 				apply(previous);
-				speak(__('The colour mode could not be saved. Please try again.', 'seoprostackcustom'), 'assertive');
+				speak(__('The colour mode could not be saved. Please try again.', 'seoprocustom'), 'assertive');
 			})
 			.then(function () {
 				saving = false;
@@ -162,39 +162,39 @@
 	}
 
 	function build() {
-		var actions = document.querySelector('.spsc-header__actions');
-		if (!actions || actions.querySelector('.spsc-theme')) {
+		var actions = document.querySelector('.spc-header__actions');
+		if (!actions || actions.querySelector('.spc-theme')) {
 			return;
 		}
 		var wrap = document.createElement('div');
-		wrap.className = 'spsc-theme';
+		wrap.className = 'spc-theme';
 		toggle = document.createElement('button');
 		toggle.type = 'button';
-		toggle.className = 'button spsc-header__support spsc-theme__toggle';
+		toggle.className = 'button spc-header__support spc-theme__toggle';
 		toggle.setAttribute('aria-haspopup', 'menu');
 		toggle.setAttribute('aria-expanded', 'false');
-		toggle.setAttribute('aria-controls', 'spsc-theme-menu');
+		toggle.setAttribute('aria-controls', 'spc-theme-menu');
 		toggle.appendChild(icon(modes[mode].icon));
 		var label = document.createElement('span');
 		label.className = 'screen-reader-text';
 		toggle.appendChild(label);
 		menu = document.createElement('div');
-		menu.id = 'spsc-theme-menu';
-		menu.className = 'spsc-theme__menu';
+		menu.id = 'spc-theme-menu';
+		menu.className = 'spc-theme__menu';
 		menu.setAttribute('role', 'menu');
-		menu.setAttribute('aria-label', __('Colour mode', 'seoprostackcustom'));
+		menu.setAttribute('aria-label', __('Colour mode', 'seoprocustom'));
 		menu.hidden = true;
 		order.forEach(function (which) {
 			var item = document.createElement('button');
 			item.type = 'button';
-			item.className = 'spsc-theme__item';
+			item.className = 'spc-theme__item';
 			item.tabIndex = -1;
 			item.setAttribute('role', 'menuitemradio');
-			item.setAttribute('data-spsc-mode', which);
+			item.setAttribute('data-spc-mode', which);
 			item.appendChild(icon(modes[which].icon));
 			item.appendChild(document.createTextNode(modes[which].label));
 			var check = document.createElement('span');
-			check.className = 'dashicons dashicons-yes spsc-theme__check';
+			check.className = 'dashicons dashicons-yes spc-theme__check';
 			check.setAttribute('aria-hidden', 'true');
 			item.appendChild(check);
 			item.addEventListener('click', function () { choose(which); });
@@ -219,7 +219,7 @@
 		});
 		wrap.appendChild(toggle);
 		wrap.appendChild(menu);
-		var donate = actions.querySelector('.spsc-header__donate');
+		var donate = actions.querySelector('.spc-header__donate');
 		actions.insertBefore(wrap, donate ? donate.nextSibling : null);
 		apply(mode);
 	}
@@ -239,4 +239,4 @@
 	}
 	if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', start); }
 	else { start(); }
-}(window.wp, window.seoprostackcustomTheme));
+}(window.wp, window.seoprocustomTheme));

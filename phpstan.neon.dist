@@ -42,7 +42,7 @@ parameters:
 	# Result cache, kept between CI runs so only changed files are analysed again.
 	tmpDir: .cache/phpstan
 	paths:
-		- seoprostackcustom.php
+		- seoprocustom.php
 		- uninstall.php
 		- includes
 		- admin

@@ -1,4 +1,4 @@
-=== SEO Pro Stack Custom ===
+=== SEO Pro Custom ===
 Contributors: wpallstars
 Donate link: https://buymeacoffee.com/marcusquinn
 Tags: starter, boilerplate, settings, developer, template
@@ -13,9 +13,9 @@ Your site's own changes, one file each, in your own repository, switched off whe
 
 == Description ==
 
-SEO Pro Stack Custom is for owners of sites built on SEO Pro Stack who want their own changes now, without waiting for a theme or plugin release. Make a private copy of its repository, add one file per change, and deploy it to your sites; the copy installed on each site is empty until you do. Ask for useful changes upstream, and switch your file off once an SEO Pro Stack product does the same.
+SEO Pro Custom is for owners of sites built on SEO Pro Stack who want their own changes now, without waiting for a theme or plugin release. Make a private copy of its repository, add one file per change, and deploy it to your sites; the copy installed on each site is empty until you do. Ask for useful changes upstream, and switch your file off once an SEO Pro Stack product does the same.
 
-* **A settings screen** (Settings → SEO Pro Stack Custom) that features fill by declaring their settings, saved instantly, searchable, in tabs. With no features yet it shows one empty tab.
+* **A settings screen** (Settings → SEO Pro Custom) that features fill by declaring their settings, saved instantly, searchable, in tabs. With no features yet it shows one empty tab.
 * **Multisite**: the same screen for the whole network (Network Admin → Settings), whose settings new sites start with. Apply a card to every site, see which sites differ, and make every site the same.
 * **A Read Me tab** that shows the plugin's README.md, banner included.
 * **Admin colour mode**: Light, Dark or System in the header, saved per person and shared with other wpallstars colour-mode controls, on settings, network settings and own screens.
@@ -23,20 +23,20 @@ SEO Pro Stack Custom is for owners of sites built on SEO Pro Stack who want thei
 * **Report a problem** (Tools): the site's AI assistant drafts problem reports and improvements for wpallstars plugins and themes; an administrator reviews and sends them.
 * **Release and check scripts**: lint, smoke test, release build, preflight and Plugin Check.
 
-Make your own copy on GitHub (wpallstars/seoprostackcustom, Use this template): the Read Me tab explains how.
+Make your own copy on GitHub (wpallstars/seoprocustom, Use this template): the Read Me tab explains how.
 
 = Built with AI =
 
-SEO Pro Stack Custom is built and maintained with aidevops (https://aidevops.sh), the same developer's open-source AI harness for creating and managing anything online with AI.
+SEO Pro Custom is built and maintained with aidevops (https://aidevops.sh), the same developer's open-source AI harness for creating and managing anything online with AI.
 
-Questions about using or changing SEO Pro Stack Custom: ask aidevops. It reads the plugin's docs and code to answer, and can report a problem for you.
+Questions about using or changing SEO Pro Custom: ask aidevops. It reads the plugin's docs and code to answer, and can report a problem for you.
 
 Made from WP Plugin Starter (https://github.com/wpallstars/wp-plugin-starter-template-for-ai-coding), the wpallstars starter plugin.
 
 == Installation ==
 
-1. Upload the `seoprostackcustom` folder to `/wp-content/plugins/`, or install the zip from Plugins → Add New → Upload Plugin.
-2. Activate it, then open Settings → SEO Pro Stack Custom.
+1. Upload the `seoprocustom` folder to `/wp-content/plugins/`, or install the zip from Plugins → Add New → Upload Plugin.
+2. Activate it, then open Settings → SEO Pro Custom.
 
 == Frequently Asked Questions ==
 
@@ -58,7 +58,7 @@ GitHub releases are the stable beta channel: each version comes out there first.
 
 == Screenshots ==
 
-1. The settings screen (Settings → SEO Pro Stack Custom) on the General tab, empty until features add settings.
+1. The settings screen (Settings → SEO Pro Custom) on the General tab, empty until features add settings.
 2. The Read Me tab, showing the plugin's README.md inside WordPress.
 
 == Changelog ==

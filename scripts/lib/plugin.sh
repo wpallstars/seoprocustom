@@ -6,17 +6,17 @@
 # plugin_identity [REF] (default HEAD). It sets:
 #
 #   PLUGIN_MAIN_FILE  the PHP file at the top of the repository with a
-#                     "Plugin Name:" header, for example seoprostackcustom.php
+#                     "Plugin Name:" header, for example seoprocustom.php
 #   PLUGIN_SLUG       its name without .php: the plugin folder and text domain
-#   PLUGIN_NAME       the Plugin Name header, for example SEO Pro Stack Custom
+#   PLUGIN_NAME       the Plugin Name header, for example SEO Pro Custom
 #   PLUGIN_PACKAGE    the @package tag, which is also the class prefix
-#                     (SEOProStackCustom: SEOProStackCustom_Settings, SEOProStackCustom::features())
+#                     (SEOProCustom: SEOProCustom_Settings, SEOProCustom::features())
 #   PLUGIN_CONST      the constant prefix, from define('<PREFIX>_VERSION', ...)
-#                     (SEOPROSTACKCUSTOM)
+#                     (SEOPROCUSTOM)
 #   PLUGIN_PREFIX     the option, hook and transient prefix: PLUGIN_CONST in
-#                     lower case (seoprostackcustom)
+#                     lower case (seoprocustom)
 #   PLUGIN_CSS        the CSS class and data attribute prefix, from the admin
-#                     screen's "wrap <css>-wrap" class (wps: .spsc-card), or
+#                     screen's "wrap <css>-wrap" class (wps: .spc-card), or
 #                     for a plugin with no admin screen of its own (an add-on
 #                     beside its parent), the <css>-wrap line of
 #                     scripts/core-public-classes.txt
@@ -209,7 +209,7 @@ plugin_map() {
 }
 
 # Value of the environment variable <PLUGIN_CONST>_<NAME>, or the default.
-# For example plugin_env PREVIEW_SITE reads SEOPROSTACKCUSTOM_PREVIEW_SITE.
+# For example plugin_env PREVIEW_SITE reads SEOPROCUSTOM_PREVIEW_SITE.
 plugin_env() {
 	local name="${PLUGIN_CONST}_$1"
 	local default="${2:-}"

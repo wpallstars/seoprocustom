@@ -1,11 +1,11 @@
 <?php
 /**
- * SEO Pro Stack Custom admin screen markup.
+ * SEO Pro Custom admin screen markup.
  *
  * The header, the tab navigation, the tab panels and the browser title of
- * the settings screen (SEOProStackCustom_Admin_Manager::render_settings_page()). The
+ * the settings screen (SEOProCustom_Admin_Manager::render_settings_page()). The
  * plugin's own screens show the header through
- * SEOProStackCustom_Admin_Manager::render_header(), their sections as tabs with
+ * SEOProCustom_Admin_Manager::render_header(), their sections as tabs with
  * sections_nav(), and name their section in the browser title with
  * title_section().
  *
@@ -14,36 +14,36 @@
  * Additional terms (GPL-3.0 section 7(b)): ATTRIBUTION.txt
  * Provenance: wpas-e4502af0f07e8a92. Copies, even of part, keep these lines.
  *
- * @package SEOProStackCustom
+ * @package SEOProCustom
  */
 
 if (!defined('ABSPATH')) {
     exit;
 }
 
-class SEOProStackCustom_Admin_Page {
+class SEOProCustom_Admin_Page {
 
     /**
      * Render the screen's header: the plugin's name and version, the feature
      * search (for people who can open the settings screen) and the links
-     * SEOProStackCustom_Setup::header_links() gives.
+     * SEOProCustom_Setup::header_links() gives.
      */
     public static function header() {
         ?>
-            <header class="spsc-header">
-                <div class="spsc-header__brand">
-                    <span class="spsc-header__logo dashicons dashicons-star-filled" aria-hidden="true"></span>
-                    <h1 class="spsc-header__title"><?php esc_html_e('SEO Pro Stack Custom', 'seoprostackcustom'); ?></h1>
-                    <span class="spsc-badge"><?php echo esc_html('v' . SEOPROSTACKCUSTOM_VERSION); ?></span>
+            <header class="spc-header">
+                <div class="spc-header__brand">
+                    <span class="spc-header__logo dashicons dashicons-star-filled" aria-hidden="true"></span>
+                    <h1 class="spc-header__title"><?php esc_html_e('SEO Pro Custom', 'seoprocustom'); ?></h1>
+                    <span class="spc-badge"><?php echo esc_html('v' . SEOPROCUSTOM_VERSION); ?></span>
                     <?php if (is_network_admin()) : ?>
-                        <span class="spsc-badge spsc-badge--network"><?php esc_html_e('Network', 'seoprostackcustom'); ?></span>
+                        <span class="spc-badge spc-badge--network"><?php esc_html_e('Network', 'seoprocustom'); ?></span>
                     <?php endif; ?>
                 </div>
                 <?php
                 if (current_user_can(is_network_admin() ? 'manage_network_options' : 'manage_options')) {
                     self::search_form();
                 }
-                self::header_links(SEOProStackCustom_Setup::header_links());
+                self::header_links(SEOProCustom_Setup::header_links());
                 ?>
             </header>
         <?php
@@ -54,23 +54,23 @@ class SEOProStackCustom_Admin_Page {
      * its action is the screen's file alone.
      */
     private static function search_form() {
-        $action = remove_query_arg('page', SEOProStackCustom_Admin_Manager::page_url());
+        $action = remove_query_arg('page', SEOProCustom_Admin_Manager::page_url());
         ?>
-                <form class="spsc-search" role="search" method="get" action="<?php echo esc_url($action); ?>">
-                    <input type="hidden" name="page" value="<?php echo esc_attr(SEOProStackCustom_Admin_Manager::PAGE); ?>" />
-                    <input type="hidden" name="tab" value="<?php echo esc_attr(SEOProStackCustom_Admin_Manager::SEARCH); ?>" />
-                    <label class="screen-reader-text" for="spsc-search-input"><?php esc_html_e('Search features', 'seoprostackcustom'); ?></label>
-                    <span class="spsc-search__field">
-                        <span class="spsc-search__icon dashicons dashicons-search" aria-hidden="true"></span>
+                <form class="spc-search" role="search" method="get" action="<?php echo esc_url($action); ?>">
+                    <input type="hidden" name="page" value="<?php echo esc_attr(SEOProCustom_Admin_Manager::PAGE); ?>" />
+                    <input type="hidden" name="tab" value="<?php echo esc_attr(SEOProCustom_Admin_Manager::SEARCH); ?>" />
+                    <label class="screen-reader-text" for="spc-search-input"><?php esc_html_e('Search features', 'seoprocustom'); ?></label>
+                    <span class="spc-search__field">
+                        <span class="spc-search__icon dashicons dashicons-search" aria-hidden="true"></span>
                         <input type="search"
-                               id="spsc-search-input"
-                               class="spsc-search__input"
+                               id="spc-search-input"
+                               class="spc-search__input"
                                name="s"
                                maxlength="100"
-                               value="<?php echo esc_attr(SEOProStackCustom_Admin_Manager::search_query()); ?>"
-                               placeholder="<?php esc_attr_e('Search features', 'seoprostackcustom'); ?>" />
+                               value="<?php echo esc_attr(SEOProCustom_Admin_Manager::search_query()); ?>"
+                               placeholder="<?php esc_attr_e('Search features', 'seoprocustom'); ?>" />
                     </span>
-                    <button type="submit" class="button spsc-search__button"><?php esc_html_e('Search', 'seoprostackcustom'); ?></button>
+                    <button type="submit" class="button spc-search__button"><?php esc_html_e('Search', 'seoprocustom'); ?></button>
                 </form>
         <?php
     }
@@ -82,30 +82,30 @@ class SEOProStackCustom_Admin_Page {
      * problem reports, Support opens Tools → Report a problem for this
      * plugin (the shared wpallstars reports); for others, the link itself.
      *
-     * @param array<string,string> $links SEOProStackCustom_Setup::header_links().
+     * @param array<string,string> $links SEOProCustom_Setup::header_links().
      */
     private static function header_links(array $links) {
         $buttons = array();
         if (!empty($links['source'])) {
-            $buttons[] = array($links['source'], __('Source code', 'seoprostackcustom'), 'editor-code', 'spsc-header__support', true);
+            $buttons[] = array($links['source'], __('Source code', 'seoprocustom'), 'editor-code', 'spc-header__support', true);
         } elseif (!empty($links['website'])) {
-            $buttons[] = array($links['website'], __('Visit website', 'seoprostackcustom'), '', '', true);
+            $buttons[] = array($links['website'], __('Visit website', 'seoprocustom'), '', '', true);
         }
         if (!empty($links['support'])) {
             $report    = function_exists('wpallstars_report_url') && current_user_can('manage_options');
             $buttons[] = array(
-                $report ? wpallstars_report_url(SEOProStackCustom::slug()) : $links['support'],
-                __('Support', 'seoprostackcustom'),
+                $report ? wpallstars_report_url(SEOProCustom::slug()) : $links['support'],
+                __('Support', 'seoprocustom'),
                 'sos',
-                'spsc-header__support',
+                'spc-header__support',
                 !$report,
             );
         }
         if (!empty($links['donate'])) {
-            $buttons[] = array($links['donate'], __('Buy me a coffee', 'seoprostackcustom'), 'coffee', 'spsc-header__support spsc-header__donate', true);
+            $buttons[] = array($links['donate'], __('Buy me a coffee', 'seoprocustom'), 'coffee', 'spc-header__support spc-header__donate', true);
         }
         ?>
-                <div class="spsc-header__actions">
+                <div class="spc-header__actions">
                     <?php foreach ($buttons as $button) : ?>
                         <?php list($url, $label, $icon, $class, $new_tab) = $button; ?>
                         <a class="<?php echo esc_attr(trim('button ' . $class)); ?>" href="<?php echo esc_url($url); ?>"<?php echo $new_tab ? ' target="_blank" rel="noopener noreferrer"' : ''; ?>>
@@ -114,7 +114,7 @@ class SEOProStackCustom_Admin_Page {
                             <?php endif; ?>
                             <?php echo esc_html($label); ?>
                             <?php if ($new_tab) : ?>
-                                <span class="screen-reader-text"><?php esc_html_e('(opens in a new tab)', 'seoprostackcustom'); ?></span>
+                                <span class="screen-reader-text"><?php esc_html_e('(opens in a new tab)', 'seoprocustom'); ?></span>
                             <?php endif; ?>
                         </a>
                     <?php endforeach; ?>
@@ -124,7 +124,7 @@ class SEOProStackCustom_Admin_Page {
 
     /**
      * Put a section's name after the screen's name in the browser's title,
-     * as "SEO Pro Stack Custom: General ‹ Site — WordPress". Call it on the
+     * as "SEO Pro Custom: General ‹ Site — WordPress". Call it on the
      * screen's load-{hook} action: the settings screen does for its tabs,
      * and the plugin's own screens with sections (render_header()) do for
      * the section shown. The rest of core's title (the site's name, Network
@@ -154,12 +154,12 @@ class SEOProStackCustom_Admin_Page {
      * site and on the network screen (multisite).
      */
     public static function title_tab() {
-        self::title_section(self::tab_label(SEOProStackCustom_Admin_Manager::get_active_tab(), SEOProStackCustom_Admin_Manager::get_tabs()));
+        self::title_section(self::tab_label(SEOProCustom_Admin_Manager::get_active_tab(), SEOProCustom_Admin_Manager::get_tabs()));
     }
 
     /**
      * A screen's name followed by a section's, as the browser title shows
-     * them: "SEO Pro Stack Custom: General".
+     * them: "SEO Pro Custom: General".
      *
      * @param string $screen  The screen's name.
      * @param string $section The section's name.
@@ -167,19 +167,19 @@ class SEOProStackCustom_Admin_Page {
      */
     public static function screen_title($screen, $section) {
         /* translators: Browser title of a section of an admin screen. 1: the screen's name, 2: the section's name. */
-        return sprintf(__('%1$s: %2$s', 'seoprostackcustom'), $screen, $section);
+        return sprintf(__('%1$s: %2$s', 'seoprocustom'), $screen, $section);
     }
 
     /**
      * Name of a tab (or of the search results), as plain text.
      *
      * @param string $tab  Tab slug.
-     * @param array  $tabs Tabs (SEOProStackCustom_Admin_Manager::get_tabs()).
+     * @param array  $tabs Tabs (SEOProCustom_Admin_Manager::get_tabs()).
      * @return string Empty for an unknown tab.
      */
     public static function tab_label($tab, array $tabs) {
-        if (SEOProStackCustom_Admin_Manager::SEARCH === $tab) {
-            return __('Search results', 'seoprostackcustom');
+        if (SEOProCustom_Admin_Manager::SEARCH === $tab) {
+            return __('Search results', 'seoprocustom');
         }
         return isset($tabs[$tab]['label']) ? trim(wp_strip_all_tags((string) $tabs[$tab]['label'])) : '';
     }
@@ -188,8 +188,8 @@ class SEOProStackCustom_Admin_Page {
      * Browser title of each tab drawn on the page, as the browser shows it
      * (entities decoded), so the script can name the tab it switches to.
      *
-     * @param string[] $page_tabs Tabs drawn on the page (SEOProStackCustom_Admin_Manager::page_tabs()).
-     * @param array    $tabs      Tabs (SEOProStackCustom_Admin_Manager::get_tabs()).
+     * @param string[] $page_tabs Tabs drawn on the page (SEOProCustom_Admin_Manager::page_tabs()).
+     * @param array    $tabs      Tabs (SEOProCustom_Admin_Manager::get_tabs()).
      * @return array<string,string>
      */
     public static function page_titles(array $page_tabs, array $tabs) {
@@ -216,7 +216,7 @@ class SEOProStackCustom_Admin_Page {
     public static function panel($slug, $render, $shown, $wide = false) {
         // Not <main>: core's #wpbody already carries role="main".
         ?>
-        <div class="spsc-main<?php echo $wide ? ' spsc-main--wide' : ''; ?> spsc-tab-<?php echo esc_attr($slug); ?>" id="spsc-tab-<?php echo esc_attr($slug); ?>" data-spsc-panel="<?php echo esc_attr($slug); ?>"<?php echo $shown ? '' : ' hidden'; ?>>
+        <div class="spc-main<?php echo $wide ? ' spc-main--wide' : ''; ?> spc-tab-<?php echo esc_attr($slug); ?>" id="spc-tab-<?php echo esc_attr($slug); ?>" data-spc-panel="<?php echo esc_attr($slug); ?>"<?php echo $shown ? '' : ' hidden'; ?>>
             <?php call_user_func($render); ?>
         </div>
         <?php
@@ -229,18 +229,18 @@ class SEOProStackCustom_Admin_Page {
      * name, opening the first of them, and, while one of them is shown, as a
      * second row of tabs under the bar (menu_row()).
      *
-     * @param array    $tabs      Tabs (SEOProStackCustom_Admin_Manager::get_tabs()).
+     * @param array    $tabs      Tabs (SEOProCustom_Admin_Manager::get_tabs()).
      * @param string   $active    Active tab slug.
-     * @param string[] $page_tabs Tabs drawn on the page (SEOProStackCustom_Admin_Manager::page_tabs()).
+     * @param string[] $page_tabs Tabs drawn on the page (SEOProCustom_Admin_Manager::page_tabs()).
      */
     public static function nav(array $tabs, $active, array $page_tabs) {
         $groups = array(
-            'settings' => __('Settings', 'seoprostackcustom'),
-            'discover' => __('Discover', 'seoprostackcustom'),
-            'about'    => __('About', 'seoprostackcustom'),
+            'settings' => __('Settings', 'seoprocustom'),
+            'discover' => __('Discover', 'seoprocustom'),
+            'about'    => __('About', 'seoprocustom'),
         );
         ?>
-        <nav class="spsc-nav" aria-label="<?php esc_attr_e('SEO Pro Stack Custom sections', 'seoprostackcustom'); ?>">
+        <nav class="spc-nav" aria-label="<?php esc_attr_e('SEO Pro Custom sections', 'seoprocustom'); ?>">
             <?php
             foreach ($groups as $group => $group_label) {
                 $group_tabs = array_filter($tabs, function ($tab) use ($group) {
@@ -261,19 +261,19 @@ class SEOProStackCustom_Admin_Page {
 
     /**
      * Render the sections of one of the plugin's own screens as the settings
-     * screen's tabs (SEOProStackCustom_Admin_Manager::render_header()): a
-     * `spsc-nav` of `spsc-nav__tab` links, the one shown `is-active` with
+     * screen's tabs (SEOProCustom_Admin_Manager::render_header()): a
+     * `spc-nav` of `spc-nav__tab` links, the one shown `is-active` with
      * aria-current="page". Each link loads its section's page; name the
      * section shown in the browser title with title_section().
      *
      * @param array<string,array{label:string,url:string}> $sections Sections in order, by slug: each its label (plain text) and URL.
      * @param string                                       $current  Slug of the section shown.
-     * @param string                                       $label    The navigation's accessible name; empty for "SEO Pro Stack Custom sections".
+     * @param string                                       $label    The navigation's accessible name; empty for "SEO Pro Custom sections".
      */
     public static function sections_nav(array $sections, $current, $label = '') {
-        $label = '' === (string) $label ? __('SEO Pro Stack Custom sections', 'seoprostackcustom') : (string) $label;
+        $label = '' === (string) $label ? __('SEO Pro Custom sections', 'seoprocustom') : (string) $label;
         ?>
-        <nav class="spsc-nav" aria-label="<?php echo esc_attr($label); ?>">
+        <nav class="spc-nav" aria-label="<?php echo esc_attr($label); ?>">
             <?php foreach ($sections as $slug => $section) : ?>
                 <?php
                 $shown = (string) $slug === (string) $current;
@@ -284,7 +284,7 @@ class SEOProStackCustom_Admin_Page {
                 }
                 ?>
                 <a href="<?php echo esc_url($url); ?>"
-                   class="spsc-nav__tab<?php echo $shown ? ' is-active' : ''; ?>"
+                   class="spc-nav__tab<?php echo $shown ? ' is-active' : ''; ?>"
                    <?php echo $shown ? 'aria-current="page"' : ''; ?>>
                     <?php echo esc_html($text); ?>
                 </a>
@@ -309,7 +309,7 @@ class SEOProStackCustom_Admin_Page {
     /**
      * Render one navigation group. A group of links, not form controls, so
      * role="group" with a label rather than <fieldset>. A menu's tabs show
-     * as one link, where the first of them is; data-spsc-tabs lists them, so
+     * as one link, where the first of them is; data-spc-tabs lists them, so
      * the script marks it current with any of them.
      *
      * @param string   $label     Group label.
@@ -320,7 +320,7 @@ class SEOProStackCustom_Admin_Page {
     private static function nav_group($label, array $tabs, $active, array $page_tabs) {
         $menus = array();
         ?>
-        <div class="spsc-nav__group" role="group" aria-label="<?php echo esc_attr($label); ?>"> <?php // NOSONAR: a labelled group of navigation links, not a fieldset of form controls (S6819). ?>
+        <div class="spc-nav__group" role="group" aria-label="<?php echo esc_attr($label); ?>"> <?php // NOSONAR: a labelled group of navigation links, not a fieldset of form controls (S6819). ?>
             <?php foreach ($tabs as $slug => $tab) : ?>
                 <?php
                 $slug    = (string) $slug;
@@ -354,10 +354,10 @@ class SEOProStackCustom_Admin_Page {
         $current      = in_array($active, $members, true);
         $aria_current = '' === $menu ? 'page' : 'true';
         ?>
-        <a href="<?php echo esc_url(SEOProStackCustom_Admin_Manager::tab_url($slug)); ?>"
-           class="spsc-nav__tab<?php echo $current ? ' is-active' : ''; ?>"
-           <?php echo '' === $menu && in_array($slug, $page_tabs, true) ? 'data-spsc-tab="' . esc_attr($slug) . '"' : ''; ?>
-           <?php echo '' !== $menu ? 'data-spsc-tabs="' . esc_attr(implode(' ', $members)) . '"' : ''; ?>
+        <a href="<?php echo esc_url(SEOProCustom_Admin_Manager::tab_url($slug)); ?>"
+           class="spc-nav__tab<?php echo $current ? ' is-active' : ''; ?>"
+           <?php echo '' === $menu && in_array($slug, $page_tabs, true) ? 'data-spc-tab="' . esc_attr($slug) . '"' : ''; ?>
+           <?php echo '' !== $menu ? 'data-spc-tabs="' . esc_attr(implode(' ', $members)) . '"' : ''; ?>
            <?php echo $current ? 'aria-current="' . esc_attr($aria_current) . '"' : ''; ?>>
             <?php echo esc_html('' === $menu ? $tab['label'] : $menu); ?>
         </a>
@@ -374,12 +374,12 @@ class SEOProStackCustom_Admin_Page {
      */
     private static function menu_row($menu, array $tabs, $active, array $page_tabs) {
         ?>
-        <nav class="spsc-subnav" aria-label="<?php echo esc_attr($menu); ?>" data-spsc-tabs="<?php echo esc_attr(implode(' ', array_map('strval', array_keys($tabs)))); ?>">
+        <nav class="spc-subnav" aria-label="<?php echo esc_attr($menu); ?>" data-spc-tabs="<?php echo esc_attr(implode(' ', array_map('strval', array_keys($tabs)))); ?>">
             <?php foreach ($tabs as $slug => $tab) : ?>
                 <?php $slug = (string) $slug; ?>
-                <a href="<?php echo esc_url(SEOProStackCustom_Admin_Manager::tab_url($slug)); ?>"
-                   class="spsc-subnav__tab<?php echo $slug === $active ? ' is-active' : ''; ?>"
-                   <?php echo in_array($slug, $page_tabs, true) ? 'data-spsc-tab="' . esc_attr($slug) . '"' : ''; ?>
+                <a href="<?php echo esc_url(SEOProCustom_Admin_Manager::tab_url($slug)); ?>"
+                   class="spc-subnav__tab<?php echo $slug === $active ? ' is-active' : ''; ?>"
+                   <?php echo in_array($slug, $page_tabs, true) ? 'data-spc-tab="' . esc_attr($slug) . '"' : ''; ?>
                    <?php echo $slug === $active ? 'aria-current="page"' : ''; ?>>
                     <?php echo esc_html($tab['label']); ?>
                 </a>

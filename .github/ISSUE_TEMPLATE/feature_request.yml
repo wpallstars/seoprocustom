@@ -12,7 +12,7 @@ body:
   - type: textarea
     id: idea
     attributes:
-      label: What SEO Pro Stack Custom could do
+      label: What SEO Pro Custom could do
       description: What it would do on its own, without new settings where possible.
     validations:
       required: true
