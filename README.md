@@ -38,7 +38,7 @@ Version: 0.1.0
 
 **Updates from GitHub** (GitHub build): each release of your copy is offered on the Plugins screen as a normal WordPress update.
 
-![The Plugins screen offering an update from GitHub](docs/images/github-update.png)
+![The Plugins screen offering SEO Pro Custom 0.1.1 from GitHub](docs/images/github-update.png)
 <!-- github-only:end -->
 
 ## When to use it
