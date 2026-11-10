@@ -82,3 +82,7 @@ The starter is foundation code, not installed on any live site: its
 release ends with `scripts/update-test.sh`. Skip `RELEASING.md` → GitHub
 release, step 5 (`scripts/deploy-sites.sh`), which is for plugins on
 the owner's sites.
+
+## Search targets
+
+Search keywords, AI-answer questions and search entities live in `context/keywords.md` and `context/keywords/` (standard: `~/.aidevops/agents/seo/keywords-standard.md`). Read them, or run `aidevops keywords brief`, before naming, copy, metadata, schema, media, social or PR work. If the files are missing in a clone, run `aidevops keywords sync`.

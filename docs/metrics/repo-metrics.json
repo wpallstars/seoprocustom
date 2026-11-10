@@ -1,20 +1,20 @@
 {
   "schema": "aidevops.repo-metrics.v1",
   "schema_version": 1,
-  "generated_at": "2026-11-10T05:35:09Z",
+  "generated_at": "2026-11-10T16:05:41Z",
   "tool": {
     "name": "aidevops repo-metrics",
     "version": "1.0.0"
   },
   "repo": {
-    "name": "wp-plugin-starter-template-for-ai-coding",
-    "slug": "wpallstars/wp-plugin-starter-template-for-ai-coding"
+    "name": "seoprostackcustom",
+    "slug": "wpallstars/seoprostackcustom"
   },
   "summary": {
-    "source_files": 88,
-    "code": 19558,
-    "comments": 5936,
-    "blanks": 2055,
+    "source_files": 90,
+    "code": 19667,
+    "comments": 5953,
+    "blanks": 2084,
     "languages": 9,
     "dependencies": 14
   },
@@ -22,10 +22,10 @@
     {
       "name": "Shell",
       "files": 21,
-      "code": 7503,
-      "comments": 1577,
-      "blanks": 581,
-      "percentage": 38.36,
+      "code": 7579,
+      "comments": 1594,
+      "blanks": 584,
+      "percentage": 38.54,
       "color": "#89e051"
     },
     {
@@ -34,25 +34,25 @@
       "code": 5641,
       "comments": 3999,
       "blanks": 656,
-      "percentage": 28.84,
+      "percentage": 28.68,
       "color": "#4F5D95"
     },
     {
       "name": "Markdown",
-      "files": 13,
-      "code": 2347,
+      "files": 16,
+      "code": 2417,
       "comments": 0,
-      "blanks": 449,
-      "percentage": 12.0,
+      "blanks": 475,
+      "percentage": 12.29,
       "color": "#083fa1"
     },
     {
       "name": "SVG",
       "files": 6,
-      "code": 1486,
+      "code": 1465,
       "comments": 43,
       "blanks": 12,
-      "percentage": 7.6,
+      "percentage": 7.45,
       "color": "#6e7781"
     },
     {
@@ -61,7 +61,7 @@
       "code": 1138,
       "comments": 89,
       "blanks": 221,
-      "percentage": 5.82,
+      "percentage": 5.79,
       "color": "#563d7c"
     },
     {
@@ -70,7 +70,7 @@
       "code": 678,
       "comments": 97,
       "blanks": 58,
-      "percentage": 3.47,
+      "percentage": 3.45,
       "color": "#f1e05a"
     },
     {
@@ -79,16 +79,16 @@
       "code": 665,
       "comments": 128,
       "blanks": 76,
-      "percentage": 3.4,
+      "percentage": 3.38,
       "color": "#cb171e"
     },
     {
       "name": "JSON",
-      "files": 3,
-      "code": 92,
+      "files": 2,
+      "code": 76,
       "comments": 0,
       "blanks": 0,
-      "percentage": 0.47,
+      "percentage": 0.39,
       "color": "#292929"
     },
     {

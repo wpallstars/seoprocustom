@@ -84,3 +84,8 @@ MODELS.md
 # keeps them (DEVELOPMENT.md → Starter sync).
 # wps-own:start
 # wps-own:end
+
+# aidevops keywords: search-target data lives in the private team hub (aidevops keywords sync)
+context/keywords.md
+context/keywords.md.hub
+context/keywords/

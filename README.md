@@ -536,7 +536,7 @@ Copyright (C) 2026 Marcus Quinn
 <!-- managed by aidevops; refresh with managed-readme-helper.sh sync -->
 ## Star History
 
-![wpallstars/wp-plugin-starter-template-for-ai-coding stars over time](docs/assets/star-history.svg)
+![wpallstars/seoprostackcustom stars over time](docs/assets/star-history.svg)
 
 ## Built with aidevops
 
