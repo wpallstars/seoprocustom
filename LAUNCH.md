@@ -2,7 +2,10 @@
 
 Version: 0.1.0
 
-In development; no release yet. The repository has been public since
+In development; no release yet. The customisation loader, Site Health test,
+`wp seoprocustom list`, product request form and DCO check are built
+(issue #2); the first release, 0.1.0, follows once that is merged (owner
+approved the public template). The repository has been public since
 10 November 2026 (the owner's decision) and is a GitHub template repository:
 clients make their own private copy with **Use this template**. Renamed from
 `seoprostackcustom` (SEO Pro Stack Custom) the same day, before any release;

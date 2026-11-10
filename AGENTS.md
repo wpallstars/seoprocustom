@@ -1,7 +1,11 @@
 # SEO Pro Custom — agent guide
 
-SEO Pro Custom: a wpallstars plugin made from WP Plugin Starter. Say here, in a line or
-two, what it does and who it is for.
+SEO Pro Custom: a wpallstars plugin made from WP Plugin Starter. It is empty on
+every client site and is the public template each client copies (**Use this
+template**) into their own private repository for their site's own changes.
+`includes/features/class-seoprocustom-customizations.php` loads each
+`customizations/*.php` file on its own, reports loaded, skipped, retired and
+failed in Site Health, on the settings screen and in `wp seoprocustom list`.
 
 **Before any change, read all of these. They are part of this guide, not
 optional extras:**
@@ -33,6 +37,35 @@ own. `CLAUDE.md` only points here.
 User docs: `README.md` (developers, and the Read Me tab) and `readme.txt`.
 Keep this file a short map: guidance for one kind of task goes in `docs/`
 (`STANDARDS.md` → Agent docs); there is none yet.
+
+## Rules for a customisation (a client's AI assistant)
+
+A client's own changes go in `customizations/`, never in the plugin's other
+files (`customizations/README.md` has the header syntax).
+
+1. Choose the lightest way, in this order: an upstream **setting**, then a
+   documented **filter or action** of the product, then **CSS**, then code.
+   Use only hooks the products document.
+2. **Never copy or edit upstream files** (plugins, themes, this plugin's
+   `includes/`, `admin/`, `scripts/`): they are replaced on update. Hook in
+   from a customisation instead.
+3. **Never write options or theme mods while loading.** A customisation file
+   only adds hooks and returns. The theme's `settings compare`,
+   `follow-defaults` and `restore` must see nothing from it.
+4. **One-off data changes** are WP-CLI commands, never customisation code:
+   run with `--dry-run` first, after a backup, and record the command.
+5. **No new database tables.**
+6. **No secrets in Git**: tokens and keys go in `wp-config.php` or the
+   server's environment.
+7. **One file per customisation**, each with its headers: `Description:`
+   (what and why), `Sites:` (default `all`), `Requires:` (plugin folders or
+   theme stylesheets, with `>=` and the like), `Upstream:` (the request's
+   issue address) and `Retire-When:` (when upstream does the job). A change
+   that would help everyone is asked for upstream first.
+8. Files load on `init` (priority 0): hook `init` or later. A style or script
+   goes beside the file as `{name}.css` or `{name}.js`.
+9. After a change, run `wp seoprocustom list`: the file must say `loaded`
+   (or `skipped` on purpose), never `failed`. Delete files that say `retired`.
 
 ## What belongs here
 

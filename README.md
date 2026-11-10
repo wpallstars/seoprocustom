@@ -43,27 +43,36 @@ Version: 0.1.0
 
 ## What you get
 
-- **A settings screen** (Settings → SEO Pro Custom) that features fill by declaring their settings: switches, numbers, text, lists, choices and Media Library pictures, saved instantly with no Save button, searchable, in tabs. With no features yet it shows one empty tab.
-- **Multisite**: the same screen for the whole network, whose settings new sites start with. Apply a card to every site so sites cannot change it, see which sites have settings of their own, and make every site the same (Multisite below).
-- **A Read Me tab** that shows this file, banner included, so users read the same guide inside WordPress as on GitHub.
-- **Admin colour mode**: Light, Dark or System from the header, saved per person and shared with other wpallstars colour-mode controls. System follows the computer live, including on network settings and the plugin's own screens with the shared header.
-- **Features as classes**: one file per feature, off by default, with settings, hooks, one-off imports from the plugins it replaces and clean uninstall.
-- **Replaced plugins**: a feature that does another plugin's job imports its settings once, waits while that plugin is active, and the Plugins screen suggests deactivating and deleting it and lists it under **Redundant**.
-- **Report a problem**: Tools → Report a problem, shared by every wpallstars plugin and theme on a site. The site's AI assistant drafts reports (an ability and WP-CLI); an administrator reviews and sends them, as a prefilled GitHub issue or, for private code, a private email with the site's mailer.
-- **Updates from GitHub**: the shared wpallstars updater (`includes/github-updater/`). Sites get each GitHub release as a normal WordPress update. Every wpallstars plugin carries a copy and only the newest copy on a site runs, so they are all checked together, once. Update checks that fall due while someone opens an admin screen run in WP-Cron instead, so the screen does not wait for update servers.
-- **Two builds of each version**: the GitHub release, and a WordPress.org build without the updater, as WordPress.org requires.
-- **Scripts and CI**: lint (PHP 7.4, WordPress coding and security rules, PHPStan), a smoke test on a real WordPress, the release build, a preflight check of both zips, Plugin Check, a preview site, the banner and icon build, and `scripts/sync-core.sh` to keep each plugin's shared parts the same as the starter's.
-- **Shared rules for people and AI**: `STANDARDS.md` (structure, code rules, performance, releases, styling, testing), `DEVELOPMENT.md` (set-up and checks) and `RELEASING.md`, the same in every plugin made from the starter.
+- **A loader for your own changes**: every `customizations/*.php` file loads on its own, with a header that says what it does (`Description:`), which sites it is for (`Sites:`), what it needs (`Requires:`), the upstream request it waits on (`Upstream:`) and when it can go (`Retire-When:`). A file with a PHP error is reported and skipped; the site keeps working.
+- **A style and script per change**: `{name}.css` and `{name}.js` next to the file load on the front end, after the theme's styles, only while the file is loaded.
+- **Four states you can check**: loaded, skipped (not for this site, or a requirement is not met), retired (upstream now does this; delete the file) and failed. They show in Tools → Site Health, on Settings → SEO Pro Custom, and in `wp seoprocustom list [--format=json]`, for checking a fleet of sites.
+- **Nothing when empty**: with no customisation files the plugin adds no front-end output and no database queries.
+- **Rules for your AI assistant**: `AGENTS.md` says how to make a change safely: prefer a setting, then a documented filter or action, then CSS, then code; never edit upstream files.
+- **Settings, Read Me, colour mode, problem reports, GitHub updates and multisite**, shared with every wpallstars plugin.
+- **Scripts and CI**: lint, a smoke test on a real WordPress, the release build, a preflight check, Plugin Check, a preview site, and `scripts/sync-core.sh` to keep the shared parts the same as the starter's.
 
-## Start a plugin
+## Make your own copy
 
-1. On GitHub, choose **Use this template** to make your repository, and clone it.
-2. Give it its names: `scripts/rename-plugin.sh --slug my-plugin --name "My Plugin" --prefix MyPlugin`. Add `--css mp` for a short CSS prefix and `--repo owner/repo` if it is not under wpallstars. Put in your own details too, or the plugin keeps the starter's: `--description`, `--author`, `--author-uri`, `--contributors` (WordPress.org usernames) and `--donate` (a link, or `none`); `--help` lists them all. The new plugin starts at version 0.1.0 (`--version` for another) with a changelog of its own. Review with `git diff`, then commit.
-3. Replace this README, `readme.txt`, `changelog.txt`, `AGENTS.md` and `LAUNCH.md` with your plugin's own, its banner and icon (`.wordpress-org/banner.svg` and `icon.svg`, then `scripts/build-banner.sh`), and screenshots (`.wordpress-org/screenshot-N.png` with captions in `readme.txt`, and GitHub-only ones in `docs/images/`). The renamer starts `LAUNCH.md` with a private pre-launch state and a Before 1.0 checklist, and `AGENTS.md` with the plugin's names and a line to say what it does; keep both current as the plugin, its releases, services and submissions change. Keep the licence and the starter's credit, as its licence requires (`ATTRIBUTION.txt`, `STANDARDS.md` → Structure): GPL-3.0-or-later, `LICENSE`, `ATTRIBUTION.txt`, the licence lines at the top of each file, both copyright lines in the main file and this README's License section, and the "Made from" line here and in `readme.txt`. The renamer gives the plugin its own Provenance ID (`scripts/provenance.sh`); keep the Provenance lines too. Please keep the rest of the Built with AI section too.
-4. Add features: a class in `includes/features/` listed in `MyPlugin_Setup::FEATURES` (see Developers below and `STANDARDS.md`).
-5. Keep the shared parts up to date: change them in the starter first, then run `scripts/sync-core.sh` in each plugin (`--check` lists what differs).
+1. On GitHub, choose **Use this template** to make your own **private** repository (a fork of a public repository stays public), and clone it.
+2. In `seoprocustom.php`, set `GitHub Plugin URI` (and `Update URI`, if you use it) to your repository, `owner/repo`.
+3. For updates from a private repository, make a read-only fine-grained token for that one repository (Contents: read) and put it in `wp-config.php` on each site, never in Git:
 
-The easiest way to do all of this is with [aidevops](https://aidevops.sh): open the repository with it and describe the plugin you want. It reads `AGENTS.md` and the guidance it lists, builds the features, tests them on a real site and runs the release checks. Any AI assistant works the same way: `AGENTS.md` (or `CLAUDE.md`, which points to it) tells it what to read first, and `ATTRIBUTION.txt` tells it what every copy keeps.
+   ```php
+   define( 'WPALLSTARS_GITHUB_TOKEN', 'github_pat_…' );
+   ```
+
+4. Add one file per change to `customizations/` (see `customizations/README.md`, and `example.php`, which is switched off). Commit, release (`RELEASING.md`), and click **Update** on each site.
+5. To ask for a change upstream, use the request form (below). When an SEO Pro Stack product does the job, add `Retire-When:` to your file, or delete it.
+6. Keep the shared parts up to date: the daily Starter sync pull request, or `scripts/sync-core.sh` (`--check` lists what differs), brings in our later loader changes. Your `customizations/` folder is yours; the sync never touches it.
+
+The easiest way to write a customisation is with [aidevops](https://aidevops.sh) or any AI assistant: open your copy, and `AGENTS.md` tells it the rules.
+
+Use only the filters and actions the products document: those are the ones kept stable.
+
+## Ask for a change upstream
+
+- **Public products** (SEO Pro Stack, the starter plugins): open an issue or a pull request on that product's own repository.
+- **Private products** (the PSD child theme, SEO Pro Directory): use the **Product request** form under [New issue](https://github.com/wpallstars/seoprocustom/issues/new/choose). Name the product, the customisation file it would replace, and what and why. Issues are public: leave out site addresses, private code and client data, and use **Tools → Report a problem** for anything sensitive.
 
 ## Where to find it
 
@@ -134,6 +143,7 @@ A feature is a class in `includes/features/class-seoprocustom-{name}.php` that e
 Filters:
 
 - `seoprocustom_features`: register a feature class that extends `SEOProCustom_Feature`.
+- `seoprocustom_customization_style_deps`: the style handles that a customisation's `.css` loads after (`site-design` by default; handles that are not registered are left out).
 - `seoprocustom_settings_schema`: add or change settings. Each entry sets `type` (bool, int, text, url, lines, domains, select, multi, times or media, a picture from the Media Library stored as its attachment ID), `default`, `label`, `description` and either `tab` or `parent`; select and multi also take `options` (an array or a callable, which runs on every settings save, so keep it small: `STANDARDS.md` → Performance) and `open` to keep saved values that are not currently registered. A child setting can take `hidden` (true): it is not shown or searched, for wiring that code sets. A child setting with `group` set to `troubleshooting` is shown last, in a closed **Troubleshooting** section of the panel, for bypasses people need only when something is wrong (`STANDARDS.md` → Code rules); the section opens by itself when one of its settings differs from its default or matches a search. `reload` (true) makes the saved message ask to reload the page, for changes that show only after a page load. `network` (false) leaves a setting off the network screen (multisite), for one that only makes sense on each site, such as a list of the site's own posts or people; media fields and `hidden` wiring are left off already. A multi setting can take `locked` (values, or a callable returning them): choices that are always chosen, shown ticked with a lock, cannot be unticked and are never stored, so the feature itself treats them as chosen. A multi setting can take `ordered` (true) to keep its values in the chosen order, which people change by dragging. `replaces` (slug => name) shows which plugin a feature replaces; keep that list in the feature's `REPLACES` class constant and pass `self::REPLACES` (`STANDARDS.md` → Structure). Settings render and save automatically.
 - `seoprocustom_admin_tabs`: add or reorder admin tabs. Each tab sets `label`, `group` (settings, discover or about), a `render` callback, an optional `capability`, an optional `preload` and an optional `network` (true: also on the network screen, multisite, where its callback runs with `is_network_admin()` true; settings tabs and Read Me have it); tabs the current user lacks the capability for are hidden. The screen draws the active tab with the other tabs of its group that preload (settings tabs and Read Me do), and switches between them without a reload (`SEOProCustom_Admin_Manager::page_tabs()`). Set `preload` to true only when the tab is cheap to draw and its script works while its panel is hidden. An optional `menu` (a name) gathers tabs: tabs of a group with the same `menu` show in the bar as one tab with that name, which opens the first of them, and while one of them is shown, they show as a second row of tabs under the bar (`SEOProCustom_Admin_Page::nav()`). An optional `wide` (true) lets the tab use the whole width of the screen (`spc-main--wide`), for a grid of cards.
 - `seoprocustom_admin_script_deps` and `seoprocustom_admin_script_data`: the settings screen script’s dependencies (once for each tab drawn on the page) and the data it reads as `seoprocustomAdmin` (with the active tab; `seoprocustomAdmin.tab` follows the tab shown, `tabs` lists the tabs drawn, `titles` their browser titles, and `network` is true on the network screen).
@@ -168,6 +178,8 @@ Deleting the plugin removes its settings (on multisite, every site's and the net
 ### 0.1.0
 
 - First version, made from WP Plugin Starter 1.0.56.
+- Customisation loader: `customizations/*.php` with `Description:`, `Sites:`, `Requires:`, `Upstream:` and `Retire-When:` headers, an optional `.css` and `.js` each, and PHP errors reported and skipped. Loaded, skipped, retired and failed show in Site Health, on the settings screen and in `wp seoprocustom list`.
+- Product request issue form, DCO check for pull requests, and rules for clients' AI assistants in `AGENTS.md`.
 
 ## Built with AI
 

@@ -1,0 +1,7 @@
+/*
+ * Example style for customizations/example.php. It loads on the front end
+ * only when that file loads, after the theme's styles.
+ */
+.entry-meta {
+	opacity: 0.8;
+}
