@@ -159,7 +159,7 @@ final class SEOProCustom_Customizations extends SEOProCustom_Feature {
             return self::finish($entry, self::STATE_RETIRED, __('Upstream now does this; delete the file.', 'seoprocustom'));
         }
         if ('' !== trim($headers['requires']) && !self::conditions_met($headers['requires'], $why)) {
-            /* translators: %s: the requirement that is not met, such as "seoprodirectory >= 1.0". */
+            /* translators: %s: the requirement that is not met, such as "kadence >= 1.2". */
             return self::finish($entry, self::STATE_SKIPPED, sprintf(__('Requirement not met: %s', 'seoprocustom'), $why));
         }
 
