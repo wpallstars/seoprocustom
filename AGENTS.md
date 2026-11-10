@@ -1,8 +1,11 @@
 # SEO Pro Custom — agent guide
 
 SEO Pro Custom: a wpallstars plugin made from WP Plugin Starter. It is empty on
-every client site and is the public template each client copies (**Use this
-template**) into their own private repository for their site's own changes.
+every client site and is the public, blank starting point each client forks
+(or copies with **Use this template**, for a private repository) for their
+sites' own changes; one fork serves many sites. Site-specific changes stay in
+the fork; this repository takes issues and pull requests only for the blank
+plugin itself (loader, reports, these rules, the example, docs).
 `includes/features/class-seoprocustom-customizations.php` loads each
 `customizations/*.php` file on its own, reports loaded, skipped, retired and
 failed in Site Health, on the settings screen and in `wp seoprocustom list`.

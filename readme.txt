@@ -13,7 +13,7 @@ Change how your theme and plugins behave when their settings can't, without wait
 
 == Description ==
 
-SEO Pro Custom is an empty plugin you make your own. Each change your site needs, that the theme's or a plugin's settings can't make, is one small file in your own copy of its repository, which you or your AI assistant write, release and deploy the same day. The theme and plugins stay untouched, so their updates keep coming. When a change would help everyone, ask the product's maker for it; once the product does the job, your file switches itself off.
+SEO Pro Custom is an empty plugin you make your own. Fork its repository and install your fork on the sites you want to change; one fork serves as many sites as you like. Each change your site needs, that the theme's or a plugin's settings can't make, is one small file in your fork, which you or your AI assistant write, release and deploy the same day. The theme and plugins stay untouched, so their updates keep coming. When a change would help everyone, ask the product's maker for it; once the product does the job, your file switches itself off.
 
 * **One file per change** in `customizations/`, with headers for what it does, which sites, what it requires, the upstream request and when it can retire. A file with a PHP error is reported and skipped; the site keeps working.
 * **A style and script per change**, loaded after the theme's styles while the file is loaded.
@@ -22,7 +22,7 @@ SEO Pro Custom is an empty plugin you make your own. Each change your site needs
 * **Rules for your AI assistant** in `AGENTS.md`: a setting first, then a documented filter or action, then CSS, then code; never edit the theme's or plugins' own files.
 * **Report a problem** (Tools): the site's AI assistant drafts problem reports and improvements for wpallstars plugins and themes; an administrator reviews and sends them.
 
-Make your own copy on GitHub (wpallstars/seoprocustom, Use this template): the Read Me tab explains how.
+Fork it on GitHub (wpallstars/seoprocustom), or choose Use this template for a private copy: the Read Me tab explains how.
 
 = Built with AI =
 
@@ -50,7 +50,11 @@ Only when no setting does the job. Try a setting first, then a documented filter
 
 = How do I add a change? =
 
-Make your own private copy of the repository with Use this template, copy `customizations/example.php` to a new file, fill in its header and hooks, and update the site from your copy's release.
+Fork the repository (or use Use this template for a private copy), copy `customizations/example.php` to a new file, fill in its header and hooks, release your fork and update each site from it. Keep your fork in sync with ours to get our fixes.
+
+= Can I send my site's changes upstream? =
+
+Keep your site's own changes in your fork. Issues and pull requests on wpallstars/seoprocustom are welcome for the blank plugin itself: the loader, its reports, the AI rules, the example and the docs. Ask a theme or plugin for a feature every site would use on that product's repository, or with the Product request form for private products.
 
 = What happens when the theme or plugin catches up? =
 
