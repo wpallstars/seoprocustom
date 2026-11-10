@@ -90,6 +90,7 @@ final class SEOProCustom_Customizations extends SEOProCustom_Feature {
         add_action('wp_enqueue_scripts', array(__CLASS__, 'enqueue_assets'), 100);
         add_filter('site_status_tests', array(__CLASS__, 'site_health_tests'));
         add_action('seoprocustom_settings_tab_after', array(__CLASS__, 'render_card'));
+        add_action('seoprocustom_admin_enqueue', array(__CLASS__, 'enqueue_admin_style'));
         if (defined('WP_CLI') && WP_CLI) {
             require_once __DIR__ . '/class-seoprocustom-customizations-cli.php';
             SEOProCustom_Customizations_CLI::register();
@@ -477,6 +478,31 @@ final class SEOProCustom_Customizations extends SEOProCustom_Feature {
     }
 
     /**
+     * Style for the Customisations card, on the settings screen only. The
+     * core stylesheet is the starter's, so this rides on it as inline CSS,
+     * using its variables so dark mode follows. It also hides the starter's
+     * "No settings yet" placeholder, as this card is the tab's content.
+     *
+     * @param string $tab Tab slug.
+     */
+    public static function enqueue_admin_style($tab) {
+        $tabs = array_keys(SEOProCustom_Setup::settings_tabs());
+        if (is_network_admin() || !$tabs || (string) $tab !== (string) $tabs[0]) {
+            return;
+        }
+        wp_add_inline_style(
+            'seoprocustom-admin',
+            '.spc-section > .spc-empty{display:none}'
+            . '.spc-customisations{margin-block-start:12px}'
+            . '.spc-customisations__card{padding:16px 20px}'
+            . '.spc-customisations__card h3{margin:0 0 8px}'
+            . '.spc-customisations__card p{margin:0 0 12px;color:var(--spc-muted)}'
+            . '.spc-customisations__card p:last-child{margin-bottom:0}'
+            . '.spc-customisations__card .widefat{margin-block-start:4px}'
+        );
+    }
+
+    /**
      * Settings screen: a card listing the customisations, after the first
      * tab's cards.
      *
@@ -489,11 +515,21 @@ final class SEOProCustom_Customizations extends SEOProCustom_Feature {
         }
         $entries = self::entries();
         ?>
-        <div class="spc-cards">
-            <div class="spc-card">
+        <div class="spc-cards spc-customisations">
+            <div class="spc-card spc-customisations__card">
                 <h3><?php esc_html_e('Customisations', 'seoprocustom'); ?></h3>
+                <p class="spc-customisations__intro">
+                    <?php
+                    printf(
+                        /* translators: 1: folder name in code tags, 2: link to the Read Me tab */
+                        esc_html__('Your own changes go in %1$s, one file each, in your own copy of this plugin. %2$s explains how.', 'seoprocustom'),
+                        '<code>customizations/</code>',
+                        '<a href="' . esc_url(SEOProCustom_Admin_Manager::tab_url('readme')) . '">' . esc_html__('The Read Me tab', 'seoprocustom') . '</a>'
+                    );
+                    ?>
+                </p>
                 <?php if (!$entries) : ?>
-                    <p><?php esc_html_e('No customisation files yet. Add one to the plugin\'s customizations folder.', 'seoprocustom'); ?></p>
+                    <p><?php esc_html_e('No customisation files yet.', 'seoprocustom'); ?></p>
                 <?php else : ?>
                     <table class="widefat striped">
                         <thead>
