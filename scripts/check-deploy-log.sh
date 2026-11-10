@@ -70,8 +70,8 @@ export DEPLOY_LIBRARY_ONLY=1
 
 readonly TS="[09-Nov-2026 02:53:00 UTC] "
 readonly JSON='{"schedule":"daily","args":[],"interval":86400}'
-readonly OWN="seoprostackcustom_daily_task"
-readonly OWN2="seoprostackcustom_cleanup"
+readonly OWN="seoprocustom_daily_task"
+readonly OWN2="seoprocustom_cleanup"
 readonly OTHER="otherplugin_sync"
 readonly MSG="Could not save cron option."
 readonly ENGLISH_RESCHEDULE="Cron reschedule event error for hook: $OWN, Error code: could_not_set, Error message: $MSG, Data: $JSON"

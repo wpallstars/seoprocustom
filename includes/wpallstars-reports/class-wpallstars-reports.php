@@ -31,7 +31,7 @@
  * Additional terms (GPL-3.0 section 7(b)): ATTRIBUTION.txt
  * Provenance: wpas-e4502af0f07e8a92. Copies, even of part, keep these lines.
  *
- * @package SEOProStackCustom
+ * @package SEOProCustom
  */
 
 if (!defined('ABSPATH')) {
@@ -267,7 +267,7 @@ final class WPAllStars_Reports { // phpcs:ignore WordPress.NamingConventions.Pre
                 'wpallstars_report_product',
                 sprintf(
                     /* translators: %s: product slugs, comma-separated. */
-                    __('Name the plugin or theme the report is about, one of: %s.', 'seoprostackcustom'),
+                    __('Name the plugin or theme the report is about, one of: %s.', 'seoprocustom'),
                     implode(', ', array_keys($products))
                 )
             );
@@ -276,7 +276,7 @@ final class WPAllStars_Reports { // phpcs:ignore WordPress.NamingConventions.Pre
         $title   = isset($input['title']) ? trim(sanitize_text_field((string) $input['title'])) : '';
         $details = isset($input['details']) ? trim(sanitize_textarea_field((string) $input['details'])) : '';
         if ('' === $title || '' === $details) {
-            return new WP_Error('wpallstars_report_empty', __('A report needs a title and details.', 'seoprostackcustom'));
+            return new WP_Error('wpallstars_report_empty', __('A report needs a title and details.', 'seoprocustom'));
         }
         return array(
             'product' => $product,
@@ -304,7 +304,7 @@ final class WPAllStars_Reports { // phpcs:ignore WordPress.NamingConventions.Pre
                 'wpallstars_report_full',
                 sprintf(
                     /* translators: %d: number of drafts. */
-                    __('There are already %d draft reports waiting for review. Send or delete some in Tools → Report a problem first.', 'seoprostackcustom'),
+                    __('There are already %d draft reports waiting for review. Send or delete some in Tools → Report a problem first.', 'seoprocustom'),
                     self::MAX_DRAFTS
                 )
             );
@@ -338,10 +338,10 @@ final class WPAllStars_Reports { // phpcs:ignore WordPress.NamingConventions.Pre
         $reports = self::all();
         $id      = sanitize_key((string) $id);
         if (!isset($reports[$id])) {
-            return new WP_Error('wpallstars_report_missing', __('That report no longer exists.', 'seoprostackcustom'));
+            return new WP_Error('wpallstars_report_missing', __('That report no longer exists.', 'seoprocustom'));
         }
         if ('draft' !== $reports[$id]['status']) {
-            return new WP_Error('wpallstars_report_sent', __('That report has been sent already.', 'seoprostackcustom'));
+            return new WP_Error('wpallstars_report_sent', __('That report has been sent already.', 'seoprocustom'));
         }
         $fields = self::clean($input);
         if (is_wp_error($fields)) {
@@ -429,7 +429,7 @@ final class WPAllStars_Reports { // phpcs:ignore WordPress.NamingConventions.Pre
      * @return string
      */
     private static function type_label($type) {
-        return 'improvement' === $type ? __('Improvement', 'seoprostackcustom') : __('Problem', 'seoprostackcustom');
+        return 'improvement' === $type ? __('Improvement', 'seoprocustom') : __('Problem', 'seoprocustom');
     }
 
     /**
@@ -637,7 +637,7 @@ final class WPAllStars_Reports { // phpcs:ignore WordPress.NamingConventions.Pre
     private static function send(array $report) {
         $products = self::products();
         if (!isset($products[$report['product']])) {
-            return new WP_Error('wpallstars_report_product', __('That plugin or theme no longer takes reports here.', 'seoprostackcustom'));
+            return new WP_Error('wpallstars_report_product', __('That plugin or theme no longer takes reports here.', 'seoprocustom'));
         }
         $product = $products[$report['product']];
         if ('github' === $product['channel']) {
@@ -657,7 +657,7 @@ final class WPAllStars_Reports { // phpcs:ignore WordPress.NamingConventions.Pre
         remove_action('wp_mail_failed', array(__CLASS__, 'mail_failed'));
         if (!$sent) {
             $message = self::mail_error();
-            return new WP_Error('wpallstars_report_mail', '' !== $message ? $message : __('The site could not send email.', 'seoprostackcustom'));
+            return new WP_Error('wpallstars_report_mail', '' !== $message ? $message : __('The site could not send email.', 'seoprocustom'));
         }
         self::mark_sent($report['id'], 'email');
         return '';
@@ -707,8 +707,8 @@ final class WPAllStars_Reports { // phpcs:ignore WordPress.NamingConventions.Pre
             return;
         }
         add_management_page(
-            __('Report a problem', 'seoprostackcustom'),
-            __('Report a problem', 'seoprostackcustom'),
+            __('Report a problem', 'seoprocustom'),
+            __('Report a problem', 'seoprocustom'),
             'manage_options',
             self::PAGE,
             array(__CLASS__, 'render')
@@ -744,12 +744,12 @@ final class WPAllStars_Reports { // phpcs:ignore WordPress.NamingConventions.Pre
                     'Your AI assistant drafted %d report about a wpallstars plugin or theme. Nothing is sent until you review it.',
                     'Your AI assistant drafted %d reports about wpallstars plugins or themes. Nothing is sent until you review them.',
                     $waiting,
-                    'seoprostackcustom'
+                    'seoprocustom'
                 ),
                 $waiting
             )),
             esc_url(self::url()),
-            esc_html__('Review reports', 'seoprostackcustom')
+            esc_html__('Review reports', 'seoprocustom')
         );
     }
 
@@ -758,7 +758,7 @@ final class WPAllStars_Reports { // phpcs:ignore WordPress.NamingConventions.Pre
      */
     public static function render() {
         if (!self::can_review()) {
-            wp_die(esc_html__('Sorry, you are not allowed to review reports.', 'seoprostackcustom'));
+            wp_die(esc_html__('Sorry, you are not allowed to review reports.', 'seoprocustom'));
         }
         // phpcs:disable WordPress.Security.NonceVerification.Recommended -- these only choose what to show.
         $id      = isset($_GET['report']) ? sanitize_key(wp_unslash($_GET['report'])) : '';
@@ -766,10 +766,10 @@ final class WPAllStars_Reports { // phpcs:ignore WordPress.NamingConventions.Pre
         $done    = isset($_GET['done']) ? sanitize_key(wp_unslash($_GET['done'])) : '';
         // phpcs:enable WordPress.Security.NonceVerification.Recommended
         echo '<div class="wrap">';
-        echo '<h1 class="wp-heading-inline">' . esc_html__('Report a problem', 'seoprostackcustom') . '</h1>';
+        echo '<h1 class="wp-heading-inline">' . esc_html__('Report a problem', 'seoprocustom') . '</h1>';
         if ('new' !== $id) {
             $new_url = self::url('new', $product ? array('product' => $product) : array());
-            printf(' <a class="page-title-action" href="%1$s">%2$s</a>', esc_url($new_url), esc_html__('New report', 'seoprostackcustom'));
+            printf(' <a class="page-title-action" href="%1$s">%2$s</a>', esc_url($new_url), esc_html__('New report', 'seoprocustom'));
         }
         echo '<hr class="wp-header-end">';
         self::render_done($done);
@@ -790,9 +790,9 @@ final class WPAllStars_Reports { // phpcs:ignore WordPress.NamingConventions.Pre
      */
     private static function render_done($done) {
         $messages = array(
-            'saved'   => array('success', __('Draft saved. Check what will be sent below, then send it.', 'seoprostackcustom')),
-            'sent'    => array('success', __('Report sent. Thank you: the maker will look into it.', 'seoprostackcustom')),
-            'deleted' => array('success', __('Report deleted.', 'seoprostackcustom')),
+            'saved'   => array('success', __('Draft saved. Check what will be sent below, then send it.', 'seoprocustom')),
+            'sent'    => array('success', __('Report sent. Thank you: the maker will look into it.', 'seoprocustom')),
+            'deleted' => array('success', __('Report deleted.', 'seoprocustom')),
         );
         $error = get_transient(self::error_key());
         if ('failed' === $done && is_string($error) && '' !== $error) {
@@ -823,10 +823,10 @@ final class WPAllStars_Reports { // phpcs:ignore WordPress.NamingConventions.Pre
     private static function channel_label(array $product) {
         if ('github' === $product['channel']) {
             /* translators: %s: GitHub repository, owner/name. */
-            return sprintf(__('a public GitHub issue on %s', 'seoprostackcustom'), $product['to']);
+            return sprintf(__('a public GitHub issue on %s', 'seoprocustom'), $product['to']);
         }
         /* translators: %s: email address. */
-        return sprintf(__('a private email to %s', 'seoprostackcustom'), $product['to']);
+        return sprintf(__('a private email to %s', 'seoprocustom'), $product['to']);
     }
 
     /**
@@ -836,7 +836,7 @@ final class WPAllStars_Reports { // phpcs:ignore WordPress.NamingConventions.Pre
      */
     private static function render_list($product) {
         $products = self::products();
-        echo '<p>' . esc_html__('Tell the makers of the wpallstars plugins and themes on this site about a problem or an improvement, so every site using them gets the fix. Your AI assistant can draft reports too (the wpallstars/report-problem ability, or wp wpallstars report create); nothing leaves the site until an administrator sends it here.', 'seoprostackcustom') . '</p>';
+        echo '<p>' . esc_html__('Tell the makers of the wpallstars plugins and themes on this site about a problem or an improvement, so every site using them gets the fix. Your AI assistant can draft reports too (the wpallstars/report-problem ability, or wp wpallstars report create); nothing leaves the site until an administrator sends it here.', 'seoprocustom') . '</p>';
         echo '<ul class="ul-disc">';
         foreach ($products as $slug => $item) {
             printf(
@@ -849,11 +849,11 @@ final class WPAllStars_Reports { // phpcs:ignore WordPress.NamingConventions.Pre
 
         $reports = self::reports();
         if (!$reports) {
-            echo '<p>' . esc_html__('No reports yet.', 'seoprostackcustom') . '</p>';
+            echo '<p>' . esc_html__('No reports yet.', 'seoprocustom') . '</p>';
             return;
         }
         echo '<table class="widefat striped"><thead><tr>';
-        foreach (array(__('Title', 'seoprostackcustom'), __('Plugin or theme', 'seoprostackcustom'), __('Type', 'seoprostackcustom'), __('Status', 'seoprostackcustom'), __('Drafted by', 'seoprostackcustom'), __('Date', 'seoprostackcustom')) as $heading) {
+        foreach (array(__('Title', 'seoprocustom'), __('Plugin or theme', 'seoprocustom'), __('Type', 'seoprocustom'), __('Status', 'seoprocustom'), __('Drafted by', 'seoprocustom'), __('Date', 'seoprocustom')) as $heading) {
             echo '<th scope="col">' . esc_html($heading) . '</th>';
         }
         echo '</tr></thead><tbody>';
@@ -864,7 +864,7 @@ final class WPAllStars_Reports { // phpcs:ignore WordPress.NamingConventions.Pre
             echo '<td>' . esc_html($name) . '</td>';
             echo '<td>' . esc_html(self::type_label($report['type'])) . '</td>';
             echo '<td>' . esc_html(self::status_label($report)) . '</td>';
-            echo '<td>' . esc_html('administrator' === $report['source'] ? __('Administrator', 'seoprostackcustom') : __('AI assistant', 'seoprostackcustom')) . '</td>';
+            echo '<td>' . esc_html('administrator' === $report['source'] ? __('Administrator', 'seoprocustom') : __('AI assistant', 'seoprocustom')) . '</td>';
             echo '<td>' . esc_html((string) wp_date(get_option('date_format') . ' ' . get_option('time_format'), (int) $report['created'])) . '</td>';
             echo '</tr>';
         }
@@ -879,15 +879,15 @@ final class WPAllStars_Reports { // phpcs:ignore WordPress.NamingConventions.Pre
      */
     private static function status_label(array $report) {
         if ('sent' !== $report['status']) {
-            return __('Draft, waiting for review', 'seoprostackcustom');
+            return __('Draft, waiting for review', 'seoprocustom');
         }
         $when = (string) wp_date((string) get_option('date_format'), (int) $report['sent']);
         if ('github' === $report['channel']) {
             /* translators: %s: date. */
-            return sprintf(__('Opened on GitHub %s', 'seoprostackcustom'), $when);
+            return sprintf(__('Opened on GitHub %s', 'seoprocustom'), $when);
         }
         /* translators: %s: date. */
-        return sprintf(__('Emailed %s', 'seoprostackcustom'), $when);
+        return sprintf(__('Emailed %s', 'seoprocustom'), $when);
     }
 
     /**
@@ -904,9 +904,9 @@ final class WPAllStars_Reports { // phpcs:ignore WordPress.NamingConventions.Pre
         $disabled = $sent ? ' disabled' : '';
         $details  = $report ? (string) $report['details'] : '';
         ?>
-        <p><a href="<?php echo esc_url(self::url()); ?>">&larr; <?php esc_html_e('All reports', 'seoprostackcustom'); ?></a></p>
+        <p><a href="<?php echo esc_url(self::url()); ?>">&larr; <?php esc_html_e('All reports', 'seoprocustom'); ?></a></p>
         <?php if ($report && 'assistant' === $report['source'] && !$sent) : ?>
-            <p><?php esc_html_e('Your AI assistant drafted this report. Check it says what you want the maker to know, change anything that is wrong, then send it.', 'seoprostackcustom'); ?></p>
+            <p><?php esc_html_e('Your AI assistant drafted this report. Check it says what you want the maker to know, change anything that is wrong, then send it.', 'seoprocustom'); ?></p>
         <?php endif; ?>
         <form method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>">
             <input type="hidden" name="action" value="<?php echo esc_attr(self::ACTION); ?>" />
@@ -914,7 +914,7 @@ final class WPAllStars_Reports { // phpcs:ignore WordPress.NamingConventions.Pre
             <?php wp_nonce_field(self::ACTION); ?>
             <table class="form-table">
                 <tr>
-                    <th scope="row"><label for="wpallstars-report-product"><?php esc_html_e('Plugin or theme', 'seoprostackcustom'); ?></label></th>
+                    <th scope="row"><label for="wpallstars-report-product"><?php esc_html_e('Plugin or theme', 'seoprocustom'); ?></label></th>
                     <td>
                         <select id="wpallstars-report-product" name="product"<?php echo esc_attr($disabled); ?>>
                             <?php foreach ($products as $slug => $item) : ?>
@@ -924,7 +924,7 @@ final class WPAllStars_Reports { // phpcs:ignore WordPress.NamingConventions.Pre
                     </td>
                 </tr>
                 <tr>
-                    <th scope="row"><?php esc_html_e('Type', 'seoprostackcustom'); ?></th>
+                    <th scope="row"><?php esc_html_e('Type', 'seoprocustom'); ?></th>
                     <td>
                         <fieldset>
                             <?php foreach (self::TYPES as $option) : ?>
@@ -934,14 +934,14 @@ final class WPAllStars_Reports { // phpcs:ignore WordPress.NamingConventions.Pre
                     </td>
                 </tr>
                 <tr>
-                    <th scope="row"><label for="wpallstars-report-title"><?php esc_html_e('Title', 'seoprostackcustom'); ?></label></th>
+                    <th scope="row"><label for="wpallstars-report-title"><?php esc_html_e('Title', 'seoprocustom'); ?></label></th>
                     <td><input type="text" id="wpallstars-report-title" name="title" class="large-text" maxlength="<?php echo esc_attr((string) self::TITLE_MAX); ?>" required value="<?php echo esc_attr($report ? $report['title'] : ''); ?>"<?php echo esc_attr($disabled); ?> /></td>
                 </tr>
                 <tr>
-                    <th scope="row"><label for="wpallstars-report-details"><?php esc_html_e('Details', 'seoprostackcustom'); ?></label></th>
+                    <th scope="row"><label for="wpallstars-report-details"><?php esc_html_e('Details', 'seoprocustom'); ?></label></th>
                     <td>
                         <textarea id="wpallstars-report-details" name="details" class="large-text code" rows="14" maxlength="<?php echo esc_attr((string) self::DETAILS_MAX); ?>" required<?php echo esc_attr($disabled); ?>><?php printf('%s', esc_textarea($details)); ?></textarea>
-                        <p class="description"><?php esc_html_e('What you did, what you expected and what happened, with the steps to see it again, or the improvement and why it would help. Leave out passwords and licence keys.', 'seoprostackcustom'); ?></p>
+                        <p class="description"><?php esc_html_e('What you did, what you expected and what happened, with the steps to see it again, or the improvement and why it would help. Leave out passwords and licence keys.', 'seoprocustom'); ?></p>
                     </td>
                 </tr>
             </table>
@@ -952,21 +952,21 @@ final class WPAllStars_Reports { // phpcs:ignore WordPress.NamingConventions.Pre
             ?>
             <p class="submit">
                 <?php if (!$sent) : ?>
-                    <button type="submit" name="do" value="save" class="button"><?php esc_html_e('Save draft', 'seoprostackcustom'); ?></button>
+                    <button type="submit" name="do" value="save" class="button"><?php esc_html_e('Save draft', 'seoprocustom'); ?></button>
                     <?php if ($report && isset($products[$report['product']])) : ?>
                         <button type="submit" name="do" value="send" class="button button-primary">
                             <?php
                             if ('github' === $products[$report['product']]['channel']) {
-                                esc_html_e('Open the issue on GitHub', 'seoprostackcustom');
+                                esc_html_e('Open the issue on GitHub', 'seoprocustom');
                             } else {
-                                esc_html_e('Send by email', 'seoprostackcustom');
+                                esc_html_e('Send by email', 'seoprocustom');
                             }
                             ?>
                         </button>
                     <?php endif; ?>
                 <?php endif; ?>
                 <?php if ($report) : ?>
-                    <button type="submit" name="do" value="delete" class="button button-link-delete"><?php esc_html_e('Delete', 'seoprostackcustom'); ?></button>
+                    <button type="submit" name="do" value="delete" class="button button-link-delete"><?php esc_html_e('Delete', 'seoprocustom'); ?></button>
                 <?php endif; ?>
             </p>
         </form>
@@ -981,11 +981,11 @@ final class WPAllStars_Reports { // phpcs:ignore WordPress.NamingConventions.Pre
      * @param bool  $sent    Already sent.
      */
     private static function render_preview(array $report, array $product, $sent) {
-        echo '<h2>' . esc_html__('What will be sent', 'seoprostackcustom') . '</h2>';
+        echo '<h2>' . esc_html__('What will be sent', 'seoprocustom') . '</h2>';
         if ('github' === $product['channel']) {
             echo '<p>' . esc_html(sprintf(
                 /* translators: %s: GitHub repository, owner/name. */
-                __('Opens a new issue on GitHub (%s) with this text filled in, for you to submit with your own GitHub account. GitHub issues are public, so the site\'s address, email and IP addresses, server paths and anything that looks like a key are taken out. Check the text below before you submit it.', 'seoprostackcustom'),
+                __('Opens a new issue on GitHub (%s) with this text filled in, for you to submit with your own GitHub account. GitHub issues are public, so the site\'s address, email and IP addresses, server paths and anything that looks like a key are taken out. Check the text below before you submit it.', 'seoprocustom'),
                 $product['to']
             )) . '</p>';
             echo '<p><strong>' . esc_html(self::redact($report['title'], true)) . '</strong></p>';
@@ -993,14 +993,14 @@ final class WPAllStars_Reports { // phpcs:ignore WordPress.NamingConventions.Pre
         } else {
             echo '<p>' . esc_html(sprintf(
                 /* translators: %s: email address. */
-                __('Sent privately by this site\'s email to %s, with your name and email address to reply to. Anything that looks like a password or key is taken out.', 'seoprostackcustom'),
+                __('Sent privately by this site\'s email to %s, with your name and email address to reply to. Anything that looks like a password or key is taken out.', 'seoprocustom'),
                 $product['to']
             )) . '</p>';
             echo '<p><strong>' . esc_html(self::email_subject($report, $product)) . '</strong></p>';
             echo '<pre style="white-space:pre-wrap;max-height:30em;overflow:auto;">' . esc_html(self::email_text($report, $product, wp_get_current_user())) . '</pre>';
         }
         if (!$sent) {
-            echo '<p class="description">' . esc_html__('Changed the text or the plugin or theme? Save the draft to see the new version here.', 'seoprostackcustom') . '</p>';
+            echo '<p class="description">' . esc_html__('Changed the text or the plugin or theme? Save the draft to see the new version here.', 'seoprocustom') . '</p>';
         }
     }
 
@@ -1009,7 +1009,7 @@ final class WPAllStars_Reports { // phpcs:ignore WordPress.NamingConventions.Pre
      */
     public static function handle() {
         if (!self::can_review()) {
-            wp_die(esc_html__('Sorry, you are not allowed to review reports.', 'seoprostackcustom'), '', array('response' => 403));
+            wp_die(esc_html__('Sorry, you are not allowed to review reports.', 'seoprocustom'), '', array('response' => 403));
         }
         check_admin_referer(self::ACTION);
         $id    = isset($_POST['report']) ? sanitize_key(wp_unslash($_POST['report'])) : '';
@@ -1031,7 +1031,7 @@ final class WPAllStars_Reports { // phpcs:ignore WordPress.NamingConventions.Pre
         } else {
             $report = self::get($id);
             if (!$report) {
-                self::fail(__('That report no longer exists.', 'seoprostackcustom'), '');
+                self::fail(__('That report no longer exists.', 'seoprocustom'), '');
                 return;
             }
             if ('draft' === $report['status']) {
@@ -1095,8 +1095,8 @@ final class WPAllStars_Reports { // phpcs:ignore WordPress.NamingConventions.Pre
             return;
         }
         wp_register_ability_category(self::CATEGORY, array(
-            'label'       => __('wpallstars plugins and themes', 'seoprostackcustom'),
-            'description' => __('Problem reports and improvements for the makers of the wpallstars plugins and themes on this site.', 'seoprostackcustom'),
+            'label'       => __('wpallstars plugins and themes', 'seoprocustom'),
+            'description' => __('Problem reports and improvements for the makers of the wpallstars plugins and themes on this site.', 'seoprocustom'),
         ));
     }
 
@@ -1109,8 +1109,8 @@ final class WPAllStars_Reports { // phpcs:ignore WordPress.NamingConventions.Pre
         }
         $slugs = array_keys(self::products());
         wp_register_ability('wpallstars/report-problem', array(
-            'label'               => __('Report a problem', 'seoprostackcustom'),
-            'description'         => __('Draft a problem report or an improvement for the maker of one of this site\'s wpallstars plugins or themes (list them with wpallstars/reports), so every site using it gets the fix. Use it when a problem or improvement belongs to that product\'s own code, not to this site\'s content or settings. It only saves a draft: nothing leaves the site until a site administrator reviews and sends it in Tools → Report a problem, so tell them to. Say what was done, what was expected and what happened, with steps, versions and error messages; leave out passwords, keys and personal data.', 'seoprostackcustom'),
+            'label'               => __('Report a problem', 'seoprocustom'),
+            'description'         => __('Draft a problem report or an improvement for the maker of one of this site\'s wpallstars plugins or themes (list them with wpallstars/reports), so every site using it gets the fix. Use it when a problem or improvement belongs to that product\'s own code, not to this site\'s content or settings. It only saves a draft: nothing leaves the site until a site administrator reviews and sends it in Tools → Report a problem, so tell them to. Say what was done, what was expected and what happened, with steps, versions and error messages; leave out passwords, keys and personal data.', 'seoprocustom'),
             'category'            => self::CATEGORY,
             'input_schema'        => array(
                 'type'                 => 'object',
@@ -1120,7 +1120,7 @@ final class WPAllStars_Reports { // phpcs:ignore WordPress.NamingConventions.Pre
                     'product' => array(
                         'type'        => 'string',
                         'enum'        => $slugs,
-                        'description' => __('The plugin folder or theme the report is about. May be left out when only one takes reports.', 'seoprostackcustom'),
+                        'description' => __('The plugin folder or theme the report is about. May be left out when only one takes reports.', 'seoprocustom'),
                     ),
                     'type'    => array(
                         'type'    => 'string',
@@ -1148,8 +1148,8 @@ final class WPAllStars_Reports { // phpcs:ignore WordPress.NamingConventions.Pre
             ),
         ));
         wp_register_ability('wpallstars/reports', array(
-            'label'               => __('Problem reports', 'seoprostackcustom'),
-            'description'         => __('List the wpallstars plugins and themes that take problem reports, where each sends them, and this site\'s reports with their status; with an id, one report and exactly what would be sent.', 'seoprostackcustom'),
+            'label'               => __('Problem reports', 'seoprocustom'),
+            'description'         => __('List the wpallstars plugins and themes that take problem reports, where each sends them, and this site\'s reports with their status; with an id, one report and exactly what would be sent.', 'seoprocustom'),
             'category'            => self::CATEGORY,
             'input_schema'        => array(
                 'type'                 => 'object',
@@ -1185,7 +1185,7 @@ final class WPAllStars_Reports { // phpcs:ignore WordPress.NamingConventions.Pre
         $view            = self::view($report);
         $view['message'] = sprintf(
             /* translators: %s: address of the Report a problem screen. */
-            __('Saved as a draft; nothing has been sent. Ask a site administrator to review and send it in Tools → Report a problem: %s', 'seoprostackcustom'),
+            __('Saved as a draft; nothing has been sent. Ask a site administrator to review and send it in Tools → Report a problem: %s', 'seoprocustom'),
             $view['review_url']
         );
         return $view;
@@ -1202,7 +1202,7 @@ final class WPAllStars_Reports { // phpcs:ignore WordPress.NamingConventions.Pre
         if (!empty($input['id'])) {
             $report = self::get((string) $input['id']);
             if (!$report) {
-                return new WP_Error('wpallstars_report_missing', __('That report no longer exists.', 'seoprostackcustom'));
+                return new WP_Error('wpallstars_report_missing', __('That report no longer exists.', 'seoprocustom'));
             }
             return array('report' => self::view($report, true));
         }

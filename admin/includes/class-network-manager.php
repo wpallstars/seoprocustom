@@ -1,11 +1,11 @@
 <?php
 /**
- * SEO Pro Stack Custom network screen (multisite).
+ * SEO Pro Custom network screen (multisite).
  *
- * Network Admin → Settings → SEO Pro Stack Custom, for people who can manage
- * the network: the settings screen (SEOProStackCustom_Admin_Manager), drawn by the
+ * Network Admin → Settings → SEO Pro Custom, for people who can manage
+ * the network: the settings screen (SEOProCustom_Admin_Manager), drawn by the
  * same code in the network admin, where its cards save network values
- * (SEOProStackCustom_Network_Settings). Under each card's description:
+ * (SEOProCustom_Network_Settings). Under each card's description:
  *
  * - Apply to every site: every site uses the card's network values and
  *   cannot change them; switching it off gives each site its own again.
@@ -23,7 +23,7 @@
  * Additional terms (GPL-3.0 section 7(b)): ATTRIBUTION.txt
  * Provenance: wpas-e4502af0f07e8a92. Copies, even of part, keep these lines.
  *
- * @package SEOProStackCustom
+ * @package SEOProCustom
  * @since 1.0.35
  */
 
@@ -31,7 +31,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-class SEOProStackCustom_Network_Manager {
+class SEOProCustom_Network_Manager {
 
     /** Most sites named under a card; the others are counted. */
     const SITES_NAMED = 10;
@@ -47,29 +47,29 @@ class SEOProStackCustom_Network_Manager {
             return;
         }
         add_action('network_admin_menu', array(__CLASS__, 'register_menu'));
-        add_filter('network_admin_plugin_action_links_' . plugin_basename(SEOPROSTACKCUSTOM_FILE), array(__CLASS__, 'plugin_action_links'));
-        add_action('wp_ajax_seoprostackcustom_network_save', array(__CLASS__, 'ajax_save'));
-        add_action('wp_ajax_seoprostackcustom_network_apply', array(__CLASS__, 'ajax_apply'));
-        add_action('wp_ajax_seoprostackcustom_network_copy', array(__CLASS__, 'ajax_copy'));
+        add_filter('network_admin_plugin_action_links_' . plugin_basename(SEOPROCUSTOM_FILE), array(__CLASS__, 'plugin_action_links'));
+        add_action('wp_ajax_seoprocustom_network_save', array(__CLASS__, 'ajax_save'));
+        add_action('wp_ajax_seoprocustom_network_apply', array(__CLASS__, 'ajax_apply'));
+        add_action('wp_ajax_seoprocustom_network_copy', array(__CLASS__, 'ajax_copy'));
     }
 
     /**
-     * Register Network Admin → Settings → SEO Pro Stack Custom.
+     * Register Network Admin → Settings → SEO Pro Custom.
      */
     public static function register_menu() {
         $hook = add_submenu_page(
             'settings.php',
-            __('SEO Pro Stack Custom', 'seoprostackcustom'),
-            __('SEO Pro Stack Custom', 'seoprostackcustom'),
+            __('SEO Pro Custom', 'seoprocustom'),
+            __('SEO Pro Custom', 'seoprocustom'),
             'manage_network_options',
-            SEOProStackCustom_Admin_Manager::PAGE,
-            array('SEOProStackCustom_Admin_Manager', 'render_settings_page')
+            SEOProCustom_Admin_Manager::PAGE,
+            array('SEOProCustom_Admin_Manager', 'render_settings_page')
         );
         // A string, or false for people who cannot see the screen.
         self::$hook = (string) $hook;
         if ('' !== self::$hook) {
             // The browser title names the tab shown, as on each site's screen.
-            add_action('load-' . self::$hook, array('SEOProStackCustom_Admin_Page', 'title_tab'));
+            add_action('load-' . self::$hook, array('SEOProCustom_Admin_Page', 'title_tab'));
         }
     }
 
@@ -89,7 +89,7 @@ class SEOProStackCustom_Network_Manager {
      * @return string
      */
     public static function page_url(array $args = array()) {
-        return add_query_arg(array_merge(array('page' => SEOProStackCustom_Admin_Manager::PAGE), $args), network_admin_url('settings.php'));
+        return add_query_arg(array_merge(array('page' => SEOProCustom_Admin_Manager::PAGE), $args), network_admin_url('settings.php'));
     }
 
     /**
@@ -99,30 +99,30 @@ class SEOProStackCustom_Network_Manager {
      * @return array
      */
     public static function plugin_action_links($links) {
-        array_unshift($links, sprintf('<a href="%s">%s</a>', esc_url(self::page_url()), esc_html__('Settings', 'seoprostackcustom')));
+        array_unshift($links, sprintf('<a href="%s">%s</a>', esc_url(self::page_url()), esc_html__('Settings', 'seoprocustom')));
         return $links;
     }
 
     /**
-     * Render a card's network part (SEOProStackCustom_Settings_Manager::render_card()
+     * Render a card's network part (SEOProCustom_Settings_Manager::render_card()
      * on the network screen): Apply to every site and the sites that differ.
      *
      * @param string $key Card's setting key.
      */
     public static function render_card_network($key) {
-        $id = 'spsc-' . $key . '-network';
+        $id = 'spc-' . $key . '-network';
         ?>
-        <div class="spsc-network">
-            <label class="spsc-network__apply" for="<?php echo esc_attr($id); ?>">
+        <div class="spc-network">
+            <label class="spc-network__apply" for="<?php echo esc_attr($id); ?>">
                 <input type="checkbox"
                        id="<?php echo esc_attr($id); ?>"
-                       data-spsc-network-apply="<?php echo esc_attr($key); ?>"
+                       data-spc-network-apply="<?php echo esc_attr($key); ?>"
                        aria-describedby="<?php echo esc_attr($id); ?>-sites"
-                       <?php checked(SEOProStackCustom_Network_Settings::is_applied($key)); ?> />
-                <?php esc_html_e('Apply to every site', 'seoprostackcustom'); ?>
+                       <?php checked(SEOProCustom_Network_Settings::is_applied($key)); ?> />
+                <?php esc_html_e('Apply to every site', 'seoprocustom'); ?>
             </label>
-            <span class="spsc-status" data-spsc-status="<?php echo esc_attr($key); ?>:network" aria-hidden="true"></span>
-            <div class="spsc-network__sites" id="<?php echo esc_attr($id); ?>-sites">
+            <span class="spc-status" data-spc-status="<?php echo esc_attr($key); ?>:network" aria-hidden="true"></span>
+            <div class="spc-network__sites" id="<?php echo esc_attr($id); ?>-sites">
                 <?php self::render_sites($key); ?>
             </div>
         </div>
@@ -132,7 +132,7 @@ class SEOProStackCustom_Network_Manager {
     /**
      * Render which sites have their own different values for a card, with
      * Make every site the same (sites()). The script draws the same from
-     * an AJAX reply (Network.sites() in admin/js/seoprostackcustom-admin.js).
+     * an AJAX reply (Network.sites() in admin/js/seoprocustom-admin.js).
      *
      * @param string $key Card's setting key.
      */
@@ -151,7 +151,7 @@ class SEOProStackCustom_Network_Manager {
         }
         if ('' !== $sites['copy']) {
             printf(
-                '<p><button type="button" class="button" data-spsc-network-copy="%1$s">%2$s</button></p>',
+                '<p><button type="button" class="button" data-spc-network-copy="%1$s">%2$s</button></p>',
                 esc_attr($key),
                 esc_html($sites['copy'])
             );
@@ -168,29 +168,29 @@ class SEOProStackCustom_Network_Manager {
      * @return array{lines:array<int,array<int,array{text:string,url?:string}>>,copy:string}
      */
     private static function sites($key) {
-        $differences = SEOProStackCustom_Network_Differences::differences();
-        $applied     = SEOProStackCustom_Network_Settings::is_applied($key);
+        $differences = SEOProCustom_Network_Differences::differences();
+        $applied     = SEOProCustom_Network_Settings::is_applied($key);
         if (!$differences['checked']) {
             /* translators: %d: number of sites */
-            return self::note(sprintf(__('This network has more than %d sites, so they are not compared here.', 'seoprostackcustom'), SEOProStackCustom_Network_Differences::MAX_SITES));
+            return self::note(sprintf(__('This network has more than %d sites, so they are not compared here.', 'seoprocustom'), SEOProCustom_Network_Differences::MAX_SITES));
         }
         if (!$differences['total']) {
-            return self::note(__('No site has used SEO Pro Stack Custom yet. Each starts with these settings.', 'seoprostackcustom'));
+            return self::note(__('No site has used SEO Pro Custom yet. Each starts with these settings.', 'seoprocustom'));
         }
         $ids = $differences['cards'][$key] ?? array();
         if (!$ids) {
-            return self::note($applied ? __('Every site uses these settings.', 'seoprostackcustom') : __('Every site has these settings.', 'seoprostackcustom'));
+            return self::note($applied ? __('Every site uses these settings.', 'seoprocustom') : __('Every site has these settings.', 'seoprocustom'));
         }
 
         $count = count($ids);
         $text  = $applied
             /* translators: 1: number of sites that differ, 2: number of sites, 3: list of those sites */
-            ? _n('Every site uses these settings. When they stop applying, %1$d of %2$d sites goes back to different settings of its own: %3$s.', 'Every site uses these settings. When they stop applying, %1$d of %2$d sites go back to different settings of their own: %3$s.', $count, 'seoprostackcustom')
+            ? _n('Every site uses these settings. When they stop applying, %1$d of %2$d sites goes back to different settings of its own: %3$s.', 'Every site uses these settings. When they stop applying, %1$d of %2$d sites go back to different settings of their own: %3$s.', $count, 'seoprocustom')
             /* translators: 1: number of sites that differ, 2: number of sites, 3: list of those sites */
-            : _n('%1$d of %2$d sites has different settings of its own: %3$s.', '%1$d of %2$d sites have different settings of their own: %3$s.', $count, 'seoprostackcustom');
+            : _n('%1$d of %2$d sites has different settings of its own: %3$s.', '%1$d of %2$d sites have different settings of their own: %3$s.', $count, 'seoprocustom');
         return array(
             'lines' => array(self::fill($text, array(1 => $count, 2 => $differences['total'], 3 => self::site_links($key, $ids, $differences['sites'])))),
-            'copy'  => __('Make every site the same', 'seoprostackcustom'),
+            'copy'  => __('Make every site the same', 'seoprocustom'),
         );
     }
 
@@ -227,11 +227,11 @@ class SEOProStackCustom_Network_Manager {
      *
      * @param string                                   $key   Card's setting key.
      * @param int[]                                    $ids   The sites that differ.
-     * @param array<int,array{name:string,url:string}> $sites Site ID => name and address (SEOProStackCustom_Network_Differences::differences()).
+     * @param array<int,array{name:string,url:string}> $sites Site ID => name and address (SEOProCustom_Network_Differences::differences()).
      * @return array<int,array{text:string,url?:string}>
      */
     private static function site_links($key, array $ids, array $sites) {
-        $schema = SEOProStackCustom_Settings::schema();
+        $schema = SEOProCustom_Settings::schema();
         $args   = empty($schema[$key]['tab']) ? array() : array('tab' => (string) $schema[$key]['tab']);
         $links  = array();
         foreach (array_slice($ids, 0, self::SITES_NAMED) as $site_id) {
@@ -244,7 +244,7 @@ class SEOProStackCustom_Network_Manager {
         $more = count($ids) - self::SITES_NAMED;
         if ($more > 0) {
             /* translators: 1: list of sites, 2: number of other sites */
-            $links = self::fill(_n('%1$s and %2$d more', '%1$s and %2$d more', $more, 'seoprostackcustom'), array(1 => $links, 2 => $more));
+            $links = self::fill(_n('%1$s and %2$d more', '%1$s and %2$d more', $more, 'seoprocustom'), array(1 => $links, 2 => $more));
         }
         return $links;
     }
@@ -282,8 +282,8 @@ class SEOProStackCustom_Network_Manager {
      * @return string
      */
     private static function site_url($site_url, array $args) {
-        $url = set_url_scheme(trailingslashit((string) $site_url) . 'wp-admin/' . SEOProStackCustom_Admin_Manager::screen_file(), 'admin');
-        return esc_url_raw(add_query_arg(array_merge(array('page' => SEOProStackCustom_Admin_Manager::PAGE), $args), $url));
+        $url = set_url_scheme(trailingslashit((string) $site_url) . 'wp-admin/' . SEOProCustom_Admin_Manager::screen_file(), 'admin');
+        return esc_url_raw(add_query_arg(array_merge(array('page' => SEOProCustom_Admin_Manager::PAGE), $args), $url));
     }
 
     /**
@@ -292,9 +292,9 @@ class SEOProStackCustom_Network_Manager {
      * @return string Setting key.
      */
     private static function ajax_key() {
-        check_ajax_referer(SEOProStackCustom_Settings::NONCE, 'nonce');
+        check_ajax_referer(SEOProCustom_Settings::NONCE, 'nonce');
         if (!is_multisite() || !current_user_can('manage_network_options')) {
-            wp_send_json_error(array('message' => __('You are not allowed to change the network’s settings.', 'seoprostackcustom')), 403);
+            wp_send_json_error(array('message' => __('You are not allowed to change the network’s settings.', 'seoprocustom')), 403);
         }
         return isset($_POST['key']) ? sanitize_key(wp_unslash($_POST['key'])) : '';
     }
@@ -309,16 +309,16 @@ class SEOProStackCustom_Network_Manager {
         // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized,WordPress.Security.NonceVerification.Missing -- sanitized per schema in set_value(); nonce checked in ajax_key().
         $raw = isset($_POST['value']) ? wp_unslash($_POST['value']) : '';
 
-        $value = SEOProStackCustom_Network_Settings::set_value($key, $raw);
+        $value = SEOProCustom_Network_Settings::set_value($key, $raw);
         if (is_wp_error($value)) {
             wp_send_json_error(array('message' => $value->get_error_message()), 400);
         }
 
-        $card = SEOProStackCustom_Settings::card_of($key);
+        $card = SEOProCustom_Settings::card_of($key);
         wp_send_json_success(array(
             'key'     => $key,
             'value'   => $value,
-            'message' => __('Saved', 'seoprostackcustom'),
+            'message' => __('Saved', 'seoprocustom'),
             'reload'  => false,
             'card'    => $card,
             'sites'   => self::sites($card),
@@ -333,7 +333,7 @@ class SEOProStackCustom_Network_Manager {
         // phpcs:ignore WordPress.Security.NonceVerification.Missing -- nonce checked in ajax_key().
         $apply = isset($_POST['apply']) && '1' === sanitize_key(wp_unslash($_POST['apply']));
 
-        $result = SEOProStackCustom_Network_Settings::apply($key, $apply);
+        $result = SEOProCustom_Network_Settings::apply($key, $apply);
         if (is_wp_error($result)) {
             wp_send_json_error(array('message' => $result->get_error_message()), 400);
         }
@@ -342,8 +342,8 @@ class SEOProStackCustom_Network_Manager {
             'key'     => $key,
             'applied' => $apply,
             'message' => $apply
-                ? __('Every site now uses these settings.', 'seoprostackcustom')
-                : __('Each site uses its own settings again.', 'seoprostackcustom'),
+                ? __('Every site now uses these settings.', 'seoprocustom')
+                : __('Each site uses its own settings again.', 'seoprocustom'),
             'sites'   => self::sites($key),
         ));
     }
@@ -353,7 +353,7 @@ class SEOProStackCustom_Network_Manager {
      */
     public static function ajax_copy() {
         $key     = self::ajax_key();
-        $changed = SEOProStackCustom_Network_Differences::copy($key);
+        $changed = SEOProCustom_Network_Differences::copy($key);
         if (is_wp_error($changed)) {
             wp_send_json_error(array('message' => $changed->get_error_message()), 400);
         }
@@ -363,8 +363,8 @@ class SEOProStackCustom_Network_Manager {
             'changed' => $changed,
             'message' => $changed
                 /* translators: %d: number of sites */
-                ? sprintf(_n('%d site now has these settings.', '%d sites now have these settings.', $changed, 'seoprostackcustom'), $changed)
-                : __('Every site already has these settings.', 'seoprostackcustom'),
+                ? sprintf(_n('%d site now has these settings.', '%d sites now have these settings.', $changed, 'seoprocustom'), $changed)
+                : __('Every site already has these settings.', 'seoprocustom'),
             'sites'   => self::sites($key),
         ));
     }

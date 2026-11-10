@@ -1,10 +1,10 @@
 <?php
 /**
- * SEO Pro Stack Custom admin loader.
+ * SEO Pro Custom admin loader.
  *
  * Loads the settings screen (and on multisite its network screen), the
  * Read Me tab and the Plugins screen notes for replaced plugins, then the
- * plugin's own admin parts (SEOProStackCustom_Setup::admin()). Included from the
+ * plugin's own admin parts (SEOProCustom_Setup::admin()). Included from the
  * main plugin file for admin requests only.
  *
  * SPDX-License-Identifier: GPL-3.0-or-later
@@ -12,14 +12,14 @@
  * Additional terms (GPL-3.0 section 7(b)): ATTRIBUTION.txt
  * Provenance: wpas-e4502af0f07e8a92. Copies, even of part, keep these lines.
  *
- * @package SEOProStackCustom
+ * @package SEOProCustom
  */
 
 if (!defined('ABSPATH')) {
     exit;
 }
 
-$seoprostackcustom_admin_files = array(
+$seoprocustom_admin_files = array(
     'admin/data/readme.php',
     'admin/includes/class-settings-manager.php',
     'admin/includes/class-readme-manager.php',
@@ -29,12 +29,12 @@ $seoprostackcustom_admin_files = array(
     'admin/includes/class-replaced-plugins.php',
 );
 
-foreach ($seoprostackcustom_admin_files as $seoprostackcustom_file) {
-    require_once SEOPROSTACKCUSTOM_DIR . $seoprostackcustom_file;
+foreach ($seoprocustom_admin_files as $seoprocustom_file) {
+    require_once SEOPROCUSTOM_DIR . $seoprocustom_file;
 }
-unset($seoprostackcustom_admin_files, $seoprostackcustom_file);
+unset($seoprocustom_admin_files, $seoprocustom_file);
 
-SEOProStackCustom_Admin_Manager::init();
-SEOProStackCustom_Network_Manager::init();
-SEOProStackCustom_Replaced_Plugins::init();
-SEOProStackCustom_Setup::admin();
+SEOProCustom_Admin_Manager::init();
+SEOProCustom_Network_Manager::init();
+SEOProCustom_Replaced_Plugins::init();
+SEOProCustom_Setup::admin();

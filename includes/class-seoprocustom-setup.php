@@ -1,6 +1,6 @@
 <?php
 /**
- * What makes this plugin SEO Pro Stack Custom: its features, settings tabs,
+ * What makes this plugin SEO Pro Custom: its features, settings tabs,
  * links, settings history and the helpers only it needs.
  *
  * The other files in includes/ and admin/ that the starter plugin also has
@@ -18,7 +18,7 @@
  * Additional terms (GPL-3.0 section 7(b)): ATTRIBUTION.txt
  * Provenance: wpas-9508a2221415b8ce. Copies, even of part, keep these lines.
  *
- * @package SEOProStackCustom
+ * @package SEOProCustom
  * @since 1.0.0
  */
 
@@ -26,12 +26,12 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-final class SEOProStackCustom_Setup {
+final class SEOProCustom_Setup {
 
     /**
      * Built-in features, in the order their cards appear within each tab.
      * Each lives in includes/features/class-{lowercase-hyphenated-name}.php,
-     * for example SEOProStackCustom_Example in class-seoprostackcustom-example.php.
+     * for example SEOProCustom_Example in class-seoprocustom-example.php.
      */
     const FEATURES = array();
 
@@ -42,7 +42,7 @@ final class SEOProStackCustom_Setup {
     const OPTIONAL_FEATURES = array();
 
     /**
-     * Settings version. SEOProStackCustom_Settings::maybe_migrate() runs
+     * Settings version. SEOProCustom_Settings::maybe_migrate() runs
      * migrate() below and every feature's migrate() once per version.
      * After a release, bump it for a new or changed import and add a line.
      *
@@ -59,7 +59,7 @@ final class SEOProStackCustom_Setup {
     /**
      * Slug of the plugin's own top-level menu (add_menu_page()), when it
      * has one: the settings screen is then Settings, the last item in that
-     * menu, and not in WordPress's Settings menu. Empty: Settings → SEO Pro Stack Custom.
+     * menu, and not in WordPress's Settings menu. Empty: Settings → SEO Pro Custom.
      */
     const MENU_PARENT = '';
 
@@ -74,8 +74,8 @@ final class SEOProStackCustom_Setup {
      */
     public static function header_links() {
         return array(
-            'source'  => 'https://github.com/wpallstars/seoprostackcustom',
-            'support' => 'https://github.com/wpallstars/seoprostackcustom/issues',
+            'source'  => 'https://github.com/wpallstars/seoprocustom',
+            'support' => 'https://github.com/wpallstars/seoprocustom/issues',
             'donate'  => 'https://buymeacoffee.com/marcusquinn',
         );
     }
@@ -115,16 +115,16 @@ final class SEOProStackCustom_Setup {
     public static function settings_tabs() {
         return array(
             'general' => array(
-                'label'       => __('General', 'seoprostackcustom'),
-                'description' => __('SEO Pro Stack Custom\'s settings appear here as features are added.', 'seoprostackcustom'),
+                'label'       => __('General', 'seoprocustom'),
+                'description' => __('SEO Pro Custom\'s settings appear here as features are added.', 'seoprocustom'),
             ),
         );
     }
 
     /**
      * Admin requests: load and start the plugin's own admin parts (other
-     * tabs with the seoprostackcustom_admin_tabs filter, scripts with the
-     * seoprostackcustom_admin_enqueue action).
+     * tabs with the seoprocustom_admin_tabs filter, scripts with the
+     * seoprocustom_admin_enqueue action).
      */
     public static function admin() {
     }

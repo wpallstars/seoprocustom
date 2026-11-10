@@ -143,5 +143,5 @@ dark mode switcher (and themes that switch palettes the same way).
   `color-switch-dark`. Check text, backgrounds, borders and palette colours
   chosen in block settings in both.
 
-<!-- spsc-own:start -->
-<!-- spsc-own:end -->
+<!-- spc-own:start -->
+<!-- spc-own:end -->

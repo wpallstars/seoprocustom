@@ -1,14 +1,14 @@
 <?php
 /**
- * SEO Pro Stack Custom settings tabs.
+ * SEO Pro Custom settings tabs.
  *
- * Renders setting cards from SEOProStackCustom_Settings::schema(). Each top-level
+ * Renders setting cards from SEOProCustom_Settings::schema(). Each top-level
  * setting is a card with a switch; child settings appear in an expandable
- * panel. Controls save instantly via AJAX (see admin/js/seoprostackcustom-admin.js).
+ * panel. Controls save instantly via AJAX (see admin/js/seoprocustom-admin.js).
  *
  * On the network screen (multisite) the same cards show and save network
  * values, with Apply to every site and the sites that differ
- * (SEOProStackCustom_Network_Manager). On a site, a card the network applies to
+ * (SEOProCustom_Network_Manager). On a site, a card the network applies to
  * every site shows its values locked.
  *
  * SPDX-License-Identifier: GPL-3.0-or-later
@@ -16,7 +16,7 @@
  * Additional terms (GPL-3.0 section 7(b)): ATTRIBUTION.txt
  * Provenance: wpas-e4502af0f07e8a92. Copies, even of part, keep these lines.
  *
- * @package SEOProStackCustom
+ * @package SEOProCustom
  * @since 0.2.0
  */
 
@@ -26,7 +26,7 @@ if (!defined('ABSPATH')) {
 
 // One schema-driven view: field renderers share card, accessibility and network
 // context. The method count includes small private renderers, not separate services.
-class SEOProStackCustom_Settings_Manager { // NOSONAR: keep the cohesive settings view and its private control renderers together (S1448).
+class SEOProCustom_Settings_Manager { // NOSONAR: keep the cohesive settings view and its private control renderers together (S1448).
 
     /** Control renderer for each child field type (render_field()); any other type is text. */
     private const CONTROLS = array(
@@ -63,7 +63,7 @@ class SEOProStackCustom_Settings_Manager { // NOSONAR: keep the cohesive setting
      * @return mixed
      */
     private static function value($key) {
-        return is_network_admin() ? SEOProStackCustom_Network_Settings::value($key) : SEOProStackCustom_Settings::get($key);
+        return is_network_admin() ? SEOProCustom_Network_Settings::value($key) : SEOProCustom_Settings::get($key);
     }
 
     /**
@@ -74,7 +74,7 @@ class SEOProStackCustom_Settings_Manager { // NOSONAR: keep the cohesive setting
      * @return array
      */
     public static function fields_for_tab($tab) {
-        return is_network_admin() ? SEOProStackCustom_Network_Settings::fields_for_tab($tab) : SEOProStackCustom_Settings::fields_for_tab($tab);
+        return is_network_admin() ? SEOProCustom_Network_Settings::fields_for_tab($tab) : SEOProCustom_Settings::fields_for_tab($tab);
     }
 
     /**
@@ -84,44 +84,44 @@ class SEOProStackCustom_Settings_Manager { // NOSONAR: keep the cohesive setting
      * and changed here.
      *
      * @param string $query Search text.
-     * @param array  $tabs  Registered tabs (see SEOProStackCustom_Admin_Manager::get_tabs()).
+     * @param array  $tabs  Registered tabs (see SEOProCustom_Admin_Manager::get_tabs()).
      */
     public static function render_search($query, array $tabs) {
         $groups  = array();
         $network = is_network_admin();
-        foreach (SEOProStackCustom_Settings::search($query) as $key => $field) {
-            if (isset($tabs[$field['tab']]) && (!$network || SEOProStackCustom_Network_Settings::eligible((string) $key))) {
+        foreach (SEOProCustom_Settings::search($query) as $key => $field) {
+            if (isset($tabs[$field['tab']]) && (!$network || SEOProCustom_Network_Settings::eligible((string) $key))) {
                 $groups[$field['tab']][$key] = $field;
             }
         }
         $count = array_sum(array_map('count', $groups));
         ?>
-        <div class="spsc-section">
-            <div class="spsc-section__intro">
-                <h2 class="spsc-section__title">
+        <div class="spc-section">
+            <div class="spc-section__intro">
+                <h2 class="spc-section__title">
                     <?php
                     /* translators: %s: search text */
-                    echo esc_html(sprintf(__('Results for “%s”', 'seoprostackcustom'), $query));
+                    echo esc_html(sprintf(__('Results for “%s”', 'seoprocustom'), $query));
                     ?>
                 </h2>
-                <p class="spsc-section__desc" role="status">
+                <p class="spc-section__desc" role="status">
                     <?php
                     // role="status" rather than <output>: screen readers announce <output> changes unevenly.
                     echo esc_html($count
                         /* translators: %d: number of matching features */
-                        ? sprintf(_n('%d feature found.', '%d features found.', $count, 'seoprostackcustom'), $count)
-                        : __('No features match. Try another word.', 'seoprostackcustom'));
+                        ? sprintf(_n('%d feature found.', '%d features found.', $count, 'seoprocustom'), $count)
+                        : __('No features match. Try another word.', 'seoprocustom'));
                     ?>
                 </p>
                 <?php if ($count) : ?>
-                    <p class="spsc-section__hint"><?php esc_html_e('Changes are saved automatically.', 'seoprostackcustom'); ?></p>
+                    <p class="spc-section__hint"><?php esc_html_e('Changes are saved automatically.', 'seoprocustom'); ?></p>
                 <?php endif; ?>
             </div>
             <?php foreach ($groups as $tab => $fields) : ?>
-                <h3 class="spsc-search__group">
-                    <a href="<?php echo esc_url(SEOProStackCustom_Admin_Manager::tab_url($tab)); ?>"><?php echo esc_html($tabs[$tab]['label']); ?></a>
+                <h3 class="spc-search__group">
+                    <a href="<?php echo esc_url(SEOProCustom_Admin_Manager::tab_url($tab)); ?>"><?php echo esc_html($tabs[$tab]['label']); ?></a>
                 </h3>
-                <div class="spsc-cards">
+                <div class="spc-cards">
                     <?php
                     self::$query = (string) $query;
                     foreach ($fields as $key => $field) {
@@ -146,20 +146,20 @@ class SEOProStackCustom_Settings_Manager { // NOSONAR: keep the cohesive setting
         $fields  = self::fields_for_tab($tab);
         $network = is_network_admin();
         ?>
-        <div class="spsc-section">
-            <div class="spsc-section__intro">
-                <h2 class="spsc-section__title"><?php echo esc_html($title); ?></h2>
+        <div class="spc-section">
+            <div class="spc-section__intro">
+                <h2 class="spc-section__title"><?php echo esc_html($title); ?></h2>
                 <?php if ($description) : ?>
-                    <p class="spsc-section__desc"><?php echo esc_html($description); ?></p>
+                    <p class="spc-section__desc"><?php echo esc_html($description); ?></p>
                 <?php endif; ?>
                 <?php if ($fields && $network) : ?>
-                    <p class="spsc-section__hint"><?php esc_html_e('New sites start with these settings. Apply a card to every site to set it for every site, so sites cannot change it. Changes are saved automatically.', 'seoprostackcustom'); ?></p>
+                    <p class="spc-section__hint"><?php esc_html_e('New sites start with these settings. Apply a card to every site to set it for every site, so sites cannot change it. Changes are saved automatically.', 'seoprocustom'); ?></p>
                 <?php elseif ($fields) : ?>
-                    <p class="spsc-section__hint"><?php esc_html_e('Changes are saved automatically.', 'seoprostackcustom'); ?></p>
+                    <p class="spc-section__hint"><?php esc_html_e('Changes are saved automatically.', 'seoprocustom'); ?></p>
                 <?php endif; ?>
             </div>
             <?php if ($fields) : ?>
-                <div class="spsc-cards">
+                <div class="spc-cards">
                     <?php
                     foreach ($fields as $key => $field) {
                         self::render_card($key, $field);
@@ -167,8 +167,8 @@ class SEOProStackCustom_Settings_Manager { // NOSONAR: keep the cohesive setting
                     ?>
                 </div>
             <?php else : ?>
-                <div class="spsc-card spsc-empty">
-                    <p><?php esc_html_e('No settings yet.', 'seoprostackcustom'); ?></p>
+                <div class="spc-card spc-empty">
+                    <p><?php esc_html_e('No settings yet.', 'seoprocustom'); ?></p>
                 </div>
             <?php endif; ?>
             <?php
@@ -179,16 +179,16 @@ class SEOProStackCustom_Settings_Manager { // NOSONAR: keep the cohesive setting
                  *
                  * @param string $tab Tab slug.
                  */
-                do_action('seoprostackcustom_network_settings_tab_after', $tab);
+                do_action('seoprocustom_network_settings_tab_after', $tab);
             } else {
                 /**
                  * Fires after a settings tab's cards, for sections that are not
                  * settings (such as example data). Not on the network screen
-                 * (seoprostackcustom_network_settings_tab_after).
+                 * (seoprocustom_network_settings_tab_after).
                  *
                  * @param string $tab Tab slug.
                  */
-                do_action('seoprostackcustom_settings_tab_after', $tab);
+                do_action('seoprocustom_settings_tab_after', $tab);
             }
             ?>
         </div>
@@ -204,43 +204,43 @@ class SEOProStackCustom_Settings_Manager { // NOSONAR: keep the cohesive setting
     public static function render_card($key, array $field) {
         $network  = is_network_admin();
         $children = self::visible_children($key);
-        // A feature may render its whole panel itself (seoprostackcustom_setting_panel);
+        // A feature may render its whole panel itself (seoprocustom_setting_panel);
         // the network screen shows only the child settings the network can set.
         $has_panel = $children || (!$network && !empty($field['panel']));
-        $id        = 'spsc-' . $key;
+        $id        = 'spc-' . $key;
         $panel_id  = $id . '-panel';
         $is_bool   = 'bool' === $field['type'];
         $value     = self::value($key);
         // On a site, a card the network applies to every site: its switch
         // and enforced settings are disabled (render_field()).
-        $locked      = !$network && SEOProStackCustom_Network_Settings::is_enforced($key);
+        $locked      = !$network && SEOProCustom_Network_Settings::is_enforced($key);
         $describedby = $id . self::DESC . ($locked ? ' ' . $id . '-locked' : '');
         ?>
         <section class="<?php echo esc_attr(self::card_classes($key, $is_bool && $value, $has_panel, $locked)); ?>" data-setting-card="<?php echo esc_attr($key); ?>">
             <?php // Clicking the header (outside the switch) opens the options; only the switch changes the value. ?>
-            <div class="spsc-setting__header"<?php echo $has_panel ? ' data-spsc-panel-toggle' : ''; ?>>
+            <div class="spc-setting__header"<?php echo $has_panel ? ' data-spc-panel-toggle' : ''; ?>>
                 <?php if ($is_bool) : ?>
-                    <span class="spsc-switch">
+                    <span class="spc-switch">
                         <input type="checkbox"
                                role="switch"
-                               class="spsc-switch__input"
+                               class="spc-switch__input"
                                id="<?php echo esc_attr($id); ?>"
-                               data-spsc-setting="<?php echo esc_attr($key); ?>"
+                               data-spc-setting="<?php echo esc_attr($key); ?>"
                                aria-labelledby="<?php echo esc_attr($id); ?>-title"
                                aria-describedby="<?php echo esc_attr($describedby); ?>"
                                <?php checked((bool) $value); ?>
                                <?php disabled($locked); ?> />
-                        <span class="spsc-switch__track" aria-hidden="true"></span>
+                        <span class="spc-switch__track" aria-hidden="true"></span>
                     </span>
                 <?php endif; ?>
 
-                <div class="spsc-setting__text">
-                    <div class="spsc-setting__title-row">
-                        <span class="spsc-setting__title" id="<?php echo esc_attr($id); ?>-title"><?php echo esc_html($field['label']); ?></span>
-                        <span class="spsc-status" data-spsc-status="<?php echo esc_attr($key); ?>" aria-hidden="true"></span>
+                <div class="spc-setting__text">
+                    <div class="spc-setting__title-row">
+                        <span class="spc-setting__title" id="<?php echo esc_attr($id); ?>-title"><?php echo esc_html($field['label']); ?></span>
+                        <span class="spc-status" data-spc-status="<?php echo esc_attr($key); ?>" aria-hidden="true"></span>
                     </div>
                     <?php if (!empty($field['description'])) : ?>
-                        <p class="spsc-setting__desc" id="<?php echo esc_attr($id . self::DESC); ?>"><?php echo esc_html($field['description']); ?></p>
+                        <p class="spc-setting__desc" id="<?php echo esc_attr($id . self::DESC); ?>"><?php echo esc_html($field['description']); ?></p>
                     <?php endif; ?>
                     <?php self::render_replaces($field); ?>
                     <?php
@@ -252,24 +252,24 @@ class SEOProStackCustom_Settings_Manager { // NOSONAR: keep the cohesive setting
 
                 <?php if ($has_panel) : ?>
                     <button type="button"
-                            class="spsc-setting__expand button-link"
+                            class="spc-setting__expand button-link"
                             aria-expanded="false"
                             aria-controls="<?php echo esc_attr($panel_id); ?>">
-                        <span class="spsc-setting__expand-label"><?php esc_html_e('Options', 'seoprostackcustom'); ?></span>
+                        <span class="spc-setting__expand-label"><?php esc_html_e('Options', 'seoprocustom'); ?></span>
                         <span class="dashicons dashicons-arrow-down-alt2" aria-hidden="true"></span>
-                        <span class="screen-reader-text"><?php echo esc_html(sprintf(/* translators: %s: setting name */ __('for %s', 'seoprostackcustom'), $field['label'])); ?></span>
+                        <span class="screen-reader-text"><?php echo esc_html(sprintf(/* translators: %s: setting name */ __('for %s', 'seoprocustom'), $field['label'])); ?></span>
                     </button>
                 <?php endif; ?>
             </div>
 
             <?php
             if ($network) {
-                SEOProStackCustom_Network_Manager::render_card_network($key);
+                SEOProCustom_Network_Manager::render_card_network($key);
             }
             ?>
 
             <?php if ($has_panel) : ?>
-                <div class="spsc-setting__panel" id="<?php echo esc_attr($panel_id); ?>" hidden>
+                <div class="spc-setting__panel" id="<?php echo esc_attr($panel_id); ?>" hidden>
                     <?php self::render_panel($key, $field, $children); ?>
                 </div>
             <?php endif; ?>
@@ -286,11 +286,11 @@ class SEOProStackCustom_Settings_Manager { // NOSONAR: keep the cohesive setting
      */
     private static function render_locked_note($id, array $field) {
         ?>
-        <p class="spsc-locked-note" id="<?php echo esc_attr($id); ?>-locked">
+        <p class="spc-locked-note" id="<?php echo esc_attr($id); ?>-locked">
             <span class="dashicons dashicons-lock" aria-hidden="true"></span>
-            <?php esc_html_e('The network administrator sets this for every site.', 'seoprostackcustom'); ?>
+            <?php esc_html_e('The network administrator sets this for every site.', 'seoprocustom'); ?>
             <?php if (current_user_can('manage_network_options')) : ?>
-                <a href="<?php echo esc_url(SEOProStackCustom_Network_Manager::page_url(empty($field['tab']) ? array() : array('tab' => (string) $field['tab']))); ?>"><?php esc_html_e('Change it for the network', 'seoprostackcustom'); ?></a>
+                <a href="<?php echo esc_url(SEOProCustom_Network_Manager::page_url(empty($field['tab']) ? array() : array('tab' => (string) $field['tab']))); ?>"><?php esc_html_e('Change it for the network', 'seoprocustom'); ?></a>
             <?php endif; ?>
         </p>
         <?php
@@ -311,22 +311,22 @@ class SEOProStackCustom_Settings_Manager { // NOSONAR: keep the cohesive setting
             /**
              * Fires at the top of a setting's options panel on the
              * network screen (multisite), for notes about the
-             * whole network (wrap output in .spsc-panel-note).
+             * whole network (wrap output in .spc-panel-note).
              *
              * @param string $key   Setting key.
              * @param array  $field Schema entry.
              */
-            do_action('seoprostackcustom_network_setting_panel', $key, $field);
+            do_action('seoprocustom_network_setting_panel', $key, $field);
         } else {
             /**
              * Fires at the top of a setting's options panel, for status
-             * such as progress (wrap output in .spsc-panel-note). Not on
-             * the network screen (seoprostackcustom_network_setting_panel).
+             * such as progress (wrap output in .spc-panel-note). Not on
+             * the network screen (seoprocustom_network_setting_panel).
              *
              * @param string $key   Setting key.
              * @param array  $field Schema entry.
              */
-            do_action('seoprostackcustom_setting_panel', $key, $field);
+            do_action('seoprocustom_setting_panel', $key, $field);
         }
 
         $troubleshooting = array_filter($children, function ($child) {
@@ -339,9 +339,9 @@ class SEOProStackCustom_Settings_Manager { // NOSONAR: keep the cohesive setting
             return;
         }
         ?>
-        <details class="spsc-troubleshooting"<?php echo self::troubleshooting_open($key, $troubleshooting) ? ' open' : ''; ?>>
-            <summary class="spsc-troubleshooting__summary"><?php esc_html_e('Troubleshooting', 'seoprostackcustom'); ?></summary>
-            <p class="spsc-troubleshooting__intro"><?php esc_html_e('Leave these as they are unless something is missing or broken.', 'seoprostackcustom'); ?></p>
+        <details class="spc-troubleshooting"<?php echo self::troubleshooting_open($key, $troubleshooting) ? ' open' : ''; ?>>
+            <summary class="spc-troubleshooting__summary"><?php esc_html_e('Troubleshooting', 'seoprocustom'); ?></summary>
+            <p class="spc-troubleshooting__intro"><?php esc_html_e('Leave these as they are unless something is missing or broken.', 'seoprocustom'); ?></p>
             <?php
             foreach ($troubleshooting as $child_key => $child) {
                 self::render_field($child_key, $child);
@@ -377,7 +377,7 @@ class SEOProStackCustom_Settings_Manager { // NOSONAR: keep the cohesive setting
          * @param bool   $open Whether it starts open (false).
          * @param string $key  Parent setting key.
          */
-        return (bool) apply_filters('seoprostackcustom_troubleshooting_open', false, $key);
+        return (bool) apply_filters('seoprocustom_troubleshooting_open', false, $key);
     }
 
     /**
@@ -431,8 +431,8 @@ class SEOProStackCustom_Settings_Manager { // NOSONAR: keep the cohesive setting
      */
     private static function visible_children($key) {
         $network = is_network_admin();
-        return array_filter(SEOProStackCustom_Settings::children_of($key), function ($child, $child_key) use ($network) {
-            return empty($child['hidden']) && (!$network || SEOProStackCustom_Network_Settings::eligible((string) $child_key));
+        return array_filter(SEOProCustom_Settings::children_of($key), function ($child, $child_key) use ($network) {
+            return empty($child['hidden']) && (!$network || SEOProCustom_Network_Settings::eligible((string) $child_key));
         }, ARRAY_FILTER_USE_BOTH);
     }
 
@@ -448,18 +448,18 @@ class SEOProStackCustom_Settings_Manager { // NOSONAR: keep the cohesive setting
      * @return string
      */
     private static function card_classes($key, $is_on, $has_panel, $locked) {
-        $applied = is_network_admin() && SEOProStackCustom_Network_Settings::is_applied($key);
-        return 'spsc-card spsc-setting' . ($is_on ? ' is-on' : '') . ($has_panel ? ' has-panel' : '')
+        $applied = is_network_admin() && SEOProCustom_Network_Settings::is_applied($key);
+        return 'spc-card spc-setting' . ($is_on ? ' is-on' : '') . ($has_panel ? ' has-panel' : '')
             . ($locked ? ' is-locked' : '') . ($applied ? ' is-applied' : '');
     }
 
     /**
      * Note which plugins a setting replaces. While one is active the setting
-     * waits (SEOProStackCustom_Feature::replaced_active()); say so, with a
+     * waits (SEOProCustom_Feature::replaced_active()); say so, with a
      * deactivate link where the user can deactivate it here. The network
      * screen notes only plugins active for the whole network, as each
      * site's own are for that site (deactivated on the network's Plugins
-     * screen, so no link). seoprostackcustom_replaces_link can change or drop the
+     * screen, so no link). seoprocustom_replaces_link can change or drop the
      * link, for a plugin with a step to take first (an import).
      *
      * @param array $field Schema entry.
@@ -470,7 +470,7 @@ class SEOProStackCustom_Settings_Manager { // NOSONAR: keep the cohesive setting
         }
 
         $network = is_network_admin();
-        $active  = $network ? self::network_active_plugins() : SEOProStackCustom_Feature::active_plugins();
+        $active  = $network ? self::network_active_plugins() : SEOProCustom_Feature::active_plugins();
         $site    = $network ? array() : self::active_plugins_by_slug();
         $items  = array();
         $links  = array();
@@ -484,11 +484,11 @@ class SEOProStackCustom_Settings_Manager { // NOSONAR: keep the cohesive setting
             if (isset($site[$slug]) && current_user_can('deactivate_plugin', $site[$slug])) {
                 // Comes back to this tab, where the setting then takes over.
                 $link = array(
-                    'url'   => SEOProStackCustom_Replaced_Plugins::deactivate_url($site[$slug]),
+                    'url'   => SEOProCustom_Replaced_Plugins::deactivate_url($site[$slug]),
                     /* translators: %s: plugin name */
-                    'label' => sprintf(__('Deactivate %s', 'seoprostackcustom'), $name),
+                    'label' => sprintf(__('Deactivate %s', 'seoprocustom'), $name),
                 );
-                $link = apply_filters('seoprostackcustom_replaces_link', $link, (string) $slug, $site[$slug], (string) $name);
+                $link = apply_filters('seoprocustom_replaces_link', $link, (string) $slug, $site[$slug], (string) $name);
                 if (is_array($link) && !empty($link['url']) && isset($link['label']) && '' !== (string) $link['label']) {
                     $links[] = sprintf('<a href="%1$s">%2$s</a>', esc_url((string) $link['url']), esc_html((string) $link['label']));
                 }
@@ -496,15 +496,15 @@ class SEOProStackCustom_Settings_Manager { // NOSONAR: keep the cohesive setting
         }
 
         printf(
-            '<p class="spsc-replaces">%1$s %2$s</p>',
-            esc_html__('Replaces:', 'seoprostackcustom'),
+            '<p class="spc-replaces">%1$s %2$s</p>',
+            esc_html__('Replaces:', 'seoprocustom'),
             implode(', ', $items) // phpcs:ignore WordPress.Security.EscapeOutput -- escaped above.
         );
         if ($busy) {
             printf(
-                '<p class="spsc-replaces spsc-replaces__active">%1$s %2$s</p>',
+                '<p class="spc-replaces spc-replaces__active">%1$s %2$s</p>',
                 /* translators: %s: plugin names */
-                esc_html(sprintf(__('%s is still active, so it does this job and this setting waits until it is deactivated.', 'seoprostackcustom'), implode(', ', $busy))),
+                esc_html(sprintf(__('%s is still active, so it does this job and this setting waits until it is deactivated.', 'seoprocustom'), implode(', ', $busy))),
                 implode(' · ', $links) // phpcs:ignore WordPress.Security.EscapeOutput -- escaped above.
             );
         }
@@ -535,7 +535,7 @@ class SEOProStackCustom_Settings_Manager { // NOSONAR: keep the cohesive setting
         static $active = null;
         if (null === $active) {
             $active = array();
-            foreach (SEOProStackCustom_Feature::stored_active_plugins() as $file) {
+            foreach (SEOProCustom_Feature::stored_active_plugins() as $file) {
                 $slug = dirname((string) $file);
                 if ('.' !== $slug) {
                     $active[$slug] = (string) $file;
@@ -555,37 +555,37 @@ class SEOProStackCustom_Settings_Manager { // NOSONAR: keep the cohesive setting
      */
     public static function render_field($key, array $field) {
         $value   = self::value($key);
-        $id      = 'spsc-' . $key;
+        $id      = 'spc-' . $key;
         $desc_id = $id . self::DESC;
-        $attrs   = sprintf('id="%1$s" data-spsc-setting="%2$s" aria-describedby="%3$s"', esc_attr($id), esc_attr($key), esc_attr($desc_id));
+        $attrs   = sprintf('id="%1$s" data-spc-setting="%2$s" aria-describedby="%3$s"', esc_attr($id), esc_attr($key), esc_attr($desc_id));
         $is_multi = 'multi' === $field['type'];
-        $locked   = !is_network_admin() && SEOProStackCustom_Network_Settings::is_enforced($key);
+        $locked   = !is_network_admin() && SEOProCustom_Network_Settings::is_enforced($key);
         ?>
-        <div class="spsc-field">
+        <div class="spc-field">
             <?php if ($is_multi) : ?>
-                <span class="spsc-field__label" id="<?php echo esc_attr($id); ?>-label"><?php echo esc_html($field['label']); ?></span>
+                <span class="spc-field__label" id="<?php echo esc_attr($id); ?>-label"><?php echo esc_html($field['label']); ?></span>
             <?php else : ?>
-                <label class="spsc-field__label" for="<?php echo esc_attr($id); ?>"><?php echo esc_html($field['label']); ?></label>
+                <label class="spc-field__label" for="<?php echo esc_attr($id); ?>"><?php echo esc_html($field['label']); ?></label>
             <?php endif; ?>
-            <div class="spsc-field__control">
+            <div class="spc-field__control">
                 <?php
                 // A disabled fieldset disables every control in it, buttons
                 // included (tokens, Select all, pictures).
                 if ($locked) {
-                    echo '<fieldset class="spsc-setting__fields" disabled>';
+                    echo '<fieldset class="spc-setting__fields" disabled>';
                 }
                 $method = isset(self::CONTROLS[$field['type']]) ? self::CONTROLS[$field['type']] : 'render_text';
                 self::$method($key, $field, $value, $attrs);
                 ?>
-                <span class="spsc-status" data-spsc-status="<?php echo esc_attr($key); ?>" aria-hidden="true"></span>
+                <span class="spc-status" data-spc-status="<?php echo esc_attr($key); ?>" aria-hidden="true"></span>
                 <?php if (!empty($field['description']) || !empty($field['tokens'])) : ?>
                     <p class="description" id="<?php echo esc_attr($desc_id); ?>">
                         <?php echo esc_html(isset($field['description']) ? $field['description'] : ''); ?>
                         <?php if (!empty($field['tokens'])) : ?>
-                            <span class="spsc-tokens">
-                                <?php esc_html_e('Tokens:', 'seoprostackcustom'); ?>
+                            <span class="spc-tokens">
+                                <?php esc_html_e('Tokens:', 'seoprocustom'); ?>
                                 <?php foreach ($field['tokens'] as $token) : ?>
-                                    <button type="button" class="spsc-token" data-token="<?php echo esc_attr($token); ?>" data-target="<?php echo esc_attr($id); ?>" title="<?php esc_attr_e('Insert token', 'seoprostackcustom'); ?>"><code><?php echo esc_html($token); ?></code></button>
+                                    <button type="button" class="spc-token" data-token="<?php echo esc_attr($token); ?>" data-target="<?php echo esc_attr($id); ?>" title="<?php esc_attr_e('Insert token', 'seoprocustom'); ?>"><code><?php echo esc_html($token); ?></code></button>
                                 <?php endforeach; ?>
                             </span>
                         <?php endif; ?>
@@ -613,11 +613,11 @@ class SEOProStackCustom_Settings_Manager { // NOSONAR: keep the cohesive setting
      * @param string $key   Setting key.
      * @param array  $field Schema entry.
      * @param mixed  $value Current value.
-     * @param string $attrs Escaped id, data-spsc-setting and aria-describedby.
+     * @param string $attrs Escaped id, data-spc-setting and aria-describedby.
      */
     private static function render_select($key, array $field, $value, $attrs) {
         printf('<select %s>', $attrs); // phpcs:ignore WordPress.Security.EscapeOutput -- escaped in render_field().
-        $choices = SEOProStackCustom_Settings::options_for($field);
+        $choices = SEOProCustom_Settings::options_for($field);
         if (!empty($field['open']) && '' !== (string) $value && !array_key_exists((string) $value, $choices)) {
             // A saved choice whose plugin is not loaded here stays shown.
             $choices[(string) $value] = (string) $value;
@@ -643,16 +643,16 @@ class SEOProStackCustom_Settings_Manager { // NOSONAR: keep the cohesive setting
      * @param string $key   Setting key.
      * @param array  $field Schema entry.
      * @param mixed  $value Current value.
-     * @param string $attrs Escaped id, data-spsc-setting and aria-describedby.
+     * @param string $attrs Escaped id, data-spc-setting and aria-describedby.
      */
     private static function render_multi($key, array $field, $value, $attrs) {
-        $id      = 'spsc-' . $key;
+        $id      = 'spc-' . $key;
         $chosen  = array_map('strval', (array) $value);
-        $choices = SEOProStackCustom_Settings::options_for($field);
-        $locked  = SEOProStackCustom_Settings::locked_values($field);
+        $choices = SEOProCustom_Settings::options_for($field);
+        $locked  = SEOProCustom_Settings::locked_values($field);
         // With some plugins skipped on this request, a saved
         // choice may belong to one of them; keep it too.
-        if (!empty($field['open']) || SEOProStackCustom_Feature::plugins_skipped()) {
+        if (!empty($field['open']) || SEOProCustom_Feature::plugins_skipped()) {
             // Saved items that are not registered right now stay visible so they can be unticked.
             foreach (array_diff($chosen, array_map('strval', array_keys($choices))) as $missing) {
                 $choices[$missing] = $missing;
@@ -678,36 +678,36 @@ class SEOProStackCustom_Settings_Manager { // NOSONAR: keep the cohesive setting
         if ($long) {
             // Long lists (such as every active plugin) scroll, with quick choices.
             printf(
-                '<span class="spsc-checkboxes__all"><button type="button" class="button-link" data-spsc-check-all="%1$s">%2$s</button> · <button type="button" class="button-link" data-spsc-check-none="%1$s">%3$s</button></span>',
+                '<span class="spc-checkboxes__all"><button type="button" class="button-link" data-spc-check-all="%1$s">%2$s</button> · <button type="button" class="button-link" data-spc-check-none="%1$s">%3$s</button></span>',
                 esc_attr($id),
-                esc_html__('Select all', 'seoprostackcustom'),
-                esc_html__('Clear', 'seoprostackcustom')
+                esc_html__('Select all', 'seoprocustom'),
+                esc_html__('Clear', 'seoprocustom')
             );
         }
-        // The group carries data-spsc-setting; the JS saves every checked value.
+        // The group carries data-spc-setting; the JS saves every checked value.
         printf(
-            '<fieldset class="spsc-checkboxes%3$s"%4$s data-spsc-multi %1$s aria-labelledby="%2$s">',
+            '<fieldset class="spc-checkboxes%3$s"%4$s data-spc-multi %1$s aria-labelledby="%2$s">',
             $attrs, // phpcs:ignore WordPress.Security.EscapeOutput -- escaped in render_field().
             esc_attr($id . '-label'),
             $long ? ' is-long' : '',
-            $ordered ? ' data-spsc-ordered' : ''
+            $ordered ? ' data-spc-ordered' : ''
         );
         foreach ($choices as $option_value => $option_label) {
             if (in_array((string) $option_value, $locked, true)) {
                 printf(
-                    '<label class="spsc-checkbox is-locked"><input type="checkbox" value="%1$s" checked disabled data-spsc-locked /> %2$s <span class="dashicons dashicons-lock" aria-hidden="true"></span><span class="screen-reader-text">%3$s</span></label>',
+                    '<label class="spc-checkbox is-locked"><input type="checkbox" value="%1$s" checked disabled data-spc-locked /> %2$s <span class="dashicons dashicons-lock" aria-hidden="true"></span><span class="screen-reader-text">%3$s</span></label>',
                     esc_attr((string) $option_value),
                     esc_html($option_label),
-                    esc_html__('(always chosen)', 'seoprostackcustom')
+                    esc_html__('(always chosen)', 'seoprocustom')
                 );
                 continue;
             }
             if ($ordered) {
                 // A handle beside the label, so dragging it never ticks the box.
                 printf(
-                    '<div class="spsc-checkbox-row"><button type="button" class="spsc-checkbox__handle" aria-label="%1$s"><span class="dashicons dashicons-menu" aria-hidden="true"></span></button><label class="spsc-checkbox"><input type="checkbox" value="%2$s"%3$s /> %4$s</label></div>',
+                    '<div class="spc-checkbox-row"><button type="button" class="spc-checkbox__handle" aria-label="%1$s"><span class="dashicons dashicons-menu" aria-hidden="true"></span></button><label class="spc-checkbox"><input type="checkbox" value="%2$s"%3$s /> %4$s</label></div>',
                     /* translators: %s: a choice, such as Facebook. */
-                    esc_attr(sprintf(__('Move %s: drag, or press the up or down arrow key', 'seoprostackcustom'), $option_label)),
+                    esc_attr(sprintf(__('Move %s: drag, or press the up or down arrow key', 'seoprocustom'), $option_label)),
                     esc_attr((string) $option_value),
                     checked(in_array((string) $option_value, $chosen, true), true, false),
                     esc_html($option_label)
@@ -715,7 +715,7 @@ class SEOProStackCustom_Settings_Manager { // NOSONAR: keep the cohesive setting
                 continue;
             }
             printf(
-                '<label class="spsc-checkbox"><input type="checkbox" value="%1$s"%2$s /> %3$s</label>',
+                '<label class="spc-checkbox"><input type="checkbox" value="%1$s"%2$s /> %3$s</label>',
                 esc_attr((string) $option_value),
                 checked(in_array((string) $option_value, $chosen, true), true, false),
                 esc_html($option_label)
@@ -723,10 +723,10 @@ class SEOProStackCustom_Settings_Manager { // NOSONAR: keep the cohesive setting
         }
         echo '</fieldset>';
         if ($ordered) {
-            printf('<p class="spsc-ordered-help">%s</p>', esc_html__('Drag the handles to change the order.', 'seoprostackcustom'));
+            printf('<p class="spc-ordered-help">%s</p>', esc_html__('Drag the handles to change the order.', 'seoprocustom'));
         }
         if ($locked) {
-            printf('<p class="spsc-locked-help">%s</p>', esc_html__('Choices with a lock are always chosen.', 'seoprostackcustom'));
+            printf('<p class="spc-locked-help">%s</p>', esc_html__('Choices with a lock are always chosen.', 'seoprocustom'));
         }
     }
 
@@ -736,7 +736,7 @@ class SEOProStackCustom_Settings_Manager { // NOSONAR: keep the cohesive setting
      * @param string $key   Setting key.
      * @param array  $field Schema entry.
      * @param mixed  $value Current value.
-     * @param string $attrs Escaped id, data-spsc-setting and aria-describedby.
+     * @param string $attrs Escaped id, data-spc-setting and aria-describedby.
      */
     private static function render_url($key, array $field, $value, $attrs) {
         printf(
@@ -753,7 +753,7 @@ class SEOProStackCustom_Settings_Manager { // NOSONAR: keep the cohesive setting
      * @param string $key   Setting key.
      * @param array  $field Schema entry.
      * @param mixed  $value Current value.
-     * @param string $attrs Escaped id, data-spsc-setting and aria-describedby.
+     * @param string $attrs Escaped id, data-spc-setting and aria-describedby.
      */
     private static function render_times($key, array $field, $value, $attrs) {
         printf(
@@ -770,7 +770,7 @@ class SEOProStackCustom_Settings_Manager { // NOSONAR: keep the cohesive setting
      * @param string $key   Setting key.
      * @param array  $field Schema entry.
      * @param mixed  $value Current value.
-     * @param string $attrs Escaped id, data-spsc-setting and aria-describedby.
+     * @param string $attrs Escaped id, data-spc-setting and aria-describedby.
      */
     private static function render_int($key, array $field, $value, $attrs) {
         printf(
@@ -781,7 +781,7 @@ class SEOProStackCustom_Settings_Manager { // NOSONAR: keep the cohesive setting
             esc_attr(isset($field['max']) ? (string) $field['max'] : '')
         );
         if (!empty($field['unit'])) {
-            echo ' <span class="spsc-field__unit">' . esc_html($field['unit']) . '</span>';
+            echo ' <span class="spc-field__unit">' . esc_html($field['unit']) . '</span>';
         }
     }
 
@@ -791,7 +791,7 @@ class SEOProStackCustom_Settings_Manager { // NOSONAR: keep the cohesive setting
      * @param string $key   Setting key.
      * @param array  $field Schema entry.
      * @param mixed  $value Current value.
-     * @param string $attrs Escaped id, data-spsc-setting and aria-describedby.
+     * @param string $attrs Escaped id, data-spc-setting and aria-describedby.
      */
     private static function render_textarea($key, array $field, $value, $attrs) {
         printf(
@@ -804,39 +804,39 @@ class SEOProStackCustom_Settings_Manager { // NOSONAR: keep the cohesive setting
     }
 
     /**
-     * Render a media control. The hidden input carries data-spsc-setting; the
+     * Render a media control. The hidden input carries data-spc-setting; the
      * JS sets it from the media dialog and saves it.
      *
      * @param string $key   Setting key.
      * @param array  $field Schema entry.
      * @param mixed  $value Current value.
-     * @param string $attrs Escaped id, data-spsc-setting and aria-describedby.
+     * @param string $attrs Escaped id, data-spc-setting and aria-describedby.
      */
     private static function render_media($key, array $field, $value, $attrs) {
-        $id       = 'spsc-' . $key;
+        $id       = 'spc-' . $key;
         $image_id = (int) $value;
         $preview  = $image_id ? wp_get_attachment_image_url($image_id, 'thumbnail') : '';
-        echo '<div class="spsc-media" data-spsc-media>';
+        echo '<div class="spc-media" data-spc-media>';
         printf(
-            '<input type="hidden" data-spsc-setting="%1$s" value="%2$s" />',
+            '<input type="hidden" data-spc-setting="%1$s" value="%2$s" />',
             esc_attr($key),
             esc_attr((string) $image_id)
         );
         if ($preview) {
-            printf('<img class="spsc-media__preview" src="%s" alt="" />', esc_url($preview));
+            printf('<img class="spc-media__preview" src="%s" alt="" />', esc_url($preview));
         } else {
-            echo '<img class="spsc-media__preview" alt="" hidden />';
+            echo '<img class="spc-media__preview" alt="" hidden />';
         }
         printf(
-            '<button type="button" class="button spsc-media__choose" id="%1$s" aria-describedby="%2$s">%3$s</button>',
+            '<button type="button" class="button spc-media__choose" id="%1$s" aria-describedby="%2$s">%3$s</button>',
             esc_attr($id),
             esc_attr($id . self::DESC),
-            esc_html__('Choose picture', 'seoprostackcustom')
+            esc_html__('Choose picture', 'seoprocustom')
         );
         printf(
-            '<button type="button" class="button-link spsc-media__remove"%1$s>%2$s</button>',
+            '<button type="button" class="button-link spc-media__remove"%1$s>%2$s</button>',
             $image_id ? '' : ' hidden',
-            esc_html__('Remove', 'seoprostackcustom')
+            esc_html__('Remove', 'seoprocustom')
         );
         echo '</div>';
     }
@@ -848,11 +848,11 @@ class SEOProStackCustom_Settings_Manager { // NOSONAR: keep the cohesive setting
      * @param string $key   Setting key.
      * @param array  $field Schema entry.
      * @param mixed  $value Current value.
-     * @param string $attrs Escaped id, data-spsc-setting and aria-describedby.
+     * @param string $attrs Escaped id, data-spc-setting and aria-describedby.
      */
     private static function render_bool($key, array $field, $value, $attrs) {
         printf(
-            '<span class="spsc-switch"><input type="checkbox" role="switch" class="spsc-switch__input" %1$s %2$s /><span class="spsc-switch__track" aria-hidden="true"></span></span>',
+            '<span class="spc-switch"><input type="checkbox" role="switch" class="spc-switch__input" %1$s %2$s /><span class="spc-switch__track" aria-hidden="true"></span></span>',
             $attrs, // phpcs:ignore WordPress.Security.EscapeOutput -- escaped in render_field().
             checked((bool) $value, true, false)
         );
@@ -864,7 +864,7 @@ class SEOProStackCustom_Settings_Manager { // NOSONAR: keep the cohesive setting
      * @param string $key   Setting key.
      * @param array  $field Schema entry.
      * @param mixed  $value Current value.
-     * @param string $attrs Escaped id, data-spsc-setting and aria-describedby.
+     * @param string $attrs Escaped id, data-spc-setting and aria-describedby.
      */
     private static function render_text($key, array $field, $value, $attrs) {
         printf(

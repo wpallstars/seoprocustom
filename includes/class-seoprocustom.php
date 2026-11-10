@@ -1,14 +1,14 @@
 <?php
 /**
- * SEO Pro Stack Custom bootstrap and feature registry. The features and anything
- * else only this plugin needs come from SEOProStackCustom_Setup.
+ * SEO Pro Custom bootstrap and feature registry. The features and anything
+ * else only this plugin needs come from SEOProCustom_Setup.
  *
  * SPDX-License-Identifier: GPL-3.0-or-later
  * SPDX-FileCopyrightText: 2026 Marcus Quinn
  * Additional terms (GPL-3.0 section 7(b)): ATTRIBUTION.txt
  * Provenance: wpas-e4502af0f07e8a92. Copies, even of part, keep these lines.
  *
- * @package SEOProStackCustom
+ * @package SEOProCustom
  * @since 0.3.0
  */
 
@@ -16,11 +16,11 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-final class SEOProStackCustom {
+final class SEOProCustom {
 
     /**
-     * Feature classes whose files are loaded: SEOProStackCustom_Setup::FEATURES,
-     * plus each of SEOProStackCustom_Setup::OPTIONAL_FEATURES this build has.
+     * Feature classes whose files are loaded: SEOProCustom_Setup::FEATURES,
+     * plus each of SEOProCustom_Setup::OPTIONAL_FEATURES this build has.
      *
      * @var string[]
      */
@@ -37,21 +37,21 @@ final class SEOProStackCustom {
      * Load files and register hooks.
      */
     public static function load() {
-        require_once SEOPROSTACKCUSTOM_DIR . 'includes/class-seoprostackcustom-settings.php';
-        require_once SEOPROSTACKCUSTOM_DIR . 'includes/class-seoprostackcustom-network-settings.php';
-        require_once SEOPROSTACKCUSTOM_DIR . 'includes/class-seoprostackcustom-network-sites.php';
-        require_once SEOPROSTACKCUSTOM_DIR . 'includes/class-seoprostackcustom-network-differences.php';
-        require_once SEOPROSTACKCUSTOM_DIR . 'includes/class-seoprostackcustom-feature.php';
-        require_once SEOPROSTACKCUSTOM_DIR . 'includes/class-seoprostackcustom-setup.php';
-        SEOProStackCustom_Setup::load();
+        require_once SEOPROCUSTOM_DIR . 'includes/class-seoprocustom-settings.php';
+        require_once SEOPROCUSTOM_DIR . 'includes/class-seoprocustom-network-settings.php';
+        require_once SEOPROCUSTOM_DIR . 'includes/class-seoprocustom-network-sites.php';
+        require_once SEOPROCUSTOM_DIR . 'includes/class-seoprocustom-network-differences.php';
+        require_once SEOPROCUSTOM_DIR . 'includes/class-seoprocustom-feature.php';
+        require_once SEOPROCUSTOM_DIR . 'includes/class-seoprocustom-setup.php';
+        SEOProCustom_Setup::load();
 
-        foreach (SEOProStackCustom_Setup::FEATURES as $class) {
+        foreach (SEOProCustom_Setup::FEATURES as $class) {
             require_once self::feature_file($class);
             self::$core_features[] = $class;
         }
         // Features that some builds leave out (the WordPress.org build has
         // no GitHub updates) load only when their file is present.
-        foreach (SEOProStackCustom_Setup::OPTIONAL_FEATURES as $class) {
+        foreach (SEOProCustom_Setup::OPTIONAL_FEATURES as $class) {
             if (is_readable(self::feature_file($class))) {
                 require_once self::feature_file($class);
                 self::$core_features[] = $class;
@@ -60,26 +60,26 @@ final class SEOProStackCustom {
 
         // The shared GitHub updater (GitHub builds only): registers this
         // copy; the newest copy on the site loads on plugins_loaded.
-        if (is_readable(SEOPROSTACKCUSTOM_DIR . 'includes/github-updater/load.php')) {
-            require_once SEOPROSTACKCUSTOM_DIR . 'includes/github-updater/load.php';
+        if (is_readable(SEOPROCUSTOM_DIR . 'includes/github-updater/load.php')) {
+            require_once SEOPROCUSTOM_DIR . 'includes/github-updater/load.php';
         }
 
         // Shared problem reports: registers this copy; the newest copy on
         // the site loads on after_setup_theme and lists this plugin, so a
         // site's AI assistant can draft reports for an administrator to send.
-        if (is_readable(SEOPROSTACKCUSTOM_DIR . 'includes/wpallstars-reports/load.php')) {
-            require_once SEOPROSTACKCUSTOM_DIR . 'includes/wpallstars-reports/load.php';
+        if (is_readable(SEOPROCUSTOM_DIR . 'includes/wpallstars-reports/load.php')) {
+            require_once SEOPROCUSTOM_DIR . 'includes/wpallstars-reports/load.php';
             add_filter('wpallstars_report_products', array(__CLASS__, 'report_product'));
         }
 
-        SEOProStackCustom_Settings::init();
-        SEOProStackCustom_Setup::init();
-        // Priority 0, added after SEOProStackCustom_Settings::maybe_migrate() so features
+        SEOProCustom_Settings::init();
+        SEOProCustom_Setup::init();
+        // Priority 0, added after SEOProCustom_Settings::maybe_migrate() so features
         // read migrated values, and early enough to hook widgets_init (init:1).
         add_action('init', array(__CLASS__, 'boot_features'), 0);
 
         if (is_admin()) {
-            require_once SEOPROSTACKCUSTOM_DIR . 'admin/settings.php';
+            require_once SEOPROCUSTOM_DIR . 'admin/settings.php';
         }
     }
 
@@ -90,7 +90,7 @@ final class SEOProStackCustom {
      * @return string
      */
     private static function feature_file($class) {
-        return SEOPROSTACKCUSTOM_DIR . 'includes/features/class-' . str_replace('_', '-', strtolower($class)) . '.php';
+        return SEOPROCUSTOM_DIR . 'includes/features/class-' . str_replace('_', '-', strtolower($class)) . '.php';
     }
 
     /**
@@ -99,12 +99,12 @@ final class SEOProStackCustom {
      * @return string
      */
     public static function slug() {
-        return dirname(plugin_basename(SEOPROSTACKCUSTOM_FILE));
+        return dirname(plugin_basename(SEOPROCUSTOM_FILE));
     }
 
     /**
      * List the plugin for problem reports (wpallstars_report_products):
-     * reports go where SEOProStackCustom_Setup::header_links()['support'] points, a
+     * reports go where SEOProCustom_Setup::header_links()['support'] points, a
      * GitHub issues address (public) or mailto:address (private, by email).
      *
      * @param mixed $products Products.
@@ -112,12 +112,12 @@ final class SEOProStackCustom {
      */
     public static function report_product($products) {
         $products = (array) $products;
-        $links    = SEOProStackCustom_Setup::header_links();
+        $links    = SEOProCustom_Setup::header_links();
         if (!empty($links['support'])) {
             $products[self::slug()] = array(
-                'name'    => 'SEO Pro Stack Custom',
+                'name'    => 'SEO Pro Custom',
                 'type'    => 'plugin',
-                'version' => SEOPROSTACKCUSTOM_VERSION,
+                'version' => SEOPROCUSTOM_VERSION,
                 'support' => $links['support'],
             );
         }
@@ -132,13 +132,13 @@ final class SEOProStackCustom {
     public static function features() {
         if (null === self::$features) {
             /**
-             * Filter the feature classes. Each must extend SEOProStackCustom_Feature.
+             * Filter the feature classes. Each must extend SEOProCustom_Feature.
              *
              * @param string[] $features Class names.
              */
-            $features       = (array) apply_filters('seoprostackcustom_features', self::$core_features);
+            $features       = (array) apply_filters('seoprocustom_features', self::$core_features);
             self::$features = array_values(array_filter($features, function ($class) {
-                return is_string($class) && class_exists($class) && is_subclass_of($class, 'SEOProStackCustom_Feature');
+                return is_string($class) && class_exists($class) && is_subclass_of($class, 'SEOProCustom_Feature');
             }));
         }
         return self::$features;

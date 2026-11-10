@@ -1,16 +1,16 @@
 <?php
 /**
- * SEO Pro Stack Custom network settings (multisite).
+ * SEO Pro Custom network settings (multisite).
  *
- * The network screen (Network Admin → Settings → SEO Pro Stack Custom) saves
+ * The network screen (Network Admin → Settings → SEO Pro Custom) saves
  * network values, kept in one network option. A card applied to every
  * site overrides each site's own values with the network's, and sites
  * cannot change them; when it stops applying, each site has its own values
  * again, as they were never overwritten. How the network values reach
  * each site (new sites start with them, and each site runs its saving
- * work for the network's changes) is in SEOProStackCustom_Network_Sites; the
+ * work for the network's changes) is in SEOProCustom_Network_Sites; the
  * sites whose own values differ, and Make every site the same, which
- * copies them once, are in SEOProStackCustom_Network_Differences.
+ * copies them once, are in SEOProCustom_Network_Differences.
  *
  * Settings that only make sense on each site are never set for the
  * network: Media Library pictures, hidden wiring, and fields with
@@ -23,7 +23,7 @@
  * Additional terms (GPL-3.0 section 7(b)): ATTRIBUTION.txt
  * Provenance: wpas-e4502af0f07e8a92. Copies, even of part, keep these lines.
  *
- * @package SEOProStackCustom
+ * @package SEOProCustom
  * @since 1.0.35
  */
 
@@ -31,7 +31,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-class SEOProStackCustom_Network_Settings {
+class SEOProCustom_Network_Settings {
 
     /**
      * Network option: `values` (key => value saved on the network screen),
@@ -39,15 +39,15 @@ class SEOProStackCustom_Network_Settings {
      * (applied card key => its keys and the values every site uses) and
      * `version` (raised whenever `enforced` changes). Code that runs before
      * the plugin loads (a must-use file) reads `enforced` over the site's
-     * own settings, as SEOProStackCustom_Settings::all() does.
+     * own settings, as SEOProCustom_Settings::all() does.
      */
-    const OPTION = 'seoprostackcustom_network';
+    const OPTION = 'seoprocustom_network';
 
     /**
      * The network option's save lock: a row in the main site's options
      * table (change()).
      */
-    const LOCK = 'seoprostackcustom_network_lock';
+    const LOCK = 'seoprocustom_network_lock';
 
     /**
      * The network option, read once per request (stored()).
@@ -88,7 +88,7 @@ class SEOProStackCustom_Network_Settings {
     private static function forget() {
         self::$stored   = null;
         self::$enforced = null;
-        SEOProStackCustom_Network_Differences::forget();
+        SEOProCustom_Network_Differences::forget();
     }
 
     /**
@@ -149,7 +149,7 @@ class SEOProStackCustom_Network_Settings {
      * @return bool
      */
     public static function eligible($key) {
-        $schema = SEOProStackCustom_Settings::schema();
+        $schema = SEOProCustom_Settings::schema();
         if (!isset($schema[$key])) {
             return false;
         }
@@ -175,7 +175,7 @@ class SEOProStackCustom_Network_Settings {
             return array();
         }
         $keys = array((string) $key);
-        foreach (array_keys(SEOProStackCustom_Settings::children_of($key)) as $child) {
+        foreach (array_keys(SEOProCustom_Settings::children_of($key)) as $child) {
             if (self::eligible((string) $child)) {
                 $keys[] = (string) $child;
             }
@@ -190,7 +190,7 @@ class SEOProStackCustom_Network_Settings {
      * @return array
      */
     public static function fields_for_tab($tab) {
-        return array_filter(SEOProStackCustom_Settings::fields_for_tab($tab), function ($key) {
+        return array_filter(SEOProCustom_Settings::fields_for_tab($tab), function ($key) {
             return self::eligible((string) $key);
         }, ARRAY_FILTER_USE_KEY);
     }
@@ -207,7 +207,7 @@ class SEOProStackCustom_Network_Settings {
         if (array_key_exists($key, $values)) {
             return $values[$key];
         }
-        return SEOProStackCustom_Settings::defaults()[$key] ?? null;
+        return SEOProCustom_Settings::defaults()[$key] ?? null;
     }
 
     /**
@@ -220,15 +220,15 @@ class SEOProStackCustom_Network_Settings {
      */
     public static function set_value($key, $value) {
         if (!self::eligible($key)) {
-            return new WP_Error('seoprostackcustom_unknown_setting', __('This setting is set on each site.', 'seoprostackcustom'));
+            return new WP_Error('seoprocustom_unknown_setting', __('This setting is set on each site.', 'seoprocustom'));
         }
-        $schema = SEOProStackCustom_Settings::schema();
-        $clean  = SEOProStackCustom_Settings::sanitize_value($value, $schema[$key]);
+        $schema = SEOProCustom_Settings::schema();
+        $clean  = SEOProCustom_Settings::sanitize_value($value, $schema[$key]);
         $saved  = self::change(function (array $network) use ($key, $clean) {
             $network['values'][$key] = $clean;
             return $network;
         });
-        return $saved ? $clean : new WP_Error('seoprostackcustom_not_saved', __('The setting could not be saved. Please try again.', 'seoprostackcustom'));
+        return $saved ? $clean : new WP_Error('seoprocustom_not_saved', __('The setting could not be saved. Please try again.', 'seoprocustom'));
     }
 
     /**
@@ -241,7 +241,7 @@ class SEOProStackCustom_Network_Settings {
     public static function apply($key, $apply) {
         // A card can always stop applying, even once its feature is gone.
         if ($apply && !self::card_keys($key)) {
-            return new WP_Error('seoprostackcustom_unknown_setting', __('This setting is set on each site.', 'seoprostackcustom'));
+            return new WP_Error('seoprocustom_unknown_setting', __('This setting is set on each site.', 'seoprocustom'));
         }
         $saved = self::change(function (array $network) use ($key, $apply) {
             $network['applied'] = array_values(array_diff($network['applied'], array((string) $key)));
@@ -250,7 +250,7 @@ class SEOProStackCustom_Network_Settings {
             }
             return $network;
         });
-        return $saved ? true : new WP_Error('seoprostackcustom_not_saved', __('The setting could not be saved. Please try again.', 'seoprostackcustom'));
+        return $saved ? true : new WP_Error('seoprocustom_not_saved', __('The setting could not be saved. Please try again.', 'seoprocustom'));
     }
 
     /**
@@ -258,7 +258,7 @@ class SEOProStackCustom_Network_Settings {
      * what is stored now, not the copy this request read when it began: two
      * saves at once (two tabs, two network administrators) would otherwise
      * each write back a copy without the other's change. The lock is a row
-     * in the main site's options table (SEOProStackCustom_Settings::under_lock()),
+     * in the main site's options table (SEOProCustom_Settings::under_lock()),
      * as the network option's own table has no unique key to lock with.
      *
      * @param callable $change Gets the network option (stored()) and returns
@@ -268,7 +268,7 @@ class SEOProStackCustom_Network_Settings {
     private static function change(callable $change) {
         global $wpdb;
         $table = $wpdb->get_blog_prefix(get_main_site_id()) . 'options';
-        return true === SEOProStackCustom_Settings::under_lock(function () use ($change) {
+        return true === SEOProCustom_Settings::under_lock(function () use ($change) {
             $network_id = get_current_network_id();
             wp_cache_delete($network_id . ':' . self::OPTION, 'site-options');
             wp_cache_delete($network_id . ':notoptions', 'site-options');
@@ -305,7 +305,7 @@ class SEOProStackCustom_Network_Settings {
      * @return array<string,array>
      */
     private static function enforced_for(array $applied, array $values, array $before) {
-        $defaults = SEOProStackCustom_Settings::defaults();
+        $defaults = SEOProCustom_Settings::defaults();
         $enforced = array();
         foreach ($applied as $card) {
             if (!array_key_exists($card, $defaults)) {

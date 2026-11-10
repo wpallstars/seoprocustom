@@ -1,6 +1,6 @@
 <?php
 /**
- * SEO Pro Stack Custom Read Me tab.
+ * SEO Pro Custom Read Me tab.
  *
  * Renders README.md with a small, escaping Markdown subset
  * (headings with GitHub-style IDs, paragraphs and list items that wrap over
@@ -14,7 +14,7 @@
  * Additional terms (GPL-3.0 section 7(b)): ATTRIBUTION.txt
  * Provenance: wpas-e4502af0f07e8a92. Copies, even of part, keep these lines.
  *
- * @package SEOProStackCustom
+ * @package SEOProCustom
  * @since 0.2.0
  */
 
@@ -22,15 +22,15 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-class SEOProStackCustom_Readme_Manager {
+class SEOProCustom_Readme_Manager {
 
     /**
      * Render the tab.
      */
     public static function display_tab_content() {
-        $readme = seoprostackcustom_get_readme_content();
+        $readme = seoprocustom_get_readme_content();
         ?>
-        <article class="spsc-card spsc-readme">
+        <article class="spc-card spc-readme">
             <?php echo self::parse_markdown($readme['content']); // phpcs:ignore WordPress.Security.EscapeOutput -- built from escaped text. ?>
         </article>
         <?php
@@ -44,7 +44,7 @@ class SEOProStackCustom_Readme_Manager {
      * @return string HTML.
      */
     public static function parse_markdown($markdown) {
-        $markdown = str_replace('{SEOPROSTACKCUSTOM_VERSION}', SEOPROSTACKCUSTOM_VERSION, $markdown);
+        $markdown = str_replace('{SEOPROCUSTOM_VERSION}', SEOPROCUSTOM_VERSION, $markdown);
         $markdown = str_replace(array("\r\n", "\r"), "\n", $markdown);
         // GitHub-only parts: the badges block (remote images), the managed
         // Star History and Built with aidevops sections (their chart does not
@@ -173,7 +173,7 @@ class SEOProStackCustom_Readme_Manager {
      * @return string HTML.
      */
     private static function code_block(array $lines) {
-        return '<pre class="spsc-readme-code"><code>' . esc_html(rtrim(implode("\n", $lines), "\n")) . '</code></pre>';
+        return '<pre class="spc-readme-code"><code>' . esc_html(rtrim(implode("\n", $lines), "\n")) . '</code></pre>';
     }
 
     /**
@@ -259,7 +259,7 @@ class SEOProStackCustom_Readme_Manager {
         }
         $html = '';
         if (!$state['table']) {
-            $html           = self::close_blocks($state) . '<div class="spsc-readme-table"><table><thead>';
+            $html           = self::close_blocks($state) . '<div class="spc-readme-table"><table><thead>';
             $state['table'] = 'head';
         }
         $tag   = 'head' === $state['table'] ? 'th' : 'td';
@@ -327,7 +327,7 @@ class SEOProStackCustom_Readme_Manager {
         if (!preg_match('#^[a-z0-9_-]+(?:/[a-z0-9_-]+)*\.(?:svg|png|jpe?g|gif|webp)$#i', $path)) {
             return '';
         }
-        $file = SEOPROSTACKCUSTOM_DIR . $path;
+        $file = SEOPROCUSTOM_DIR . $path;
         if (!is_file($file)) {
             return '';
         }
@@ -348,10 +348,10 @@ class SEOProStackCustom_Readme_Manager {
 
         // The file's time in the address, so browsers fetch a changed image
         // (such as a new banner after an update) instead of a cached one.
-        $url = add_query_arg('ver', (string) filemtime($file), SEOPROSTACKCUSTOM_URL . $path);
+        $url = add_query_arg('ver', (string) filemtime($file), SEOPROCUSTOM_URL . $path);
 
         return sprintf(
-            '<p class="spsc-readme-image"><img src="%1$s" alt="%2$s"%3$s decoding="async" /></p>',
+            '<p class="spc-readme-image"><img src="%1$s" alt="%2$s"%3$s decoding="async" /></p>',
             esc_url($url),
             esc_attr($alt),
             $dims

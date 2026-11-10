@@ -1,6 +1,6 @@
 {
-	"name": "wpallstars/seoprostackcustom",
-	"description": "SEO Pro Stack Custom WordPress plugin. Development tools only: the plugin has no Composer dependencies and ships without vendor/.",
+	"name": "wpallstars/seoprocustom",
+	"description": "SEO Pro Custom WordPress plugin. Development tools only: the plugin has no Composer dependencies and ships without vendor/.",
 	"type": "wordpress-plugin",
 	"license": "GPL-3.0-or-later",
 	"require": {
