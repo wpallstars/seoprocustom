@@ -5,7 +5,7 @@ Tags: customization, custom code, developer, template, wpallstars
 Requires at least: 6.2
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 0.1.1
+Stable tag: 0.1.2
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -79,7 +79,7 @@ GitHub releases are the stable beta channel: each version comes out there first.
 
 == Changelog ==
 
-= 0.1.1 =
-* Settings screen: the Customisations card is padded, spaced and replaces the "No settings yet" placeholder. Docs: fork it, install your fork, reuse it across sites.
+= 0.1.2 =
+* No change to the plugin's code: its development files keep their own lines through the Starter sync.
 
 Every change: changelog.txt.

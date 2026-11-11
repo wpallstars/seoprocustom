@@ -2,6 +2,9 @@
 
 Every change to SEO Pro Custom. readme.txt lists the latest version in short.
 
+= 0.1.2 =
+* Development files only, no change to the plugin's code: the smoke test's customisation checks, the issue chooser's contact links and the DCO sign-off step in CONTRIBUTING.md are kept by the Starter sync.
+
 = 0.1.1 =
 * Settings screen: the Customisations card has inner padding and space above it, a line saying where your changes go with a link to the Read Me tab, and it replaces the "No settings yet" placeholder on the General tab.
 * README: fork the plugin, install your fork on the sites you want to customise and reuse it across them; keep your fork in sync; issues and pull requests here are for the blank plugin itself. New banner strapline.

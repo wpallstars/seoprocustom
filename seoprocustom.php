@@ -3,7 +3,7 @@
  * Plugin Name:       SEO Pro Custom
  * Plugin URI:        https://github.com/wpallstars/seoprocustom
  * Description:       Change how your theme and plugins behave when their settings can't, without waiting on their makers: one small file per change, in your own copy.
- * Version:           0.1.1
+ * Version:           0.1.2
  * Requires at least: 6.2
  * Requires PHP:      7.4
  * Author:            Marcus Quinn
@@ -44,7 +44,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-define('SEOPROCUSTOM_VERSION', '0.1.1');
+define('SEOPROCUSTOM_VERSION', '0.1.2');
 define('SEOPROCUSTOM_FILE', __FILE__);
 define('SEOPROCUSTOM_DIR', plugin_dir_path(__FILE__));
 define('SEOPROCUSTOM_URL', plugin_dir_url(__FILE__));
