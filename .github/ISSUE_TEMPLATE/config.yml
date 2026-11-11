@@ -3,9 +3,13 @@ contact_links:
   - name: Security problem
     url: https://github.com/wpallstars/seoprocustom/blob/main/SECURITY.md
     about: Report security problems privately, never in a public issue.
+  # A plugin's own contact links go between these markers; a Starter sync
+  # keeps them (DEVELOPMENT.md → Starter sync).
+  # spc-own:start
   - name: SEO Pro Stack issues and pull requests
     url: https://github.com/wpallstars/seoprostack/issues
     about: SEO Pro Stack is public; ask for changes and send pull requests on its own repository.
   - name: WP Plugin Starter issues and pull requests
     url: https://github.com/wpallstars/wp-plugin-starter-template-for-ai-coding/issues
     about: The starter plugin is public; ask for changes and send pull requests on its own repository.
+  # spc-own:end
