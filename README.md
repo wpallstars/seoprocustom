@@ -181,6 +181,10 @@ SEO Pro Custom shares the starter's settings screen, Read Me tab, multisite sett
 
 ## Changelog
 
+### Unreleased
+
+- Development files only, no change to the plugin's behaviour: core files synced from WP Plugin Starter 1.0.61, including the secret text setting, the hooks check (`scripts/check-hooks.js`, skipped until `docs/HOOKS.md` exists), `scripts/release-bump.sh`, the changelog check, minified assets in release builds (`SEOProCustom::asset_url()`), the deploy load-check retry and the auto-dispatch label on the Starter sync issue (GH#18).
+
 ### 0.1.2
 
 - Development files only, no change to the plugin's code: the customisation checks in `scripts/smoke-test.sh`, the issue chooser's contact links in `.github/ISSUE_TEMPLATE/config.yml` and the DCO sign-off step in `CONTRIBUTING.md` sit in the plugin's own blocks, which the Starter sync keeps (WP Plugin Starter added empty ones for them).
