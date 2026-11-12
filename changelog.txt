@@ -3,6 +3,7 @@
 Every change to SEO Pro Custom. readme.txt lists the latest version in short.
 
 = Unreleased =
+* Development files only, no change to the plugin's behaviour: core files synced from WP Plugin Starter at b87b475 (1.0.63 and later): the deploy load-check retry and process wait, the changelog check's heading rule, the documented non-empty asset_url() return and the Starter sync workflow's optional STARTER_SYNC_TOKEN (GH#20).
 * Development files only, no change to the plugin's behaviour: core files synced from WP Plugin Starter 1.0.62, including the secret text setting, the hooks check (scripts/check-hooks.js, skipped until docs/HOOKS.md exists), scripts/release-bump.sh, the changelog check, minified assets in release builds (SEOProCustom::asset_url()), the deploy load-check retry and the auto-dispatch label on the Starter sync issue (GH#18).
 
 = 0.1.2 =
