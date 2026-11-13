@@ -183,6 +183,7 @@ SEO Pro Custom shares the starter's settings screen, Read Me tab, multisite sett
 
 ### Unreleased
 
+- Development files only, no change to the plugin's behaviour: core files synced from WP Plugin Starter at ffb0c87 (1.0.66): deploy script fixes (SSH keep-alive, 137 rechecks, `--ignore-log-line`, a lock for another plugin's deploy on the same host), the hooks check and `scripts/release-bump.sh` fixes, and the secret field's placeholder after a save (GH#22).
 - Development files only, no change to the plugin's behaviour: core files synced from WP Plugin Starter 1.0.62, including the secret text setting, the hooks check (`scripts/check-hooks.js`, skipped until `docs/HOOKS.md` exists), `scripts/release-bump.sh`, the changelog check, minified assets in release builds (`SEOProCustom::asset_url()`), the deploy load-check retry and the auto-dispatch label on the Starter sync issue (GH#18).
 
 ### 0.1.2
