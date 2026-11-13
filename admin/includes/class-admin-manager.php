@@ -417,6 +417,7 @@ class SEOProCustom_Admin_Manager {
                 'saving'      => __('Saving…', 'seoprocustom'),
                 'saved'       => __('Saved', 'seoprocustom'),
                 'saveFailed'  => __('Could not save. Please try again.', 'seoprocustom'),
+                'secretSaved' => __('Saved (hidden). Type a new one to replace it, or a space to remove it.', 'seoprocustom'),
                 'chooseImage' => __('Choose a picture', 'seoprocustom'),
                 'useImage'    => __('Use this picture', 'seoprocustom'),
                 'copyConfirm' => __('Copy these settings into every site’s own settings? Each site can change them again afterwards, unless they are applied to every site.', 'seoprocustom'),
