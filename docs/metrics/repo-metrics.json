@@ -1,7 +1,7 @@
 {
   "schema": "aidevops.repo-metrics.v1",
   "schema_version": 1,
-  "generated_at": "2026-11-13T13:59:50Z",
+  "generated_at": "2026-11-14T17:10:24Z",
   "tool": {
     "name": "aidevops repo-metrics",
     "version": "1.0.0"
@@ -11,21 +11,21 @@
     "slug": "wpallstars/seoprocustom"
   },
   "summary": {
-    "source_files": 100,
-    "code": 21722,
-    "comments": 6684,
-    "blanks": 2164,
+    "source_files": 108,
+    "code": 21820,
+    "comments": 6803,
+    "blanks": 2169,
     "languages": 9,
     "dependencies": 14
   },
   "languages": [
     {
       "name": "Shell",
-      "files": 22,
-      "code": 8489,
-      "comments": 1866,
-      "blanks": 643,
-      "percentage": 39.08,
+      "files": 30,
+      "code": 8576,
+      "comments": 1985,
+      "blanks": 647,
+      "percentage": 39.3,
       "color": "#89e051"
     },
     {
@@ -34,15 +34,15 @@
       "code": 6048,
       "comments": 4293,
       "blanks": 699,
-      "percentage": 27.84,
+      "percentage": 27.72,
       "color": "#4F5D95"
     },
     {
       "name": "Markdown",
       "files": 17,
-      "code": 2442,
+      "code": 2453,
       "comments": 0,
-      "blanks": 413,
+      "blanks": 414,
       "percentage": 11.24,
       "color": "#083fa1"
     },
@@ -52,7 +52,7 @@
       "code": 1650,
       "comments": 43,
       "blanks": 12,
-      "percentage": 7.6,
+      "percentage": 7.56,
       "color": "#6e7781"
     },
     {
@@ -61,7 +61,7 @@
       "code": 1141,
       "comments": 98,
       "blanks": 221,
-      "percentage": 5.25,
+      "percentage": 5.23,
       "color": "#563d7c"
     },
     {
@@ -70,7 +70,7 @@
       "code": 1052,
       "comments": 206,
       "blanks": 83,
-      "percentage": 4.84,
+      "percentage": 4.82,
       "color": "#f1e05a"
     },
     {
@@ -79,7 +79,7 @@
       "code": 816,
       "comments": 175,
       "blanks": 91,
-      "percentage": 3.76,
+      "percentage": 3.74,
       "color": "#cb171e"
     },
     {
