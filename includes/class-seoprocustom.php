@@ -72,6 +72,13 @@ final class SEOProCustom {
             add_filter('wpallstars_report_products', array(__CLASS__, 'report_product'));
         }
 
+        // Shared licensed updates: registers this copy; the newest copy on
+        // the site loads on after_setup_theme and serves every plugin and
+        // theme with an Update URI on wpallstars.com and a Licence Item.
+        if (is_readable(SEOPROCUSTOM_DIR . 'includes/wpallstars-licence/load.php')) {
+            require_once SEOPROCUSTOM_DIR . 'includes/wpallstars-licence/load.php';
+        }
+
         SEOProCustom_Settings::init();
         SEOProCustom_Setup::init();
         // Priority 0, added after SEOProCustom_Settings::maybe_migrate() so features
