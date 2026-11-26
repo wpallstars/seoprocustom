@@ -183,6 +183,7 @@ SEO Pro Custom shares the starter's settings screen, Read Me tab, multisite sett
 
 ### Unreleased
 
+- Developers: core files synced from WP Plugin Starter at 7363e11: the Starter sync workflow retries a `gh` call up to 3 times with backoff on a transient GitHub API error, and `RELEASING.md`'s deployment step uses the list's 3-space indent throughout. No change to the plugin's behaviour (GH#50).
 - Developers: core files synced from WP Plugin Starter at 55531c6: `scripts/deploy-sites.sh` gains `--zip FILE` to install a plugin that has no GitHub release (a licensed plugin sold through the shop), with the matching `DEVELOPMENT.md` and `RELEASING.md` text. No change to the plugin's behaviour (GH#47).
 - Developers: core files synced from WP Plugin Starter at f3c249d: the shared licence library, the shop release scripts and the release preflight carry review fixes, a killed cron event that printed a PHP or database error is not retried, and update_plugins/update_themes are restored with TTL 0 under an external object cache by the deploy modules. No change to the plugin's behaviour (GH#39).
 - Developers: core files synced from WP Plugin Starter at 7f15ab5: the shared licence library (1.1.0) lists every product with a Licence Item header before its Update URI moves to the shop, and `scripts/deploy-sites.sh`, its remote modules and `scripts/lib/shop-release-remote.php` are updated. No change to the plugin's behaviour (GH#37).
